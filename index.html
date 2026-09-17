@@ -249,6 +249,9 @@ svg.plan .zone-lab{fill:var(--ink-3);font-size:calc(8.5px*var(--z,1));letter-spa
 svg.plan .zone-note{fill:var(--blue);font-size:calc(8.5px*var(--z,1));letter-spacing:.08em;font-weight:600}
 svg.plan .ck{stroke:#4a5563;stroke-width:.7;vector-effect:non-scaling-stroke;opacity:.85}
 svg.plan .l-check{pointer-events:none}
+/* mission 5 : plaque de couche */
+svg.plan .buttplate{fill:#e6eaf0;fill-opacity:1;stroke:var(--ink);stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+svg.plan .l-plate{pointer-events:none}
 #svg-accueil .part{stroke:var(--blue-2);opacity:.7}#svg-accueil .guard{stroke:var(--blue-2);opacity:.7}
 svg.plan .lim{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:6 4;vector-effect:non-scaling-stroke}
 svg.plan .lim-t{fill:var(--ink-3);font-size:calc(12px*var(--z,1))}
@@ -417,15 +420,15 @@ const L_TOTAL=900;const G_TOTAL=1000;const G=G_TOTAL/L_TOTAL;
 const st={model:'A',stock:'pistolet',designer:'',done1:false,done2:false,done3:false}; // alias techniques de projectState (jamais réinitialisés par un rendu)
 
 /* ===================== ÉTAT DU PROJET — source de vérité ===================== */
-const SCHEMA_VERSION=2,APP_VERSION='BMA-1';const MISSION_COUNT=4;
+const SCHEMA_VERSION=3,APP_VERSION='BMA-1';const MISSION_COUNT=5;
 function defaultState(){return {schemaVersion:SCHEMA_VERSION,appVersion:APP_VERSION,projectId:'',createdAt:'',savedAt:'',student:{name:''},design:{model:'A',stock:'pistolet'},progress:{currentMission:1},
-  missions:{mission1:{status:'not_started',inputs:{rear:'',middle:'',front:''}},mission2:{status:'not_started',inputs:{leg1:'',leg2:'',square:'',rootValue:'',result:''}},mission3:{status:'not_started',inputs:{usableWidth:'',usableHeight:'',scale:'',detailLength:'',detailHeight:''}},mission4:{status:'not_started',inputs:{usableWidth:'',lpi:'',spacing:'',intervals:''}}},
+  missions:{mission1:{status:'not_started',inputs:{rear:'',middle:'',front:''}},mission2:{status:'not_started',inputs:{leg1:'',leg2:'',square:'',rootValue:'',result:''}},mission3:{status:'not_started',inputs:{usableWidth:'',usableHeight:'',scale:'',detailLength:'',detailHeight:''}},mission4:{status:'not_started',inputs:{usableWidth:'',lpi:'',spacing:'',intervals:''}},mission5:{status:'not_started',inputs:{angle:'',offset:'',length:''}}},
   modules:{conception:{},vente:{},gestion:{},compteResultat:{}}};}
 let projectState=defaultState();
 function newProjectId(){const yy=String(new Date().getFullYear()).slice(-2);let hex='';const a=new Uint8Array(3);if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(a);else for(let i=0;i<3;i++)a[i]=Math.floor(Math.random()*256);for(const b of a)hex+=b.toString(16).padStart(2,'0');return `BMA-${yy}-${hex.toUpperCase()}`;}
 /* Création volontaire d'un NOUVEAU projet : seul endroit où l'avancement est remis à zéro */
 function newProject(model,stock,name){projectState=defaultState();projectState.projectId=newProjectId();projectState.createdAt=new Date().toISOString();projectState.design={model,stock};projectState.student.name=name||'';
-  st.model=model;st.stock=stock;st.designer=name||'';st.done1=st.done2=st.done3=false;return projectState;}
+  st.model=model;st.stock=stock;st.designer=name||'';for(let n=1;n<=MISSION_COUNT;n++)st['done'+n]=false;return projectState;}
 function missionState(n){return projectState.missions['mission'+n];}
 function setInput(n,field,value){const m=missionState(n);m.inputs[field]=value==null?'':String(value);if(m.status==='not_started'&&Object.values(m.inputs).some(v=>v!==''))m.status='in_progress';}
 function bindState(input,n,field){input.addEventListener('input',()=>setInput(n,field,input.value));}
@@ -437,14 +440,17 @@ function deepMerge(base,extra){if(!isPlainObj(extra))return base;const out=Objec
 function migrateProjectState(data){let v=Number(data.schemaVersion)||1;let d=deepMerge({},data);
   if(v<2){ // v1 → v2 : la mission 4 (quadrillage) n'existait pas ; elle est ajoutée vide, l'élève y arrive après les trois premières
     d.missions=isPlainObj(d.missions)?d.missions:{};if(!isPlainObj(d.missions.mission4))d.missions.mission4={status:'not_started',inputs:{usableWidth:'',lpi:'',spacing:'',intervals:''}};v=2;}
+  if(v<3){ // v2 → v3 : la mission 5 (plaque de couche) est ajoutée vide
+    d.missions=isPlainObj(d.missions)?d.missions:{};if(!isPlainObj(d.missions.mission5))d.missions.mission5={status:'not_started',inputs:{angle:'',offset:'',length:''}};v=3;}
   const out=deepMerge(defaultState(),d);out.schemaVersion=SCHEMA_VERSION;out.appVersion=APP_VERSION;return out;}
 function stateSummary(){const S=projectState;const e=expected();const m1=S.missions.mission1,m2=S.missions.mission2,m3=S.missions.mission3;const open=firstOpenMission();
-  const S2=STOCKS[S.design.stock];const d3=m3Data();const m4=S.missions.mission4;const d4=m4Data(m4.inputs.lpi?+m4.inputs.lpi:20);
+  const S2=STOCKS[S.design.stock];const d3=m3Data();const m4=S.missions.mission4;const d4=m4Data(m4.inputs.lpi?+m4.inputs.lpi:20);const m5=S.missions.mission5;const d5=m5Data(m5.inputs.angle?+m5.inputs.angle:10);
   return {open,items:[
     {title:'Mission 1 — Proportions',status:m1.status,result:m1.status==='completed'?`Partie arrière ${fmt(e.a)} mm · centrale ${fmt(e.c)} mm · avant ${fmt(e.f)} mm (longueur globale ${fmt(L_TOTAL)} mm)`:'',inputs:[['Partie arrière',m1.inputs.rear],['Partie centrale',m1.inputs.middle],['Partie avant',m1.inputs.front]]},
     {title:'Mission 2 — Profil de crosse',status:m2.status,result:m2.status==='completed'?`AB = ${fmt(S2.ab)} mm (déplacement ${fmt(S2.dx)} mm, dénivelé ${fmt(S2.dy)} mm)`:'',inputs:[['Premier côté',m2.inputs.leg1],['Second côté',m2.inputs.leg2],['AB²',m2.inputs.square],['Sous la racine',m2.inputs.rootValue],['AB',m2.inputs.result]]},
     {title:'Mission 3 — Choisir l\u2019échelle du détail',status:m3.status,result:m3.status==='completed'?`Échelle 1:${fmtN(d3.best)} · fût sur le détail ${fmtN(d3.detL)} × ${fmtN(d3.detH)} mm (zone utile ${d3.uw} × ${d3.uh} mm)`:'',inputs:[['Largeur utile',m3.inputs.usableWidth],['Hauteur utile',m3.inputs.usableHeight],['Échelle',m3.inputs.scale?`1:${fmtN(+m3.inputs.scale)}`:''],['Longueur sur le détail',m3.inputs.detailLength],['Hauteur sur le détail',m3.inputs.detailHeight]]},
-    {title:'Mission 4 — Quadrillage de la crosse',status:m4.status,result:m4.status==='completed'?`Densité ${d4.lpi} LPI · espacement ${fmt(d4.spacing,2)} mm · ${d4.intervals} intervalles complets (largeur utile ${d4.usable} mm)`:'',lines:m4.status==='completed'?[`Densité : ${d4.lpi} LPI`,`Espacement : ${fmt(d4.spacing,2)} mm`,`Intervalles complets : ${d4.intervals}`]:null,inputs:[['Largeur utile',m4.inputs.usableWidth],['Densité',m4.inputs.lpi?`${m4.inputs.lpi} LPI`:''],['Espacement',m4.inputs.spacing],['Intervalles',m4.inputs.intervals]]}]};}
+    {title:'Mission 4 — Quadrillage de la crosse',status:m4.status,result:m4.status==='completed'?`Densité ${d4.lpi} LPI · espacement ${fmt(d4.spacing,2)} mm · ${d4.intervals} intervalles complets (largeur utile ${d4.usable} mm)`:'',lines:m4.status==='completed'?[`Densité : ${d4.lpi} LPI`,`Espacement : ${fmt(d4.spacing,2)} mm`,`Intervalles complets : ${d4.intervals}`]:null,inputs:[['Largeur utile',m4.inputs.usableWidth],['Densité',m4.inputs.lpi?`${m4.inputs.lpi} LPI`:''],['Espacement',m4.inputs.spacing],['Intervalles',m4.inputs.intervals]]},
+    {title:'Mission 5 — Plaque de couche',status:m5.status,result:m5.status==='completed'?`θ = ${d5.angle}° · d = ${fmt(d5.offset,1)} mm · AB = ${fmt(d5.length,1)} mm (H = ${d5.H} mm)`:'',lines:m5.status==='completed'?[{runs:[['F1','Inclinaison : '],['F3','q'],['F1',` = ${d5.angle}°`]]},`Décalage : d = ${fmt(d5.offset,1)} mm`,`Longueur : AB = ${fmt(d5.length,1)} mm`]:null,inputs:[['Angle',m5.inputs.angle?`${m5.inputs.angle}°`:''],['Décalage d',m5.inputs.offset],['Longueur AB',m5.inputs.length]]}]};}
 function expected(){const m=MODELS[st.model];const a=m.rear/100*L_TOTAL,c=m.mid/100*L_TOTAL;return {a,c,f:L_TOTAL-a-c,m,ga:a*G,gc:c*G,gf:(L_TOTAL-a-c)*G};}
 
 /* ===================== silhouettes (dessin) ===================== */
@@ -477,13 +483,13 @@ function openPlan(){newProject(st.model,st.stock,($('#designer').value||'').trim
 function enterAtelier(){const m=MODELS[st.model],s=m.stocks.find(x=>x.id===st.stock);
   $('#c-designer').textContent=st.designer||'—';$('#c-model').textContent=`${m.letter} — ${m.name}`;$('#c-stock').textContent=s.name;$('#c-id').textContent=projectState.projectId||'—';
   setTopinfo(1);show('s-atelier');}
-const MISSION_TITLES={1:'Les proportions',2:'Profil de crosse',3:'Échelle du détail',4:'Quadrillage de la crosse'};
+const MISSION_TITLES={1:'Les proportions',2:'Profil de crosse',3:'Échelle du détail',4:'Quadrillage de la crosse',5:'Plaque de couche'};
 function setTopinfo(n,validated){const m=MODELS[st.model];$('#topinfo').innerHTML=`<b>Mission ${n}</b> — ${MISSION_TITLES[n]}${validated?' — validée':''} &nbsp;·&nbsp; Projet ${m.letter} ${m.name}${st.designer?' &nbsp;·&nbsp; '+st.designer:''}`;}
 
 /* ===================== le plan ===================== */
 const svgPlan=$('#svg-plan');
 let layers={};let planGen=0;
-function drawPlan(){planGen++;const svg=svgPlan;while(svg.firstChild)svg.removeChild(svg.firstChild);setVB(VB_FULL);m2.g=null;m3.g=null;m4.g=null;layers.check=null;
+function drawPlan(){planGen++;const svg=svgPlan;while(svg.firstChild)svg.removeChild(svg.firstChild);setVB(VB_FULL);m2.g=null;m3.g=null;m4.g=null;m5.g=null;m5.scene=null;layers.check=null;layers.plate=null;
   const defs=el('defs',{},svg);const pat=el('pattern',{id:'grid',width:25,height:25,patternUnits:'userSpaceOnUse'},defs);
   el('path',{d:'M25,0 L0,0 L0,25',fill:'none',stroke:'#e6e9ee','stroke-width':1},pat);
   el('rect',{x:-70,y:-215,width:1140,height:560,fill:'url(#grid)'},svg);
@@ -829,7 +835,7 @@ function verify4(fb,bV,bH,next){const u=m4.ui;const lpi=u.getLpi();const D=m4Dat
   [u.iW,u.iS,u.iN].forEach(i=>{i.classList.add('ok');i.disabled=true;});$$('.lpis .lpi').forEach(b=>b.disabled=true);bV.disabled=true;bH.disabled=true;
   completeMission(4);projectState.modules.conception.checkering={lpi,spacing:Math.round(D.spacing*100)/100,usableWidth:D.usable,intervals:D.intervals};
   setFb(fb,`Quadrillage ${lpi} LPI validé. Le motif se trace…`,'ok');
-  reveal4(lpi).then(()=>{setFb(fb,'<div class="big">MISSION 4 VALIDÉE</div><div>Ton quadrillage est défini et ajouté à la crosse.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');const soon=h('div',{class:'soon'});bC.addEventListener('click',()=>{bC.disabled=true;soon.textContent='Étape suivante bientôt disponible.';});next.append(bC,soon);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(4,true);});}
+  reveal4(lpi).then(()=>{setFb(fb,'<div class="big">MISSION 4 VALIDÉE</div><div>Ton quadrillage est défini et ajouté à la crosse.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');bC.addEventListener('click',()=>{bC.disabled=true;startMission5();});next.append(bC);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(4,true);});}
 /* Réussite : marges confirmées, contour vert, première famille de lignes puis la seconde (losanges), motif conservé, retour à la vue générale avec l'annotation LPI */
 async function reveal4(lpi){if(!m4.zone)drawZoneScene();const g=m4.g;m4.margins.forEach(m=>m.classList.add('ok'));await wait(400);m4.zone.classList.add('ok');await wait(500);
   if(!layers.check){layers.check=el('g',{class:'l-check'},svgPlan);}
@@ -844,12 +850,99 @@ function annotateCheckering(fade){const F=zoneFrame();const lpi=+(projectState.m
 function renderCheckeringResult(fade){const lpi=+(projectState.modules.conception.checkering||{}).lpi||+(missionState(4).inputs.lpi)||20;if(!layers.check)layers.check=el('g',{class:'l-check'},svgPlan);
   if(!m4.g||!m4.g.parentNode)m4.g=el('g',{class:'l-m4'},svgPlan);drawCheckering(layers.check,lpi,0);annotateCheckering(fade);}
 
+/* ===================== mission 5 : plaque de couche ===================== */
+/* Données pédagogiques : hauteur du talon H (mm) par crosse ; inclinaisons proposées ; d = H·tan θ, AB = H / cos θ (vérifiés au dixième).
+   Géométrie : A = talon (haut de l'arrière de la crosse), B décalé vers l'arrière au niveau de la pointe ; l'angle dessiné est le vrai angle θ. */
+const HEEL={pistolet:118,anglaise:112,montecarlo:124,droite:116,pleine:126,squelette:120};const ANGLES=[8,10,12];const ANGLE_DESC={8:'inclinaison légère',10:'inclinaison intermédiaire',12:'inclinaison plus marquée'};const PLATE_T=6;
+function m5Data(angle){const H=HEEL[st.stock];const a=angle?rad(angle):0;return {H,angle,offset:angle?H*Math.tan(a):0,length:angle?H/Math.cos(a):0};}
+let hints5=0;const m5={ui:null,g:null,scene:null};
+function buttGeom(angle){const P=parts(st.model,st.stock);const d=P.parts[0].d;const nums=d.match(/-?\d+\.?\d*/g).map(Number);let top=Infinity,bot=-Infinity;for(let i=0;i<nums.length;i+=2){if(Math.abs(nums[i])<0.01){top=Math.min(top,nums[i+1]);bot=Math.max(bot,nums[i+1]);}}
+  const Hu=bot-top;const du=angle?Hu*Math.tan(rad(angle)):0;return {A:[0,top],T:[0,bot],B:[-du,bot],Hu,du};}
+function platePoly(angle){const G=buttGeom(angle);const dx=G.B[0]-G.A[0],dy=G.B[1]-G.A[1],len=Math.hypot(dx,dy)||1;const n=[-dy/len,dx/len];// normale à AB tournée vers l'arrière (x négatif)
+  const A2=[G.A[0]+n[0]*PLATE_T,G.A[1]+n[1]*PLATE_T],B2=[G.B[0]+n[0]*PLATE_T,G.B[1]+n[1]*PLATE_T];
+  return {pts:[G.A,A2,B2,G.B,G.T],G};}
+function buttBox(){const G=buttGeom(12);const w=330,hgt=w*VB_FULL[3]/VB_FULL[2];const cy=(G.A[1]+G.T[1])/2;return [-95,cy-hgt/2+6,w,hgt];}
+async function startMission5(opts){opts=opts||{};hints5=0;const gen=planGen;sceneReady=false;setTopinfo(5);projectState.progress.currentMission=5;
+  buildMission5();if(opts.prefill)prefillMission(5);await wait(opts.fast?0:600);if(gen!==planGen)return;
+  if(Math.round(curVB[2])!==VB_FULL[2])await zoomTo(VB_FULL,opts.fast?200:800);if(gen!==planGen)return;
+  layers.net.children[1].classList.add('dim');layers.net.children[2].classList.add('dim');layers.cotes.classList.add('dim');if(m3.g)m3.g.classList.add('dim');
+  await zoomTo(buttBox(),opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawButtScene();sceneDone(m5.ui);}
+/* Scène : point A, verticale de référence, plaque fantôme AB, point B, arc θ, décalage d en pointillés ; s'actualise au choix de l'angle */
+function drawButtScene(){const z=+svgPlan.style.getPropertyValue('--z')||1;const g=m5.g=el('g',{class:'l-m5'},svgPlan);const G0=buttGeom(0);
+  const vert=el('line',{x1:0,y1:G0.A[1]-14*z,x2:0,y2:G0.T[1]+14*z,class:'proj'},g);el('text',{x:3*z,y:G0.T[1]+12*z,class:'zone-note',text:'verticale'},g);
+  const dline=el('line',{x1:0,y1:G0.T[1],x2:0,y2:G0.T[1],class:'proj'},g);const ghost=el('line',{x1:0,y1:G0.A[1],x2:0,y2:G0.T[1],class:'ab-hint'},g);
+  const arc=el('path',{d:'',class:'cons'},g);const th=el('text',{x:-16*z,y:G0.A[1]+34*z,class:'ct q',text:'θ = ?','text-anchor':'middle'},g);
+  const pA=el('g',{class:'m2-pt'},g);el('circle',{cx:0,cy:G0.A[1],r:3.2*z,class:'pt'},pA);el('text',{x:10*z,y:G0.A[1]-6*z,class:'ptl',text:'A','text-anchor':'middle'},pA);
+  const pB=el('g',{class:'m2-pt'},g);const cB=el('circle',{cx:0,cy:G0.T[1],r:3.2*z,class:'pt'},pB);const tB=el('text',{x:-10*z,y:G0.T[1]+16*z,class:'ptl',text:'B','text-anchor':'middle'},pB);
+  const dq=el('text',{x:-8*z,y:G0.T[1]+30*z,class:'ct q',text:'d = ?','text-anchor':'middle'},g);const abq=el('text',{x:0,y:0,class:'ct q',text:'AB = ?','text-anchor':'middle'},g);
+  m5.scene={g,vert,dline,ghost,arc,th,pB,cB,tB,dq,abq,z};m5.scene.setAngle=a=>updateButtScene(a);updateButtScene(+missionState(5).inputs.angle||0);fadeIn(g,500);}
+function updateButtScene(angle){const S=m5.scene;if(!S)return;const G=buttGeom(angle),z=S.z;const R=Math.min(40,G.Hu*0.32);
+  const tw=(node,attr,to)=>{const from=+node.getAttribute(attr)||0;if(REDUCED||!window.requestAnimationFrame||Math.abs(from-to)<0.01){node.setAttribute(attr,to);return;}tween(node,attr,from,to,320);};
+  tw(S.ghost,'x2',G.B[0]);tw(S.dline,'x2',G.B[0]);tw(S.cB,'cx',G.B[0]);tw(S.tB,'x',G.B[0]-10*z);tw(S.dq,'x',G.B[0]/2);
+  if(angle){const a=rad(angle);const p1=[0,G.A[1]+R],p2=[-Math.sin(a)*R,G.A[1]+Math.cos(a)*R];S.arc.setAttribute('d',`M${p1[0]},${p1[1]} A${R},${R} 0 0 1 ${p2[0]},${p2[1]}`);S.th.textContent=`θ = ${angle}°`;S.th.classList.remove('q');S.th.setAttribute('x',-Math.sin(a/2)*(R+14*z)-4*z);S.th.setAttribute('y',G.A[1]+Math.cos(a/2)*(R+14*z)+5*z);
+    const mx=G.B[0]/2,my=(G.A[1]+G.B[1])/2;const dx=G.B[0],dy=G.B[1]-G.A[1],len=Math.hypot(dx,dy);S.abq.setAttribute('x',mx-dy/len*14*z);S.abq.setAttribute('y',my+dx/len*14*z+5*z);S.abq.style.display='';}
+  else{S.arc.setAttribute('d','');S.th.textContent='θ = ?';S.th.classList.add('q');S.abq.style.display='none';}}
+function buildMission5(){const H=HEEL[st.stock];const p=$('#panel');p.innerHTML='';
+  const top=h('div',{class:'panel-scroll'}),bot=h('div',{class:'panel-fixed'});p.append(top,bot);
+  const mk=(lbl)=>h('input',{type:'text',inputmode:'decimal',placeholder:'…',autocomplete:'off',spellcheck:'false','aria-label':lbl});const iD=mk('Décalage d'),iL=mk('Longueur AB');let angSel=null;
+  const vAng=h('b',{},'à choisir');
+  const angs=h('div',{class:'lpis'});ANGLES.forEach(a=>{const b=h('button',{type:'button',class:'sc lpi','aria-pressed':'false'},h('b',{},`${a}°`),h('small',{},ANGLE_DESC[a]));b.addEventListener('click',()=>{angSel=a;setInput(5,'angle',a);$$('.lpis .lpi').forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-pressed',x===b?'true':'false');});angs.classList.remove('err');vAng.textContent=`${a}°`;if(m5.scene)m5.scene.setAngle(a);});angs.append(b);});
+  const one=(lbl,inp)=>h('div',{class:'field'},h('label',{},lbl),h('div',{class:'in'},inp,h('span',{class:'u'},'mm')));
+  const fb=h('div',{class:'fb',id:'fb'});const hints=h('div',{class:'hints',id:'hints'});const bV=h('button',{class:'btn blue',id:'btn-verif'},'VALIDER MA PLAQUE');const bH=h('button',{class:'btn ghost',id:'btn-hint'},'Indice');const next=h('div',{class:'next',id:'next'});
+  top.append(
+    h('div',{class:'mnum'},'MISSION 5 — PLAQUE DE COUCHE'),h('div',{class:'msub'},'Calculatrice autorisée — vérifie qu\u2019elle est en mode degrés.'),
+    h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Choisis l\u2019inclinaison de ta plaque de couche, puis calcule les deux dimensions nécessaires pour la tracer :'),h('ol',{class:'steps'},h('li',{},'le décalage horizontal du point B ;'),h('li',{},'la longueur réelle AB de la plaque.'))),
+    h('div',{},h('div',{class:'ttl'},'POURQUOI ?'),h('p',{class:'why'},'La hauteur du talon est déjà connue. Ton choix d\u2019angle fixe la position du point B et la longueur de la plaque à dessiner.')),
+    h('div',{class:'card'},h('div',{class:'ttl'},'DONNÉES DU PLAN'),h('div',{class:'dl'},h('span',{},'Hauteur du talon H'),h('b',{},`${H} mm`),h('span',{},'Angle choisi θ'),vAng,h('span',{},'Décalage horizontal d'),h('b',{class:'rest'},'?'),h('span',{},'Longueur AB'),h('b',{class:'rest'},'?'))),
+    h('div',{class:'card formula'},h('div',{class:'ttl'},'TRIGONOMÉTRIE — TRIANGLE RECTANGLE'),h('div',{class:'f'},'tan(θ) = côté opposé / côté adjacent'),h('div',{class:'f'},'cos(θ) = côté adjacent / hypoténuse'),
+      h('div',{class:'ex',html:'Dans cette construction : <b>H</b> est le côté adjacent, <b>d</b> le côté opposé, <b>AB</b> l\u2019hypoténuse.<br>Exemple générique (H = 100 mm, θ = 5°) : tan(5°) = d / 100.<br>Arrondis tes deux résultats au dixième de millimètre.'})));
+  bot.append(
+    h('div',{class:'grp'},h('div',{class:'ttl'},'INCLINAISON DE LA PLAQUE'),h('div',{class:'q'},'Choix de conception : les trois inclinaisons sont valides.'),angs),
+    h('div',{class:'grp'},h('div',{class:'ttl'},'DÉCALAGE DU POINT B'),one('d =',iD)),
+    h('div',{class:'grp'},h('div',{class:'ttl'},'LONGUEUR DE LA PLAQUE'),one('AB =',iL)),
+    fb,hints,next);p.append(h('div',{class:'acts'},bV,bH));
+  [['offset',iD],['length',iL]].forEach(([k,inp])=>bindState(inp,5,k));
+  [iD,iL].forEach((inp,i,arr)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();if(i<arr.length-1)arr[i+1].focus();else bV.click();}});});
+  const HINTS=['L\u2019angle θ est mesuré entre la verticale H et la plaque AB.','Pour trouver d : tan(θ) = d / H.','Pour trouver AB : cos(θ) = H / AB.'];
+  bH.addEventListener('click',()=>{if(hints5>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hints5]);hints.append(hn);ensureVisible(hn);hints5++;bH.textContent=hints5<HINTS.length?'Un autre indice':'Indice';if(hints5>=HINTS.length)bH.disabled=true;});
+  m5.ui={iD,iL,angs,bV,bH,n:5,getAngle:()=>angSel,setAngle:a=>{const b=$$('.lpis .lpi')[ANGLES.indexOf(a)];if(b)b.click();}};bV.disabled=true;
+  bV.addEventListener('click',()=>verify5(fb,bV,bH,next));setTimeout(()=>iD.focus(),80);}
+function verify5(fb,bV,bH,next){const u=m5.ui;const ang=u.getAngle();[u.iD,u.iL].forEach(i=>i.classList.remove('err','ok'));u.angs.classList.remove('err');
+  if(!ang){u.angs.classList.add('err');setFb(fb,'Choisis d\u2019abord l\u2019inclinaison que tu veux donner à ta plaque de couche.','err');ensureVisible(u.angs);return;}
+  const D=m5Data(ang);const vD=parseNum(u.iD.value),vL=parseNum(u.iL.value);
+  if(!Number.isFinite(vD)){u.iD.classList.add('err');setFb(fb,'Indique le décalage d du point B, en mm, arrondi au dixième.','err');u.iD.focus();return;}
+  if(!near(vD,D.offset,.06)){u.iD.classList.add('err');setFb(fb,'Sur ton triangle, d est le côté opposé à l\u2019angle θ et H est le côté adjacent. Utilise la tangente pour retrouver d.','err');u.iD.focus();return;}
+  u.iD.classList.add('ok');
+  if(!Number.isFinite(vL)){u.iL.classList.add('err');setFb(fb,'Indique la longueur AB de la plaque, en mm, arrondie au dixième.','err');u.iL.focus();return;}
+  if(!near(vL,D.length,.06)){u.iL.classList.add('err');setFb(fb,'AB est l\u2019hypoténuse du triangle. H est le côté adjacent à θ. Utilise le cosinus pour retrouver AB.','err');u.iL.focus();return;}
+  [u.iD,u.iL].forEach(i=>{i.classList.add('ok');i.disabled=true;});$$('.lpis .lpi').forEach(b=>b.disabled=true);bV.disabled=true;bH.disabled=true;
+  completeMission(5);projectState.modules.conception.buttplate={angle:ang,heelHeight:D.H,offset:Math.round(D.offset*10)/10,length:Math.round(D.length*10)/10};
+  setFb(fb,`Inclinaison ${ang}° validée. La plaque se trace…`,'ok');
+  reveal5(ang).then(()=>{setFb(fb,'<div class="big">MISSION 5 VALIDÉE</div><div>L\u2019inclinaison et les dimensions de ta plaque de couche sont définies.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');const soon=h('div',{class:'soon'});bC.addEventListener('click',()=>{bC.disabled=true;soon.textContent='Étape suivante bientôt disponible.';});next.append(bC,soon);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(5,true);});}
+/* Réussite : cote d, cote AB, les traits auxiliaires s'atténuent, la plaque se trace entre A et B puis devient une pièce nette ; retour en vue générale avec l'annotation θ */
+async function reveal5(ang){if(!m5.scene)drawButtScene();const S=m5.scene,z=S.z;const D=m5Data(ang);const G=buttGeom(ang);const g=S.g;
+  S.dq.style.display='none';S.abq.style.display='none';await wait(400);
+  const cd=dimAligned(g,G.B,G.T,[0,22*z],fmt(D.offset,1),z,'m5-d');fadeIn(cd,400);await wait(700);
+  const dx=G.B[0]-G.A[0],dy=G.B[1]-G.A[1],len=Math.hypot(dx,dy);const cab=dimAligned(g,G.A,G.B,[-dy/len*26*z,dx/len*26*z],fmt(D.length,1),z,'m5-ab');fadeIn(cab,400);await wait(900);
+  [S.vert,S.dline,S.arc,S.pB,S.ghost].forEach(n=>anim(n,[{opacity:1},{opacity:0}],{duration:500,fill:'forwards'}));await wait(550);
+  const pl=drawButtplate(ang,true);await wait(1300);
+  [cd,cab,g].forEach(n=>anim(n,[{opacity:1},{opacity:0}],{duration:500,fill:'forwards'}));await wait(520);while(g.firstChild)g.removeChild(g.firstChild);
+  layers.net.children[1].classList.remove('dim');layers.net.children[2].classList.remove('dim');layers.cotes.classList.remove('dim');if(m3.g)m3.g.classList.remove('dim');
+  await zoomTo(VB_FULL,1000);annotateButtplate(true);await wait(400);}
+function drawButtplate(ang,animateIt){if(!layers.plate)layers.plate=el('g',{class:'l-plate'},svgPlan);const {pts}=platePoly(ang);const d='M'+pts.map(p=>p.map(v=>v.toFixed(2)).join(',')).join(' L')+' Z';
+  const poly=el('path',{d,class:'buttplate'},layers.plate);if(animateIt){const a=drawPath(poly,900);anim(poly,[{fillOpacity:0},{fillOpacity:1}],{duration:500,delay:900,fill:'both'});}return poly;}
+function annotateButtplate(fade){const ang=+(projectState.modules.conception.buttplate||{}).angle||+(missionState(5).inputs.angle)||10;if(!m5.g||!m5.g.parentNode)m5.g=el('g',{class:'l-m5'},svgPlan);const G=buttGeom(ang);const zf=.78;
+  const t=el('text',{x:G.B[0]-8,y:G.T[1]+16*zf,class:'ct',text:`θ = ${ang}°`,'text-anchor':'middle'},m5.g);if(fade)fadeIn(t,450);return t;}
+/* Résultat de la mission 5 sans animation (restauration) */
+function renderButtplateResult(fade){const ang=+(projectState.modules.conception.buttplate||{}).angle||+(missionState(5).inputs.angle)||10;drawButtplate(ang,false);annotateButtplate(fade);}
+
 /* ===================== RESTAURATION DEPUIS L'ÉTAT (rendu sans animation) ===================== */
 function prefillMission(n){const m=missionState(n).inputs;
   if(n===1&&m1.ui){m1.ui.iA.value=m.rear;m1.ui.iC.value=m.middle;m1.ui.iF.value=m.front;}
   if(n===2&&m2.ui){const k=['leg1','leg2','square','rootValue','result'];m2.ui.inputs.forEach((inp,i)=>inp.value=m[k[i]]);}
   if(n===3&&m3.ui){m3.ui.iW.value=m.usableWidth;m3.ui.iH.value=m.usableHeight;m3.ui.iL.value=m.detailLength;m3.ui.iD.value=m.detailHeight;if(m.scale!=='')m3.ui.setScale(+m.scale);}
-  if(n===4&&m4.ui){m4.ui.iW.value=m.usableWidth;m4.ui.iS.value=m.spacing;m4.ui.iN.value=m.intervals;if(m.lpi!=='')m4.ui.setLpi(+m.lpi);}}
+  if(n===4&&m4.ui){m4.ui.iW.value=m.usableWidth;m4.ui.iS.value=m.spacing;m4.ui.iN.value=m.intervals;if(m.lpi!=='')m4.ui.setLpi(+m.lpi);}
+  if(n===5&&m5.ui){m5.ui.iD.value=m.offset;m5.ui.iL.value=m.length;if(m.angle!=='')m5.ui.setAngle(+m.angle);}}
 function buildDonePanel(){const p=$('#panel');p.innerHTML='';const top=h('div',{class:'panel-scroll'});p.append(top);const sm=stateSummary();
   top.append(h('div',{class:'mnum'},'PROJET À JOUR'),h('div',{},h('div',{class:'ttl'},'ÉTAT DU PROJET'),h('p',{class:'mission'},'Ton projet est à jour. La prochaine étape n\u2019est pas encore disponible.')),
     h('div',{class:'card'},h('div',{class:'ttl'},'MISSIONS VALIDÉES'),...sm.items.map(it=>h('div',{class:'why',style:'margin:4px 0'},h('b',{},it.title),h('br'),it.result))));}
@@ -857,12 +950,13 @@ function buildDonePanel(){const p=$('#panel');p.innerHTML='';const top=h('div',{
 async function renderProjectFromState(){const S=projectState;st.model=S.design.model;st.stock=S.design.stock;st.designer=S.student.name||'';
   for(let n=1;n<=MISSION_COUNT;n++)st['done'+n]=missionState(n).status==='completed';
   enterAtelier();drawPlan();
-  if(st.done1)renderZonesResult();if(st.done2)renderABResult(false);if(st.done3)renderFutResult(false);if(st.done4)renderCheckeringResult(false);
+  if(st.done1)renderZonesResult();if(st.done2)renderABResult(false);if(st.done3)renderFutResult(false);if(st.done4)renderCheckeringResult(false);if(st.done5)renderButtplateResult(false);
   const open=firstOpenMission();
   if(open===1){buildMission1();prefillMission(1);setTopinfo(1);}
   else if(open===2){await startMission2({fast:true,prefill:true});}
   else if(open===3){await startMission3({fast:true,prefill:true});}
   else if(open===4){await startMission4({fast:true,prefill:true});}
+  else if(open===5){await startMission5({fast:true,prefill:true});}
   else{setTopinfo(MISSION_COUNT,true);buildDonePanel();}
   return open;}
 
@@ -895,6 +989,8 @@ function svgPathToPdf(d,s,tx,ty){const tok=d.match(/[MLHVCAZmlhvcaz]|-?\d*\.?\d+
       const t1=sw?[-a[1],a[0]]:[a[1],-a[0]],t2=sw?[-b[1],b[0]]:[b[1],-b[0]];out+=`${P(cx+k*t1[0],cy+k*t1[1])} ${P(x-k*t2[0],y-k*t2[1])} ${P(x,y)} c\n`;cx=x;cy=y;}
     else{i++;}}
   return out;}
+const HW={a:556,b:556,c:500,d:556,e:556,f:278,g:556,h:556,i:222,j:222,k:500,l:222,m:833,n:556,o:556,p:556,q:556,r:333,s:500,t:278,u:556,v:500,w:722,x:500,y:500,z:500,' ':278,':':278,'=':584,'°':400,'.':278,',':278,'-':333,I:278,A:667,B:667,C:722,D:722,E:667,F:611,G:778,H:722,J:500,K:667,L:556,M:833,N:722,O:778,P:667,Q:778,R:722,S:667,T:611,U:722,V:667,W:944,X:667,Y:667,Z:611};
+function hw(str,size){let w=0;for(const ch of str){w+=(HW[ch]!=null?HW[ch]:(/[0-9]/.test(ch)?556:556));}return w*size/1000;}
 function dateFr(iso){const d=iso?new Date(iso):new Date();const p=n=>String(n).padStart(2,'0');return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} à ${p(d.getHours())}h${p(d.getMinutes())}`;}
 function statusLabel(s){return s==='completed'?'VALIDÉE':s==='in_progress'?'EN COURS':'NON COMMENCÉE';}
 function safeFileName(str){return (str||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'');}
@@ -902,8 +998,10 @@ function safeFileName(str){return (str||'').normalize('NFD').replace(/[\u0300-\u
 async function buildSavePdf(){projectState.savedAt=new Date().toISOString();const S=projectState;const m=MODELS[S.design.model],stk=m.stocks.find(x=>x.id===S.design.stock);const sm=stateSummary();
   const json=JSON.stringify(S);const payload=b64url(utf8(json));const hash=await sha256hex(utf8(payload));
   // --- contenu de la page (A4, origine en bas à gauche) ---
-  const c=[];let y=800;const T=(x,yy,size,txt,bold,gray)=>{c.push(`BT /${bold?'F2':'F1'} ${size} Tf ${gray!=null?gray+' g ':'0 g '}${x.toFixed(1)} ${yy.toFixed(1)} Td (${pdfText(txt)}) Tj ET`);};
+  const pages=[[]];let c=pages[0];let y=800;const T=(x,yy,size,txt,bold,gray)=>{c.push(`BT /${bold?'F2':'F1'} ${size} Tf ${gray!=null?gray+' g ':'0 g '}${x.toFixed(1)} ${yy.toFixed(1)} Td (${pdfText(txt)}) Tj ET`);};
   const rule=(yy,gray)=>c.push(`${gray!=null?gray:0.75} G 0.6 w 40 ${yy.toFixed(1)} m 555 ${yy.toFixed(1)} l S`);
+  const newPage=()=>{c=[];pages.push(c);y=800;T(40,y,10.5,'PROJET BMA ARMURIER — FICHE DE CONTINUITÉ (suite)',true,0.35);y-=8;rule(y);y-=20;};
+  const need=(hgt)=>{if(y-hgt<70)newPage();};
   T(40,y,18,'PROJET BMA ARMURIER',true);y-=20;T(40,y,11.5,'FICHE DE CONTINUITÉ',true,0.35);y-=10;rule(y);y-=18;
   const avancement=sm.open===0?'toutes les missions disponibles sont validées':`Mission ${sm.open} ${missionState(sm.open).status==='in_progress'?'en cours':'à commencer'}`;
   const info=[['Concepteur',S.student.name||'—'],['Identifiant du projet',S.projectId],['Date de sauvegarde',dateFr(S.savedAt)],['Projet',`${m.letter} — ${m.name}`],['Crosse',stk?stk.name.replace(/^Crosse /,'').replace(/^./,c=>c.toUpperCase()):S.design.stock],['Avancement',avancement]];
@@ -912,18 +1010,19 @@ async function buildSavePdf(){projectState.savedAt=new Date().toISOString();cons
   try{const P=parts(S.design.model,S.design.stock);const sc=0.43,tx=60,ty=y-16;let ops='0 g\n';P.parts.forEach(p=>{ops+=svgPathToPdf(p.d,sc,tx,ty)+(p.evenodd?'f*\n':'f\n');});
     ops+='0 G 2.5 w 1 J 1 j\n';P.strokes.forEach(p=>{ops+=svgPathToPdf(p.d,sc,tx,ty)+'S\n';});c.push('q '+ops+'Q');y-=(0.43*175)+14;}catch(e){}
   rule(y);y-=18;T(40,y,11.5,'PROGRESSION',true);y-=18;
-  sm.items.forEach(it=>{T(40,y,10.5,it.title,true);T(400,y,10.5,statusLabel(it.status),true,it.status==='completed'?0.15:0.4);y-=14;
-    if(it.status==='completed'){if(it.lines){it.lines.forEach(l=>{T(52,y,10,l,false,0.25);y-=13;});}else{T(52,y,10,`Résultats : ${it.result}`,false,0.25);y-=14;}}
+  sm.items.forEach(it=>{const blockH=14+(it.status==='completed'?(it.lines?it.lines.length*13:14):it.status==='in_progress'?14:0)+6;need(blockH);T(40,y,10.5,it.title,true);T(400,y,10.5,statusLabel(it.status),true,it.status==='completed'?0.15:0.4);y-=14;
+    if(it.status==='completed'){if(it.lines){it.lines.forEach(l=>{if(typeof l==='string')T(52,y,10,l,false,0.25);else{let x=52;l.runs.forEach(([f,txt])=>{c.push(`BT /${f} 10 Tf 0.25 g ${x.toFixed(1)} ${y.toFixed(1)} Td (${pdfText(txt)}) Tj ET`);x+=f==='F3'?5.2:hw(txt,10);});}y-=13;});}else{T(52,y,10,`Résultats : ${it.result}`,false,0.25);y-=14;}}
     else if(it.status==='in_progress'){const filled=it.inputs.filter(([k,v])=>v!=='');T(52,y,10,'Informations déjà renseignées : '+(filled.length?filled.map(([k,v])=>`${k} ${v}`).join(' · '):'aucune'),false,0.25);y-=14;}
     y-=6;});
-  y-=6;rule(y);y-=16;T(40,y,9,'Ce PDF est aussi la sauvegarde du projet : conserve-le et rouvre-le avec « REPRENDRE UN PROJET »',false,0.45);y-=12;T(40,y,9,'à la prochaine séance. Ne pas le modifier.',false,0.45);
+  need(56);y-=6;rule(y);y-=16;T(40,y,9,'Ce PDF est aussi la sauvegarde du projet : conserve-le et rouvre-le avec « REPRENDRE UN PROJET »',false,0.45);y-=12;T(40,y,9,'à la prochaine séance. Ne pas le modifier.',false,0.45);
   y-=12;T(40,y,9,`${APP_VERSION} · schéma ${S.schemaVersion} · dimensions propres à l\u2019exercice, en mm`,false,0.6);
-  const content=c.join('\n');
-  // --- assemblage du fichier (octets Latin-1, offsets exacts) ---
-  const objs=['<< /Type /Catalog /Pages 2 0 R >>','<< /Type /Pages /Kids [3 0 R] /Count 1 >>','<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>',`<< /Length ${content.length} >>\nstream\n${content}\nendstream`,'<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>',`<< /Title (${pdfText('Projet BMA Armurier — fiche de continuité')}) /Producer (${pdfText('Atelier de conception BMA')}) /Creator (${pdfText('Atelier de conception BMA')}) >>`];
+  // --- assemblage du fichier (octets Latin-1, offsets exacts) : 1 catalogue, 2 pages, 3 police, 4 police grasse, 5 infos, puis (page, contenu) par page ---
+  const nP=pages.length;const kids=pages.map((p,i)=>`${7+2*i} 0 R`).join(' ');
+  const objs=['<< /Type /Catalog /Pages 2 0 R >>',`<< /Type /Pages /Kids [${kids}] /Count ${nP} >>`,'<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>',`<< /Title (${pdfText('Projet BMA Armurier — fiche de continuité')}) /Producer (${pdfText('Atelier de conception BMA')}) /Creator (${pdfText('Atelier de conception BMA')}) >>`,'<< /Type /Font /Subtype /Type1 /BaseFont /Symbol >>'];
+  pages.forEach((p,i)=>{const content=p.join('\n');objs.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 6 0 R >> >> /Contents ${8+2*i} 0 R >>`);objs.push(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);});
   let pdf=`%PDF-1.4\n%\xe2\xe3\xcf\xd3\n${SAVE_MARK}${payload}\n${HASH_MARK}${hash}\n`;const offs=[];
   objs.forEach((o,i)=>{offs.push(pdf.length);pdf+=`${i+1} 0 obj\n${o}\nendobj\n`;});
-  const xref=pdf.length;pdf+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n`+offs.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+`trailer\n<< /Size ${objs.length+1} /Root 1 0 R /Info 7 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  const xref=pdf.length;pdf+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n`+offs.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+`trailer\n<< /Size ${objs.length+1} /Root 1 0 R /Info 5 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
   const bytes=new Uint8Array(pdf.length);for(let i=0;i<pdf.length;i++)bytes[i]=pdf.charCodeAt(i)&0xff;
   const fname=`Projet_BMA_${safeFileName(S.student.name)||'Eleve'}_${S.projectId}.pdf`;return {bytes,filename:fname,payload,hash};}
 async function saveProject(){const btn=$('#btn-save');if(!btn||btn.disabled)return;btn.disabled=true;try{const {bytes,filename}=await buildSavePdf();
@@ -964,6 +1063,7 @@ function autoSolve(){
   else if(/MISSION 2/.test(num)){const S=STOCKS[st.stock];const sq=S.dx*S.dx+S.dy*S.dy;const ins=$$('#panel .calc input');[S.dx,S.dy,sq,sq,S.ab].forEach((v,i)=>set(ins[i],v));}
   else if(/MISSION 3/.test(num)){const {uw,uh,best,detL,detH}=m3Data();const u=m3.ui;set(u.iW,uw);set(u.iH,uh);u.setScale(best);set(u.iL,detL);set(u.iD,Math.round(detH*10)/10);}
   else if(/MISSION 4/.test(num)){const u=m4.ui;const lpi=+(missionState(4).inputs.lpi)||20;const d=m4Data(lpi);set(u.iW,d.usable);u.setLpi(lpi);set(u.iS,fmt(d.spacing,2));set(u.iN,d.intervals);}
+  else if(/MISSION 5/.test(num)){const u=m5.ui;const ang=+(missionState(5).inputs.angle)||10;const d=m5Data(ang);u.setAngle(ang);set(u.iD,fmt(d.offset,1));set(u.iL,fmt(d.length,1));}
   else return;
   bV.click();}
 document.addEventListener('keydown',e=>{if(e.ctrlKey||e.altKey||e.metaKey)return;const k=(e.key||'').toLowerCase();if(k.length!==1||!/[a-z]/.test(k)){return;}
@@ -985,7 +1085,7 @@ function init(){const a=$('#svg-accueil');a.setAttribute('viewBox','-30 -110 106
 init();
 /* Audit de débordement du panneau (à lancer dans la console : __bma.auditPanel()) : éléments plus larges que leur boîte ou sortant du panneau */
 function auditPanel(){const p=$('#panel');if(!p)return [];const pr=p.getBoundingClientRect();const out=[];p.querySelectorAll('*').forEach(e=>{const r=e.getBoundingClientRect();const over=e.scrollWidth>e.clientWidth+1&&getComputedStyle(e).overflowX!=='auto'&&getComputedStyle(e).overflowX!=='scroll';const outside=r.width>0&&(r.left<pr.left-1||r.right>pr.right+1);if(over||outside)out.push({el:e,tag:e.tagName+(e.className?'.'+String(e.className).split(' ').join('.'):''),over,outside,scrollWidth:e.scrollWidth,clientWidth:e.clientWidth});});return out;}
-window.__bma={st,MODELS,STOCKS,M3,FRAME,SCALES,CHECK,LPIS,m3Data,m4Data,startMission4,m4,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
+window.__bma={st,MODELS,STOCKS,M3,FRAME,SCALES,CHECK,LPIS,HEEL,ANGLES,m3Data,m4Data,m5Data,startMission4,startMission5,m4,m5,buttGeom,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
 })();
 </script>
 </body>
