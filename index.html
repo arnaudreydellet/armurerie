@@ -227,6 +227,28 @@ svg.plan .det-place{fill:var(--ink-3);font-size:calc(11px*var(--z,1));letter-spa
 .scales .sc.sel{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue);background:var(--blue-bg);color:var(--blue)}
 .scales .sc:disabled{cursor:default;color:var(--ink-3)}
 .scales .sc.sel:disabled{color:var(--blue)}
+/* mission 4 : quadrillage */
+.msub{font-size:12.5px;color:var(--ink-3);margin-top:-6px}
+.steps{margin:6px 0 0;padding-left:20px;font-size:13.5px;line-height:1.45}
+.steps li{margin:2px 0}
+.grp .q{font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.lpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:6px;padding:2px;border:1px solid transparent;border-radius:2px}
+.lpis.err{border-color:var(--err);background:var(--err-bg)}
+.lpis .lpi{min-width:0;padding:7px 6px;border:1px solid var(--hair);background:#fff;border-radius:2px;text-align:center;line-height:1.2}
+.lpis .lpi b{display:block;font-size:14px}
+.lpis .lpi small{display:block;font-size:11px;color:var(--ink-3);font-weight:500}
+.lpis .lpi:hover{border-color:var(--blue-2)}
+.lpis .lpi.sel{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue);background:var(--blue-bg);color:var(--blue)}
+.lpis .lpi:disabled{cursor:default;color:var(--ink-3)}
+.lpis .lpi.sel:disabled{color:var(--blue)}
+svg.plan .zone-out{fill:none;stroke:var(--blue);stroke-width:1.1;vector-effect:non-scaling-stroke;transition:stroke .3s}
+svg.plan .zone-out.ok{stroke:var(--ok);stroke-width:1.8}
+svg.plan .zone-mg{stroke:var(--blue-2);stroke-width:.9;stroke-dasharray:3 3;vector-effect:non-scaling-stroke;transition:stroke .3s}
+svg.plan .zone-mg.ok{stroke:var(--ok);stroke-dasharray:none}
+svg.plan .zone-lab{fill:var(--ink-3);font-size:calc(8.5px*var(--z,1));letter-spacing:.12em;font-weight:600;text-anchor:middle}
+svg.plan .zone-note{fill:var(--blue);font-size:calc(8.5px*var(--z,1));letter-spacing:.08em;font-weight:600}
+svg.plan .ck{stroke:#4a5563;stroke-width:.7;vector-effect:non-scaling-stroke;opacity:.85}
+svg.plan .l-check{pointer-events:none}
 #svg-accueil .part{stroke:var(--blue-2);opacity:.7}#svg-accueil .guard{stroke:var(--blue-2);opacity:.7}
 svg.plan .lim{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:6 4;vector-effect:non-scaling-stroke}
 svg.plan .lim-t{fill:var(--ink-3);font-size:calc(12px*var(--z,1))}
@@ -321,6 +343,7 @@ function h(tag,attrs,...kids){const e=document.createElement(tag);if(attrs)for(c
 const fmt=(n,d=0)=>Number(n).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
 function parseNum(s){s=String(s==null?'':s).trim().replace(/\s|\u202f|\u00a0/g,'').replace(',','.').replace(/[−–]/g,'-');if(!/^-?(\d+\.?\d*|\.\d+)$/.test(s))return NaN;return parseFloat(s);}
 const near=(x,t,tol)=>Number.isFinite(x)&&Math.abs(x-t)<=tol+1e-9;
+const rad=d=>d*Math.PI/180;
 function anim(node,frames,opts){if(!node||!node.animate)return null;if(REDUCED)opts=Object.assign({},opts,{duration:1,delay:0});try{return node.animate(frames,opts);}catch(e){return null;}}
 const wait=(ms)=>new Promise(r=>setTimeout(r,REDUCED?0:ms));
 
@@ -394,9 +417,9 @@ const L_TOTAL=900;const G_TOTAL=1000;const G=G_TOTAL/L_TOTAL;
 const st={model:'A',stock:'pistolet',designer:'',done1:false,done2:false,done3:false}; // alias techniques de projectState (jamais réinitialisés par un rendu)
 
 /* ===================== ÉTAT DU PROJET — source de vérité ===================== */
-const SCHEMA_VERSION=1,APP_VERSION='BMA-1';const MISSION_COUNT=3;
+const SCHEMA_VERSION=2,APP_VERSION='BMA-1';const MISSION_COUNT=4;
 function defaultState(){return {schemaVersion:SCHEMA_VERSION,appVersion:APP_VERSION,projectId:'',createdAt:'',savedAt:'',student:{name:''},design:{model:'A',stock:'pistolet'},progress:{currentMission:1},
-  missions:{mission1:{status:'not_started',inputs:{rear:'',middle:'',front:''}},mission2:{status:'not_started',inputs:{leg1:'',leg2:'',square:'',rootValue:'',result:''}},mission3:{status:'not_started',inputs:{usableWidth:'',usableHeight:'',scale:'',detailLength:'',detailHeight:''}}},
+  missions:{mission1:{status:'not_started',inputs:{rear:'',middle:'',front:''}},mission2:{status:'not_started',inputs:{leg1:'',leg2:'',square:'',rootValue:'',result:''}},mission3:{status:'not_started',inputs:{usableWidth:'',usableHeight:'',scale:'',detailLength:'',detailHeight:''}},mission4:{status:'not_started',inputs:{usableWidth:'',lpi:'',spacing:'',intervals:''}}},
   modules:{conception:{},vente:{},gestion:{},compteResultat:{}}};}
 let projectState=defaultState();
 function newProjectId(){const yy=String(new Date().getFullYear()).slice(-2);let hex='';const a=new Uint8Array(3);if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(a);else for(let i=0;i<3;i++)a[i]=Math.floor(Math.random()*256);for(const b of a)hex+=b.toString(16).padStart(2,'0');return `BMA-${yy}-${hex.toUpperCase()}`;}
@@ -411,15 +434,17 @@ function firstOpenMission(){for(let n=1;n<=MISSION_COUNT;n++)if(missionState(n).
 function isPlainObj(o){return o&&typeof o==='object'&&!Array.isArray(o);}
 function deepMerge(base,extra){if(!isPlainObj(extra))return base;const out=Object.assign({},base);for(const k in extra){const v=extra[k];out[k]=(isPlainObj(v)&&isPlainObj(out[k]))?deepMerge(out[k],v):v;}return out;}
 /* Migration d'une sauvegarde vers le schéma courant : les champs absents reçoivent leurs valeurs par défaut ; les versions futures ajouteront leurs étapes ici (v1 → v2 : module vente, …). */
-function migrateProjectState(data){let v=Number(data.schemaVersion)||1;let d=data;
-  // if(v<2){ … conversion v1 → v2 … ; v=2; }
+function migrateProjectState(data){let v=Number(data.schemaVersion)||1;let d=deepMerge({},data);
+  if(v<2){ // v1 → v2 : la mission 4 (quadrillage) n'existait pas ; elle est ajoutée vide, l'élève y arrive après les trois premières
+    d.missions=isPlainObj(d.missions)?d.missions:{};if(!isPlainObj(d.missions.mission4))d.missions.mission4={status:'not_started',inputs:{usableWidth:'',lpi:'',spacing:'',intervals:''}};v=2;}
   const out=deepMerge(defaultState(),d);out.schemaVersion=SCHEMA_VERSION;out.appVersion=APP_VERSION;return out;}
 function stateSummary(){const S=projectState;const e=expected();const m1=S.missions.mission1,m2=S.missions.mission2,m3=S.missions.mission3;const open=firstOpenMission();
-  const S2=STOCKS[S.design.stock];const d3=m3Data();
+  const S2=STOCKS[S.design.stock];const d3=m3Data();const m4=S.missions.mission4;const d4=m4Data(m4.inputs.lpi?+m4.inputs.lpi:20);
   return {open,items:[
     {title:'Mission 1 — Proportions',status:m1.status,result:m1.status==='completed'?`Partie arrière ${fmt(e.a)} mm · centrale ${fmt(e.c)} mm · avant ${fmt(e.f)} mm (longueur globale ${fmt(L_TOTAL)} mm)`:'',inputs:[['Partie arrière',m1.inputs.rear],['Partie centrale',m1.inputs.middle],['Partie avant',m1.inputs.front]]},
     {title:'Mission 2 — Profil de crosse',status:m2.status,result:m2.status==='completed'?`AB = ${fmt(S2.ab)} mm (déplacement ${fmt(S2.dx)} mm, dénivelé ${fmt(S2.dy)} mm)`:'',inputs:[['Premier côté',m2.inputs.leg1],['Second côté',m2.inputs.leg2],['AB²',m2.inputs.square],['Sous la racine',m2.inputs.rootValue],['AB',m2.inputs.result]]},
-    {title:'Mission 3 — Choisir l\u2019échelle du détail',status:m3.status,result:m3.status==='completed'?`Échelle 1:${fmtN(d3.best)} · fût sur le détail ${fmtN(d3.detL)} × ${fmtN(d3.detH)} mm (zone utile ${d3.uw} × ${d3.uh} mm)`:'',inputs:[['Largeur utile',m3.inputs.usableWidth],['Hauteur utile',m3.inputs.usableHeight],['Échelle',m3.inputs.scale?`1:${fmtN(+m3.inputs.scale)}`:''],['Longueur sur le détail',m3.inputs.detailLength],['Hauteur sur le détail',m3.inputs.detailHeight]]}]};}
+    {title:'Mission 3 — Choisir l\u2019échelle du détail',status:m3.status,result:m3.status==='completed'?`Échelle 1:${fmtN(d3.best)} · fût sur le détail ${fmtN(d3.detL)} × ${fmtN(d3.detH)} mm (zone utile ${d3.uw} × ${d3.uh} mm)`:'',inputs:[['Largeur utile',m3.inputs.usableWidth],['Hauteur utile',m3.inputs.usableHeight],['Échelle',m3.inputs.scale?`1:${fmtN(+m3.inputs.scale)}`:''],['Longueur sur le détail',m3.inputs.detailLength],['Hauteur sur le détail',m3.inputs.detailHeight]]},
+    {title:'Mission 4 — Quadrillage de la crosse',status:m4.status,result:m4.status==='completed'?`Densité ${d4.lpi} LPI · espacement ${fmt(d4.spacing,2)} mm · ${d4.intervals} intervalles complets (largeur utile ${d4.usable} mm)`:'',lines:m4.status==='completed'?[`Densité : ${d4.lpi} LPI`,`Espacement : ${fmt(d4.spacing,2)} mm`,`Intervalles complets : ${d4.intervals}`]:null,inputs:[['Largeur utile',m4.inputs.usableWidth],['Densité',m4.inputs.lpi?`${m4.inputs.lpi} LPI`:''],['Espacement',m4.inputs.spacing],['Intervalles',m4.inputs.intervals]]}]};}
 function expected(){const m=MODELS[st.model];const a=m.rear/100*L_TOTAL,c=m.mid/100*L_TOTAL;return {a,c,f:L_TOTAL-a-c,m,ga:a*G,gc:c*G,gf:(L_TOTAL-a-c)*G};}
 
 /* ===================== silhouettes (dessin) ===================== */
@@ -452,13 +477,13 @@ function openPlan(){newProject(st.model,st.stock,($('#designer').value||'').trim
 function enterAtelier(){const m=MODELS[st.model],s=m.stocks.find(x=>x.id===st.stock);
   $('#c-designer').textContent=st.designer||'—';$('#c-model').textContent=`${m.letter} — ${m.name}`;$('#c-stock').textContent=s.name;$('#c-id').textContent=projectState.projectId||'—';
   setTopinfo(1);show('s-atelier');}
-const MISSION_TITLES={1:'Les proportions',2:'Profil de crosse',3:'Échelle du détail'};
+const MISSION_TITLES={1:'Les proportions',2:'Profil de crosse',3:'Échelle du détail',4:'Quadrillage de la crosse'};
 function setTopinfo(n,validated){const m=MODELS[st.model];$('#topinfo').innerHTML=`<b>Mission ${n}</b> — ${MISSION_TITLES[n]}${validated?' — validée':''} &nbsp;·&nbsp; Projet ${m.letter} ${m.name}${st.designer?' &nbsp;·&nbsp; '+st.designer:''}`;}
 
 /* ===================== le plan ===================== */
 const svgPlan=$('#svg-plan');
 let layers={};let planGen=0;
-function drawPlan(){planGen++;const svg=svgPlan;while(svg.firstChild)svg.removeChild(svg.firstChild);setVB(VB_FULL);m2.g=null;m3.g=null;
+function drawPlan(){planGen++;const svg=svgPlan;while(svg.firstChild)svg.removeChild(svg.firstChild);setVB(VB_FULL);m2.g=null;m3.g=null;m4.g=null;layers.check=null;
   const defs=el('defs',{},svg);const pat=el('pattern',{id:'grid',width:25,height:25,patternUnits:'userSpaceOnUse'},defs);
   el('path',{d:'M25,0 L0,0 L0,25',fill:'none',stroke:'#e6e9ee','stroke-width':1},pat);
   el('rect',{x:-70,y:-215,width:1140,height:560,fill:'url(#grid)'},svg);
@@ -526,7 +551,8 @@ function buildMission1(){const e=expected(),m=e.m;const p=$('#panel');p.innerHTM
   setTimeout(()=>iA.focus(),60);}
 function setFb(fb,msg,kind){fb.innerHTML=msg;fb.className='fb'+(kind?' '+kind:'');if(msg)ensureVisible(fb);}
 function ensureVisible(node){try{const p=$('#panel');if(!p||!node)return;const bar=p.querySelector('.acts');const bh=bar?bar.offsetHeight:0;const pr=p.getBoundingClientRect(),nr=node.getBoundingClientRect();if(!nr.height&&!nr.width)return;
-  if(nr.bottom>pr.bottom-bh)p.scrollTop+=nr.bottom-(pr.bottom-bh)+8;else if(nr.top<pr.top)p.scrollTop-=(pr.top-nr.top)+8;}catch(e){}}
+  if(nr.bottom>pr.bottom-bh)p.scrollTop+=nr.bottom-(pr.bottom-bh)+8;else if(nr.top<pr.top)p.scrollTop-=(pr.top-nr.top)+8;
+  if(node.classList&&node.classList.contains('next'))requestAnimationFrame(()=>{p.scrollTop=p.scrollHeight;});}catch(e){}}
 function verify(iA,iC,iF,fb,bV,bH,next){const e=expected(),m=e.m;const vA=parseNum(iA.value),vC=parseNum(iC.value),vF=parseNum(iF.value);
   [iA,iC,iF].forEach(i=>i.classList.remove('err','ok'));
   const missing=[[iA,vA],[iC,vC],[iF,vF]].filter(([i,v])=>!Number.isFinite(v));
@@ -550,7 +576,8 @@ function zoomTo(t,ms){return new Promise(res=>{if(vbAnim){cancelAnimationFrame(v
 function stockBox(){const w=460,hgt=w*VB_FULL[3]/VB_FULL[2];return [-50,-62,w,hgt];}
 
 /* ===================== mission 2 : profil de crosse (Pythagore) ===================== */
-let hints2=0;const m2={g:null,pts:[],aux:[]};
+let hints2=0;const m2={g:null,pts:[],aux:[]};let sceneReady=true;
+function sceneDone(ui){sceneReady=true;if(ui&&ui.bV&&!st['done'+(ui.n||0)])ui.bV.disabled=false;}
 function dimAligned(g,P,Q,off,label,z,cls){const dx=Q[0]-P[0],dy=Q[1]-P[1],len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len;const on=Math.hypot(off[0],off[1])||1,nx=off[0]/on,ny=off[1]/on;const grp=el('g',{class:'cote-g '+(cls||'')},g);
   const P2=[P[0]+off[0],P[1]+off[1]],Q2=[Q[0]+off[0],Q[1]+off[1]],ov=6*z;
   el('line',{x1:P[0],y1:P[1],x2:P2[0]+nx*ov,y2:P2[1]+ny*ov,class:'ext'},grp);el('line',{x1:Q[0],y1:Q[1],x2:Q2[0]+nx*ov,y2:Q2[1]+ny*ov,class:'ext'},grp);
@@ -572,11 +599,11 @@ function drawTriangle(){const {S,A,B,H,sx,sy}=m2Geometry();const z=+svgPlan.styl
   m2.aux=[pH,pV,ra,cH,cV,ab,q];
   m2.pts=[[A,'A',[-13*z,15*z]],[B,'B',grip?[-4*z,17*z]:[9*z,16*z]]].map(([P,n,o])=>{const grp=el('g',{class:'m2-pt'},g);el('circle',{cx:P[0],cy:P[1],r:3.2*z,class:'pt'},grp);el('text',{x:P[0]+o[0],y:P[1]+o[1],class:'ptl',text:n,'text-anchor':'middle'},grp);return grp;});
   fadeIn(g,500);}
-async function startMission2(opts){opts=opts||{};const S=STOCKS[st.stock];hints2=0;const gen=planGen;
+async function startMission2(opts){opts=opts||{};const S=STOCKS[st.stock];hints2=0;const gen=planGen;sceneReady=false;
   setTopinfo(2);projectState.progress.currentMission=2;
   buildMission2();if(opts.prefill)prefillMission(2);await wait(opts.fast?0:700);if(gen!==planGen)return;
   layers.net.children[1].classList.add('dim');layers.net.children[2].classList.add('dim');layers.cotes.classList.add('dim');
-  await zoomTo(stockBox(),opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawTriangle();}
+  await zoomTo(stockBox(),opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawTriangle();sceneDone(m2.ui);}
 function buildMission2(){const S=STOCKS[st.stock];const p=$('#panel');p.innerHTML='';
   const top=h('div',{class:'panel-scroll'}),bot=h('div',{class:'panel-fixed'});p.append(top,bot);
   const mk=(w)=>h('input',{type:'text',inputmode:'decimal',placeholder:'…',autocomplete:'off',spellcheck:'false',class:w||''});
@@ -591,7 +618,7 @@ function buildMission2(){const S=STOCKS[st.stock];const p=$('#panel');p.innerHTM
     h('div',{class:'card'},h('div',{class:'ttl'},'DONNÉES DU PLAN'),h('div',{class:'dl'},h('span',{},'Déplacement horizontal'),h('b',{},`${fmt(S.dx)} mm`),h('span',{},'Dénivelé vertical'),h('b',{},`${fmt(S.dy)} mm`),h('span',{},'Longueur AB'),h('b',{class:'rest'},'?'))),
     h('div',{class:'card formula'},h('div',{class:'ttl'},'THÉORÈME DE PYTHAGORE'),h('div',{class:'f',html:'Dans un triangle rectangle : c² = a² + b²'}),h('div',{class:'ex'},'c est le côté opposé à l\u2019angle droit : c\u2019est l\u2019hypoténuse.')));
   bot.append(h('div',{class:'ttl'},'TON CALCUL'),calc,fb,hints,next);p.append(h('div',{class:'acts'},bV,bH));
-  const all=[i1,i2,isq,ir,iab];[['leg1',i1],['leg2',i2],['square',isq],['rootValue',ir],['result',iab]].forEach(([k,inp])=>bindState(inp,2,k));m2.ui={inputs:all,bV,bH};
+  const all=[i1,i2,isq,ir,iab];[['leg1',i1],['leg2',i2],['square',isq],['rootValue',ir],['result',iab]].forEach(([k,inp])=>bindState(inp,2,k));m2.ui={inputs:all,bV,bH,n:2};bV.disabled=true;
   all.forEach((inp,i)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();if(i<all.length-1)all[i+1].focus();else bV.click();}});});
   const HINTS=['AB est le côté opposé à l\u2019angle droit : c\u2019est donc l\u2019hypoténuse.','Calcule d\u2019abord le carré des deux longueurs connues, puis additionne-les.','La dernière étape consiste à prendre la racine carrée de AB².'];
   bH.addEventListener('click',()=>{if(hints2>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hints2]);hints.append(hn);ensureVisible(hn);hints2++;bH.textContent=hints2<HINTS.length?'Un autre indice':'Indice';if(hints2>=HINTS.length)bH.disabled=true;});
@@ -610,7 +637,7 @@ function verify2(ins,fb,bV,bH,next){const S=STOCKS[st.stock];const [i1,i2,isq,ir
     setTopinfo(2,true);});}
 const val=inp=>parseNum(inp.value);
 /* Réussite : les traits auxiliaires s'effacent, A et B restent un instant, AB se trace et rejoint le tracé net, sa cote apparaît, puis retour à la vue générale. */
-async function reveal2(){const {S,A,B}=m2Geometry();const z=+svgPlan.style.getPropertyValue('--z')||1;
+async function reveal2(){if(!m2.g||!m2.pts.length)drawTriangle();const {S,A,B}=m2Geometry();const z=+svgPlan.style.getPropertyValue('--z')||1;
   m2.aux.forEach(n=>anim(n,[{opacity:1},{opacity:0}],{duration:600,fill:'forwards'}));await wait(1000);
   const seg=el('line',{x1:A[0],y1:A[1],x2:B[0],y2:B[1],class:'part net ab-net'},layers.net.children[0]);drawLine(seg,900);await wait(950);
   const dx=B[0]-A[0],dy=B[1]-A[1],len=Math.hypot(dx,dy),nx=-dy/len,ny=dx/len;
@@ -638,13 +665,13 @@ function drawPath(p,ms){let len=0;try{len=p.getTotalLength();}catch(e){len=0;}if
 /* profil extérieur simplifié du fût pour la vue de détail, dans une boîte w × h (proportions réelles L × H) */
 function detailFutPath(x,y,w,h){if(st.model==='C')return `M${x},${y} L${x+.9*w},${y} L${x+w},${y+.35*h} L${x+w},${y+.6*h} L${x+.88*w},${y+.85*h} L${x},${y+h} Z`;
   return `M${x},${y} L${x+.88*w},${y} C${x+.96*w},${y} ${x+w},${y+.25*h} ${x+w},${y+.42*h} C${x+w},${y+.62*h} ${x+.94*w},${y+.78*h} ${x+.86*w},${y+.82*h} C${x+.6*w},${y+.95*h} ${x+.3*w},${y+h} ${x},${y+h} Z`;}
-async function startMission3(opts){opts=opts||{};hints3=0;const gen=planGen;
+async function startMission3(opts){opts=opts||{};hints3=0;const gen=planGen;sceneReady=false;
   setTopinfo(3);projectState.progress.currentMission=3;
   buildMission3();if(opts.prefill)prefillMission(3);await wait(opts.fast?0:600);if(gen!==planGen)return;
   if(Math.round(curVB[2])!==VB_FULL[2])await zoomTo(VB_FULL,opts.fast?200:800);if(gen!==planGen)return;
   layers.net.children[0].classList.add('dim');layers.net.children[1].classList.add('dim');layers.cotes.classList.add('dim');if(m2.g)m2.g.classList.add('dim');
   m3.futPath=layers.net.children[2].querySelector('[data-part="fut"]');if(m3.futPath)m3.futPath.classList.add('under');
-  await zoomTo([380,-110,700,344],opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawDetailScene();}
+  await zoomTo([380,-110,700,344],opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawDetailScene();sceneDone(m3.ui);}
 function drawDetailScene(){const {D}=m3Data(),F=futBox();const z=+svgPlan.style.getPropertyValue('--z')||1;const g=m3.g=el('g',{class:'l-m3'},svgPlan);
   // repère de détail sur le projet : cadre pointillé autour du fût + bulle A ; ses dimensions réelles
   const m=8*z;el('rect',{x:F.x1-m,y:F.y1-m,width:F.x2-F.x1+2*m,height:F.y2-F.y1+2*m,rx:4*z,class:'callout'},g);
@@ -685,7 +712,7 @@ function buildMission3(){const {D}=m3Data();const p=$('#panel');p.innerHTML='';
   const HINTS=['Commence par enlever les marges pour connaître la zone réellement utilisable.','Une échelle n\u2019est acceptable que si la longueur ET la hauteur tiennent dans le cadre.','Parmi les échelles qui conviennent, conserve celle qui donne le dessin le plus grand.'];
   bH.addEventListener('click',()=>{if(hints3>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hints3]);hints.append(hn);ensureVisible(hn);hints3++;bH.textContent=hints3<HINTS.length?'Un autre indice':'Indice';if(hints3>=HINTS.length)bH.disabled=true;});
   bV.addEventListener('click',()=>verify3({iW,iH,iL,iD,scales,getScale:()=>scaleSel},fb,bV,bH,next));
-  m3.ui={iW,iH,iL,iD,scales,bV,bH,setScale:n=>{const b=$$('.scales .sc')[SCALES.indexOf(n)];if(b)b.click();}};
+  m3.ui={iW,iH,iL,iD,scales,bV,bH,n:3,setScale:n=>{const b=$$('.scales .sc')[SCALES.indexOf(n)];if(b)b.click();}};bV.disabled=true;
   setTimeout(()=>iW.focus(),80);}
 function verify3(ui,fb,bV,bH,next){const {D,uw,uh,fits,best,detL,detH}=m3Data();const {iW,iH,iL,iD,scales}=ui;const n=ui.getScale();
   [iW,iH,iL,iD].forEach(i=>i.classList.remove('err','ok'));scales.classList.remove('err');
@@ -709,10 +736,10 @@ function verify3(ui,fb,bV,bH,next){const {D,uw,uh,fits,best,detL,detH}=m3Data();
   if(!okL||!okD){if(!okL)iL.classList.add('err');if(!okD)iD.classList.add('err');setFb(fb,'Ton choix d\u2019échelle est possible. Vérifie maintenant les dimensions obtenues sur le détail.','err');(okL?iD:iL).focus();return;}
   [iL,iD].forEach(i=>{i.classList.add('ok');i.disabled=true;});[iW,iH].forEach(i=>i.disabled=true);$$('.scales .sc').forEach(b=>b.disabled=true);bV.disabled=true;bH.disabled=true;completeMission(3);
   setFb(fb,`Échelle 1:${fmtN(n)} retenue. Le détail se construit…`,'ok');
-  reveal3().then(()=>{setFb(fb,'<div class="big">MISSION 3 VALIDÉE</div><div>L\u2019échelle du détail est définie et le fût peut être reporté sur le dossier technique.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');const soon=h('div',{class:'soon'});bC.addEventListener('click',()=>{bC.disabled=true;soon.textContent='Étape suivante bientôt disponible.';});next.append(bC,soon);next.classList.add('on');ensureVisible(next);bC.focus();
+  reveal3().then(()=>{setFb(fb,'<div class="big">MISSION 3 VALIDÉE</div><div>L\u2019échelle du détail est définie et le fût peut être reporté sur le dossier technique.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');bC.addEventListener('click',()=>{bC.disabled=true;startMission4();});next.append(bC);next.classList.add('on');ensureVisible(next);bC.focus();
     setTopinfo(3,true);});}
 /* Réussite : l'échelle s'inscrit dans le cartouche du détail, le fût apparaît dans la zone utile à cette échelle, la marge est vérifiée, ses cotes se tracent, le détail est relié au fût du projet, puis le fût s'encre sur le plan avec ses cotes réelles et la vue générale revient. */
-async function reveal3(){const {D,best,detL,detH}=m3Data(),F=futBox();const z=+svgPlan.style.getPropertyValue('--z')||1;const g=m3.g,det=m3.det,{wx,wy,W,Hh,mg}=m3.win;
+async function reveal3(){if(!m3.win)drawDetailScene();const {D,best,detL,detH}=m3Data(),F=futBox();const z=+svgPlan.style.getPropertyValue('--z')||1;const g=m3.g,det=m3.det,{wx,wy,W,Hh,mg}=m3.win;
   m3.scaleT.textContent=`ÉCHELLE 1:${fmtN(best)}`;fadeIn(m3.scaleT,400);await wait(500);
   anim(m3.place,[{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});
   const fw=detL*KD,fh=detH*KD,fx=wx+mg+((W-2*mg)-fw)/2,fy=wy+mg+((Hh-2*mg)-fh)/2;
@@ -731,11 +758,98 @@ async function reveal3(){const {D,best,detL,detH}=m3Data(),F=futBox();const z=+s
 function renderFutResult(fade){const {D}=m3Data(),F=futBox();if(!m3.g||!m3.g.parentNode)m3.g=el('g',{class:'l-m3'},svgPlan);const g=m3.g;const fp=layers.net.children[2].querySelector('[data-part="fut"]');if(fp)fp.classList.remove('under');const zf=.78;
   const k1=dimAligned(g,[F.x1,F.y2],[F.x2,F.y2],[0,22*zf],fmtN(D.L),zf,'m3-len');const k2=dimAligned(g,[F.x2,F.y1],[F.x2,F.y2],[24*zf,0],fmtN(D.H),zf,'m3-h');if(fade){fadeIn(k1,450);fadeIn(k2,450);}}
 
+/* ===================== mission 4 : quadrillage de la crosse ===================== */
+/* Données pédagogiques (mm) : largeur de la zone de prise en main par crosse, marge de 4 mm de chaque côté, 1 pouce = 25,4 mm, densités 18 / 20 / 22 LPI.
+   Géométrie : zone dessinée sur la crosse (unités graphiques, S2 = 0,45 u/mm comme la mission 2) — centre, orientation de l'axe long, longueur. */
+const CHECK={pistolet:{w:52,c:[312,74],ang:37,len:36},anglaise:{w:48,c:[330,12],ang:90,len:40},montecarlo:{w:54,c:[304,78],ang:52,len:38},droite:{w:50,c:[300,92],ang:53,len:44},pleine:{w:56,c:[292,92],ang:53,len:40},squelette:{w:46,c:[288,90],ang:53,len:38}};
+const MARGIN4=4,INCH=25.4,LPIS=[18,20,22];const LPI_DESC={18:'motif plus large',20:'motif intermédiaire',22:'motif plus serré'};
+function m4Data(lpi){const Z=CHECK[st.stock];const usable=Z.w-2*MARGIN4;const spacing=lpi?INCH/lpi:0;const intervals=lpi?Math.floor(usable/spacing+1e-9):0;return {Z,usable,lpi,spacing,intervals};}
+let hints4=0;const m4={ui:null,g:null,zone:null,margins:[]};
+function zoneFrame(){const Z=CHECK[st.stock];const a=rad(Z.ang);const u=[Math.cos(a),Math.sin(a)],n=[-Math.sin(a),Math.cos(a)];const wu=Z.w*S2,mg=MARGIN4*S2;return {Z,u,n,wu,mg,len:Z.len,c:Z.c,usable:wu-2*mg,rect:`translate(${Z.c[0]} ${Z.c[1]}) rotate(${Z.ang})`};}
+/* Motif de quadrillage : deux familles de lignes croisées dans la zone utile (rendu normalisé : ~ un trait sur deux, la densité reste proportionnelle au choix LPI) */
+function drawCheckering(g,lpi,animateMs){const F=zoneFrame(),D=m4Data(lpi);const K=Math.max(6,Math.round(D.intervals/2));const d=F.usable/K;const half=F.len/2,hw=F.usable/2;const R=Math.hypot(half,hw)+2;
+  const cid='clip-check-'+(planGen)+'-'+Date.now().toString(36);const cp=el('clipPath',{id:cid},svgPlan.querySelector('defs'));el('rect',{x:-half,y:-hw,width:F.len,height:F.usable},cp);
+  const grp=el('g',{class:'checker',transform:F.rect,'clip-path':`url(#${cid})`},g);const fams=[];
+  [55,-55].forEach((deg,fi)=>{const a=rad(deg),ux=Math.cos(a),uy=Math.sin(a),nx=-uy,ny=ux;const fg=el('g',{class:'fam'+fi},grp);let k=0;
+    for(let o=-R;o<=R;o+=d){const ln=el('line',{x1:o*nx-ux*R,y1:o*ny-uy*R,x2:o*nx+ux*R,y2:o*ny+uy*R,class:'ck'},fg);if(animateMs){const delay=fi*animateMs+k*(animateMs/(2*R/d));anim(ln,[{opacity:0},{opacity:1}],{duration:220,delay,fill:'both'});}k++;}fams.push(fg);});
+  return {grp,fams,K,d};}
+function drawZoneOutline(g,z){const F=zoneFrame();const half=F.len/2,hw=F.wu/2,mg=F.mg;const og=el('g',{transform:F.rect},g);
+  const outline=el('rect',{x:-half,y:-hw,width:F.len,height:F.wu,class:'zone-out'},og);
+  const m1=el('line',{x1:-half,y1:-hw+mg,x2:half,y2:-hw+mg,class:'zone-mg'},og),m2=el('line',{x1:-half,y1:hw-mg,x2:half,y2:hw-mg,class:'zone-mg'},og);
+  return {og,outline,margins:[m1,m2],F};}
+function zoneBox(){const Z=CHECK[st.stock];const w=250,hgt=w*VB_FULL[3]/VB_FULL[2];return [Z.c[0]-w/2,Z.c[1]-hgt/2+4,w,hgt];}
+async function startMission4(opts){opts=opts||{};hints4=0;const gen=planGen;sceneReady=false;setTopinfo(4);projectState.progress.currentMission=4;
+  buildMission4();if(opts.prefill)prefillMission(4);await wait(opts.fast?0:600);if(gen!==planGen)return;
+  if(Math.round(curVB[2])!==VB_FULL[2])await zoomTo(VB_FULL,opts.fast?200:800);if(gen!==planGen)return;
+  layers.net.children[1].classList.add('dim');layers.net.children[2].classList.add('dim');layers.cotes.classList.add('dim');if(m2.g)m2.g.classList.add('dim');if(m3.g)m3.g.classList.add('dim');
+  await zoomTo(zoneBox(),opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawZoneScene();sceneDone(m4.ui);}
+function drawZoneScene(){const z=+svgPlan.style.getPropertyValue('--z')||1;const g=m4.g=el('g',{class:'l-m4'},svgPlan);const {og,outline,margins,F}=drawZoneOutline(g,z);m4.zone=outline;m4.margins=margins;
+  // annotations : « ZONE À QUADRILLER », largeur totale, marge
+  const half=F.len/2,hw=F.wu/2;const lab=el('text',{x:0,y:0,class:'zone-lab',text:'À QUADRILLER','text-anchor':'middle'},og);lab.setAttribute('y',2.5*z);lab.setAttribute('transform',F.Z.ang>60?'rotate(-90)':'');
+  const p1=[F.c[0]+F.u[0]*half+F.n[0]*hw,F.c[1]+F.u[1]*half+F.n[1]*hw],p2=[F.c[0]+F.u[0]*half-F.n[0]*hw,F.c[1]+F.u[1]*half-F.n[1]*hw];
+  m4.cote=dimAligned(g,p1,p2,[F.u[0]*16*z,F.u[1]*16*z],fmt(F.Z.w),z,'m4-w');
+  const mgTxt=el('text',{x:-half+3*z,y:hw-F.mg-2*z,class:'zone-note',text:'MARGE 4'},og);
+  fadeIn(g,500);}
+function buildMission4(){const D=m4Data(0),Z=CHECK[st.stock];const p=$('#panel');p.innerHTML='';
+  const top=h('div',{class:'panel-scroll'}),bot=h('div',{class:'panel-fixed'});p.append(top,bot);
+  const mk=(lbl)=>h('input',{type:'text',inputmode:'decimal',placeholder:'…',autocomplete:'off',spellcheck:'false','aria-label':lbl});
+  const iW=mk('Largeur utile'),iS=mk('Espacement entre deux lignes'),iN=mk('Nombre d\u2019intervalles complets');let lpiSel=null;
+  const lpis=h('div',{class:'lpis'});LPIS.forEach(n=>{const b=h('button',{type:'button',class:'sc lpi','aria-pressed':'false'},h('b',{},`${n} LPI`),h('small',{},LPI_DESC[n]));b.addEventListener('click',()=>{lpiSel=n;setInput(4,'lpi',n);$$('.lpis .lpi').forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-pressed',x===b?'true':'false');});lpis.classList.remove('err');});lpis.append(b);});
+  const one=(lbl,inp,unit)=>h('div',{class:'field'},h('label',{},lbl),h('div',{class:'in'},inp,unit?h('span',{class:'u'},unit):null));
+  const fb=h('div',{class:'fb',id:'fb'});const hints=h('div',{class:'hints',id:'hints'});const bV=h('button',{class:'btn blue',id:'btn-verif'},'VALIDER MON QUADRILLAGE');const bH=h('button',{class:'btn ghost',id:'btn-hint'},'Indice');const next=h('div',{class:'next',id:'next'});
+  top.append(
+    h('div',{class:'mnum'},'MISSION 4 — QUADRILLAGE DE LA CROSSE'),h('div',{class:'msub'},'LPI = lignes par pouce.'),
+    h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Tu vas quadriller la zone de prise en main de ta crosse.'),h('ol',{class:'steps'},h('li',{},'Calcule la largeur réellement disponible après les deux marges.'),h('li',{},'Choisis la finesse de ton quadrillage.'),h('li',{},'Calcule l\u2019espace entre deux lignes.'),h('li',{},'Détermine combien d\u2019intervalles complets peuvent tenir dans la zone.'))),
+    h('div',{},h('div',{class:'ttl'},'POURQUOI ?'),h('p',{class:'why'},'Ces calculs permettent de tracer un motif régulier qui tient entièrement dans la zone prévue sur ta crosse.')),
+    h('div',{class:'card'},h('div',{class:'ttl'},'DONNÉES DU PLAN'),h('div',{class:'dl'},h('span',{},'Largeur totale de la zone'),h('b',{},`${Z.w} mm`),h('span',{},'Marge gauche'),h('b',{},`${MARGIN4} mm`),h('span',{},'Marge droite'),h('b',{},`${MARGIN4} mm`),h('span',{},'1 pouce'),h('b',{},`${fmt(INCH,1)} mm`),h('span',{},'Densités disponibles'),h('b',{},'18 / 20 / 22 lignes par pouce'))),
+    h('div',{class:'card formula'},h('div',{class:'ttl'},'RAPPEL UTILE'),h('div',{class:'f'},'Espacement entre deux lignes : 25,4 / nombre de lignes par pouce'),h('div',{class:'ex',html:'Exemple générique, pour 10 lignes par pouce : 25,4 / 10 = <b>2,54 mm</b>.<br>Pour connaître le nombre d\u2019intervalles complets, divise la largeur utile par l\u2019espacement. Si le résultat n\u2019est pas entier, ne garde que les intervalles entiers.'})));
+  bot.append(
+    h('div',{class:'grp'},h('div',{class:'ttl'},'LARGEUR UTILE'),h('div',{class:'q'},`Après avoir retiré les deux marges de ${MARGIN4} mm, quelle largeur reste-t-il pour le quadrillage ?`),one('Largeur utile',iW,'mm')),
+    h('div',{class:'grp'},h('div',{class:'ttl'},'FINESSE DU QUADRILLAGE'),h('div',{class:'q'},'Choisis ton quadrillage. Les trois densités sont acceptables : c\u2019est un choix de conception.'),lpis),
+    h('div',{class:'grp'},h('div',{class:'ttl'},'ESPACEMENT ENTRE DEUX LIGNES'),h('div',{class:'q'},'Avec la densité que tu as choisie, quelle distance doit séparer deux lignes du quadrillage ? Arrondis au centième de millimètre.'),one('Espacement',iS,'mm')),
+    h('div',{class:'grp'},h('div',{class:'ttl'},'NOMBRE D\u2019INTERVALLES COMPLETS'),h('div',{class:'q'},'Combien d\u2019intervalles COMPLETS de cette largeur peuvent tenir dans ta zone utile ? Exemple : si ton calcul donne 31,7, tu peux tracer 31 intervalles complets.'),one('Nombre d\u2019intervalles',iN,'')),
+    fb,hints,next);p.append(h('div',{class:'acts'},bV,bH));
+  [['usableWidth',iW],['spacing',iS],['intervals',iN]].forEach(([k,inp])=>bindState(inp,4,k));
+  [iW,iS,iN].forEach((inp,i,arr)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();if(i<arr.length-1)arr[i+1].focus();else bV.click();}});});
+  const HINTS=[`La largeur utile ne comprend pas les deux marges de ${MARGIN4} mm.`,'LPI signifie lignes par pouce. Un pouce mesure 25,4 mm.','Pour les intervalles, un résultat décimal signifie que le dernier intervalle ne tient pas entièrement : ne le compte pas.'];
+  bH.addEventListener('click',()=>{if(hints4>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hints4]);hints.append(hn);ensureVisible(hn);hints4++;bH.textContent=hints4<HINTS.length?'Un autre indice':'Indice';if(hints4>=HINTS.length)bH.disabled=true;});
+  m4.ui={iW,iS,iN,lpis,bV,bH,n:4,getLpi:()=>lpiSel,setLpi:n=>{const b=$$('.lpis .lpi')[LPIS.indexOf(n)];if(b)b.click();}};bV.disabled=true;
+  bV.addEventListener('click',()=>verify4(fb,bV,bH,next));setTimeout(()=>iW.focus(),80);}
+function verify4(fb,bV,bH,next){const u=m4.ui;const lpi=u.getLpi();const D=m4Data(lpi||20);[u.iW,u.iS,u.iN].forEach(i=>i.classList.remove('err','ok'));u.lpis.classList.remove('err');
+  const vW=parseNum(u.iW.value),vS=parseNum(u.iS.value),vN=parseNum(u.iN.value);
+  if(!Number.isFinite(vW)){u.iW.classList.add('err');setFb(fb,'Commence par la largeur utile, en mm.','err');u.iW.focus();return;}
+  if(!near(vW,D.usable,.01)){u.iW.classList.add('err');setFb(fb,`La marge de ${MARGIN4} mm est présente des deux côtés de la zone. Vérifie la largeur qu\u2019il reste réellement.`,'err');u.iW.focus();return;}
+  u.iW.classList.add('ok');
+  if(!lpi){u.lpis.classList.add('err');setFb(fb,'Choisis d\u2019abord la finesse du quadrillage que tu veux réaliser.','err');ensureVisible(u.lpis);return;}
+  if(!Number.isFinite(vS)){u.iS.classList.add('err');setFb(fb,'Indique l\u2019espacement entre deux lignes, en mm.','err');u.iS.focus();return;}
+  if(!near(vS,D.spacing,.006)){u.iS.classList.add('err');setFb(fb,`${lpi} LPI signifie ${lpi} lignes réparties sur un pouce de 25,4 mm. Vérifie l\u2019espacement entre deux lignes.`,'err');u.iS.focus();return;}
+  u.iS.classList.add('ok');
+  if(!Number.isFinite(vN)){u.iN.classList.add('err');setFb(fb,'Indique le nombre d\u2019intervalles complets (un nombre entier, sans unité).','err');u.iN.focus();return;}
+  if(!near(vN,D.intervals,.01)){u.iN.classList.add('err');setFb(fb,'Ton résultat doit correspondre au nombre d\u2019intervalles ENTIERS qui tiennent complètement dans la largeur utile.','err');u.iN.focus();return;}
+  [u.iW,u.iS,u.iN].forEach(i=>{i.classList.add('ok');i.disabled=true;});$$('.lpis .lpi').forEach(b=>b.disabled=true);bV.disabled=true;bH.disabled=true;
+  completeMission(4);projectState.modules.conception.checkering={lpi,spacing:Math.round(D.spacing*100)/100,usableWidth:D.usable,intervals:D.intervals};
+  setFb(fb,`Quadrillage ${lpi} LPI validé. Le motif se trace…`,'ok');
+  reveal4(lpi).then(()=>{setFb(fb,'<div class="big">MISSION 4 VALIDÉE</div><div>Ton quadrillage est défini et ajouté à la crosse.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');const soon=h('div',{class:'soon'});bC.addEventListener('click',()=>{bC.disabled=true;soon.textContent='Étape suivante bientôt disponible.';});next.append(bC,soon);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(4,true);});}
+/* Réussite : marges confirmées, contour vert, première famille de lignes puis la seconde (losanges), motif conservé, retour à la vue générale avec l'annotation LPI */
+async function reveal4(lpi){if(!m4.zone)drawZoneScene();const g=m4.g;m4.margins.forEach(m=>m.classList.add('ok'));await wait(400);m4.zone.classList.add('ok');await wait(500);
+  if(!layers.check){layers.check=el('g',{class:'l-check'},svgPlan);}
+  const {grp}=drawCheckering(layers.check,lpi,900);await wait(2100);
+  anim(g,[{opacity:1},{opacity:0}],{duration:500,fill:'forwards'});await wait(520);while(g.firstChild)g.removeChild(g.firstChild);
+  layers.net.children[1].classList.remove('dim');layers.net.children[2].classList.remove('dim');layers.cotes.classList.remove('dim');if(m2.g)m2.g.classList.remove('dim');if(m3.g)m3.g.classList.remove('dim');
+  await zoomTo(VB_FULL,1000);annotateCheckering(true);await wait(400);}
+function annotateCheckering(fade){const F=zoneFrame();const lpi=+(projectState.modules.conception.checkering||{}).lpi||+(missionState(4).inputs.lpi)||20;const half=F.len/2,hw=F.wu/2;
+  const p1=[F.c[0]-F.u[0]*half-F.n[0]*hw,F.c[1]-F.u[1]*half-F.n[1]*hw],p2=[F.c[0]-F.u[0]*half+F.n[0]*hw,F.c[1]-F.u[1]*half+F.n[1]*hw];const zf=.78;
+  const c=dimAligned(m4.g,p1,p2,[-F.u[0]*12*zf,-F.u[1]*12*zf],`${lpi} LPI`,zf,'m4-lpi');if(fade)fadeIn(c,450);return c;}
+/* Résultat de la mission 4 sans animation (restauration) */
+function renderCheckeringResult(fade){const lpi=+(projectState.modules.conception.checkering||{}).lpi||+(missionState(4).inputs.lpi)||20;if(!layers.check)layers.check=el('g',{class:'l-check'},svgPlan);
+  if(!m4.g||!m4.g.parentNode)m4.g=el('g',{class:'l-m4'},svgPlan);drawCheckering(layers.check,lpi,0);annotateCheckering(fade);}
+
 /* ===================== RESTAURATION DEPUIS L'ÉTAT (rendu sans animation) ===================== */
 function prefillMission(n){const m=missionState(n).inputs;
   if(n===1&&m1.ui){m1.ui.iA.value=m.rear;m1.ui.iC.value=m.middle;m1.ui.iF.value=m.front;}
   if(n===2&&m2.ui){const k=['leg1','leg2','square','rootValue','result'];m2.ui.inputs.forEach((inp,i)=>inp.value=m[k[i]]);}
-  if(n===3&&m3.ui){m3.ui.iW.value=m.usableWidth;m3.ui.iH.value=m.usableHeight;m3.ui.iL.value=m.detailLength;m3.ui.iD.value=m.detailHeight;if(m.scale!=='')m3.ui.setScale(+m.scale);}}
+  if(n===3&&m3.ui){m3.ui.iW.value=m.usableWidth;m3.ui.iH.value=m.usableHeight;m3.ui.iL.value=m.detailLength;m3.ui.iD.value=m.detailHeight;if(m.scale!=='')m3.ui.setScale(+m.scale);}
+  if(n===4&&m4.ui){m4.ui.iW.value=m.usableWidth;m4.ui.iS.value=m.spacing;m4.ui.iN.value=m.intervals;if(m.lpi!=='')m4.ui.setLpi(+m.lpi);}}
 function buildDonePanel(){const p=$('#panel');p.innerHTML='';const top=h('div',{class:'panel-scroll'});p.append(top);const sm=stateSummary();
   top.append(h('div',{class:'mnum'},'PROJET À JOUR'),h('div',{},h('div',{class:'ttl'},'ÉTAT DU PROJET'),h('p',{class:'mission'},'Ton projet est à jour. La prochaine étape n\u2019est pas encore disponible.')),
     h('div',{class:'card'},h('div',{class:'ttl'},'MISSIONS VALIDÉES'),...sm.items.map(it=>h('div',{class:'why',style:'margin:4px 0'},h('b',{},it.title),h('br'),it.result))));}
@@ -743,11 +857,12 @@ function buildDonePanel(){const p=$('#panel');p.innerHTML='';const top=h('div',{
 async function renderProjectFromState(){const S=projectState;st.model=S.design.model;st.stock=S.design.stock;st.designer=S.student.name||'';
   for(let n=1;n<=MISSION_COUNT;n++)st['done'+n]=missionState(n).status==='completed';
   enterAtelier();drawPlan();
-  if(st.done1)renderZonesResult();if(st.done2)renderABResult(false);if(st.done3)renderFutResult(false);
+  if(st.done1)renderZonesResult();if(st.done2)renderABResult(false);if(st.done3)renderFutResult(false);if(st.done4)renderCheckeringResult(false);
   const open=firstOpenMission();
   if(open===1){buildMission1();prefillMission(1);setTopinfo(1);}
   else if(open===2){await startMission2({fast:true,prefill:true});}
   else if(open===3){await startMission3({fast:true,prefill:true});}
+  else if(open===4){await startMission4({fast:true,prefill:true});}
   else{setTopinfo(MISSION_COUNT,true);buildDonePanel();}
   return open;}
 
@@ -798,7 +913,7 @@ async function buildSavePdf(){projectState.savedAt=new Date().toISOString();cons
     ops+='0 G 2.5 w 1 J 1 j\n';P.strokes.forEach(p=>{ops+=svgPathToPdf(p.d,sc,tx,ty)+'S\n';});c.push('q '+ops+'Q');y-=(0.43*175)+14;}catch(e){}
   rule(y);y-=18;T(40,y,11.5,'PROGRESSION',true);y-=18;
   sm.items.forEach(it=>{T(40,y,10.5,it.title,true);T(400,y,10.5,statusLabel(it.status),true,it.status==='completed'?0.15:0.4);y-=14;
-    if(it.status==='completed'){T(52,y,10,`Résultats : ${it.result}`,false,0.25);y-=14;}
+    if(it.status==='completed'){if(it.lines){it.lines.forEach(l=>{T(52,y,10,l,false,0.25);y-=13;});}else{T(52,y,10,`Résultats : ${it.result}`,false,0.25);y-=14;}}
     else if(it.status==='in_progress'){const filled=it.inputs.filter(([k,v])=>v!=='');T(52,y,10,'Informations déjà renseignées : '+(filled.length?filled.map(([k,v])=>`${k} ${v}`).join(' · '):'aucune'),false,0.25);y-=14;}
     y-=6;});
   y-=6;rule(y);y-=16;T(40,y,9,'Ce PDF est aussi la sauvegarde du projet : conserve-le et rouvre-le avec « REPRENDRE UN PROJET »',false,0.45);y-=12;T(40,y,9,'à la prochaine séance. Ne pas le modifier.',false,0.45);
@@ -843,17 +958,22 @@ function autoSolve(){
   if($('#s-accueil').classList.contains('on')){$('#btn-start').click();return;}
   if($('#s-projet').classList.contains('on')){$('#btn-open').click();return;}
   const nextBtn=$('#next.on button');if(nextBtn&&!nextBtn.disabled){nextBtn.click();return;}
-  const bV=$('#btn-verif');if(!bV||bV.disabled)return;
+  const bV=$('#btn-verif');if(!bV)return;if(bV.disabled){if(!sceneReady)setTimeout(autoSolve,300);return;}
   const num=($('#panel .mnum')||{}).textContent||'';const set=(inp,v)=>{inp.value=String(v);inp.dispatchEvent(new Event('input',{bubbles:true}));};
   if(/MISSION 1/.test(num)){const e=expected();const ins=$$('#panel .fields input');[e.a,e.c,e.f].forEach((v,i)=>set(ins[i],v));}
   else if(/MISSION 2/.test(num)){const S=STOCKS[st.stock];const sq=S.dx*S.dx+S.dy*S.dy;const ins=$$('#panel .calc input');[S.dx,S.dy,sq,sq,S.ab].forEach((v,i)=>set(ins[i],v));}
   else if(/MISSION 3/.test(num)){const {uw,uh,best,detL,detH}=m3Data();const u=m3.ui;set(u.iW,uw);set(u.iH,uh);u.setScale(best);set(u.iL,detL);set(u.iD,Math.round(detH*10)/10);}
+  else if(/MISSION 4/.test(num)){const u=m4.ui;const lpi=+(missionState(4).inputs.lpi)||20;const d=m4Data(lpi);set(u.iW,d.usable);u.setLpi(lpi);set(u.iS,fmt(d.spacing,2));set(u.iN,d.intervals);}
   else return;
   bV.click();}
 document.addEventListener('keydown',e=>{if(e.ctrlKey||e.altKey||e.metaKey)return;const k=(e.key||'').toLowerCase();if(k.length!==1||!/[a-z]/.test(k)){return;}
   keyBuf=(keyBuf+k).slice(-CHEAT.length);if(keyBuf!==CHEAT)return;keyBuf='';
   const a=document.activeElement;if(a&&a.tagName==='INPUT'&&/prof$/i.test(a.value||''))a.value=a.value.replace(/prof$/i,'');
   e.preventDefault();autoSolve();});
+
+/* ===================== diagnostic : aucune erreur interne ne doit rester invisible ===================== */
+function showInternalError(msg){try{const n=$('#save-note');if(n){n.textContent='Erreur interne : '+msg;n.className='save-note err';}const fb=$('#fb');if(fb&&!fb.textContent){fb.innerHTML='Une erreur interne est survenue ('+String(msg).replace(/</g,'&lt;')+'). Ouvre la console (F12) et transmets ce message.';fb.className='fb err';}}catch(e){}}
+window.addEventListener('error',e=>showInternalError(e.message||'erreur'));window.addEventListener('unhandledrejection',e=>showInternalError((e.reason&&(e.reason.message||e.reason))||'promesse rejetée'));
 
 /* ===================== démarrage ===================== */
 function init(){const a=$('#svg-accueil');a.setAttribute('viewBox','-30 -110 1060 300');const g=el('g',{},a);drawGun(g,'A','pistolet','plan');
@@ -865,7 +985,7 @@ function init(){const a=$('#svg-accueil');a.setAttribute('viewBox','-30 -110 106
 init();
 /* Audit de débordement du panneau (à lancer dans la console : __bma.auditPanel()) : éléments plus larges que leur boîte ou sortant du panneau */
 function auditPanel(){const p=$('#panel');if(!p)return [];const pr=p.getBoundingClientRect();const out=[];p.querySelectorAll('*').forEach(e=>{const r=e.getBoundingClientRect();const over=e.scrollWidth>e.clientWidth+1&&getComputedStyle(e).overflowX!=='auto'&&getComputedStyle(e).overflowX!=='scroll';const outside=r.width>0&&(r.left<pr.left-1||r.right>pr.right+1);if(over||outside)out.push({el:e,tag:e.tagName+(e.className?'.'+String(e.className).split(' ').join('.'):''),over,outside,scrollWidth:e.scrollWidth,clientWidth:e.clientWidth});});return out;}
-window.__bma={st,MODELS,STOCKS,M3,FRAME,SCALES,m3Data,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
+window.__bma={st,MODELS,STOCKS,M3,FRAME,SCALES,CHECK,LPIS,m3Data,m4Data,startMission4,m4,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
 })();
 </script>
 </body>
