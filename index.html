@@ -252,6 +252,35 @@ svg.plan .l-check{pointer-events:none}
 /* mission 5 : plaque de couche */
 svg.plan .buttplate{fill:#e6eaf0;fill-opacity:1;stroke:var(--ink);stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linejoin:round}
 svg.plan .l-plate{pointer-events:none}
+/* mission 6 : flanc simplifié et finition */
+svg.plan .dim2{opacity:.5;transition:opacity .6s}
+svg.plan .fz{stroke:var(--ink);stroke-width:1.2;vector-effect:non-scaling-stroke;stroke-linejoin:round;transition:fill .4s}
+svg.plan .fz-a{fill:#eef2f9}svg.plan .fz-b{fill:#eef6ee}svg.plan .fz-c{fill:#f8f1e8}
+svg.plan .fz-a.on{fill:#cfdcf3}svg.plan .fz-b.on{fill:#cfe6d0}svg.plan .fz-c.on{fill:#f1dcc4}
+svg.plan .fz-lab{fill:var(--ink);font-weight:700;font-size:calc(14px*var(--z,1))}
+svg.plan .tcons{fill:var(--blue);font-size:calc(11px*var(--z,1));font-weight:600}
+svg.plan .flank-copy{opacity:.55;pointer-events:none}
+svg.plan .finish{stroke:none}
+svg.plan .fin-huilee{fill:#ece3d3}
+svg.plan .fin-satinee{fill:#e0d3bc}
+svg.plan .fin-brillante{fill:url(#fin-gloss)}
+svg.plan .l-finish{pointer-events:none}
+.fins .lpi b{font-size:12px;letter-spacing:.06em}
+/* mission 7 : gravure */
+.motifs{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;padding:2px;border:1px solid transparent;border-radius:2px}
+.motifs.err{border-color:var(--err);background:var(--err-bg)}
+.motif{min-width:0;padding:8px 6px 7px;border:1px solid var(--hair);background:#fff;border-radius:2px;text-align:center;line-height:1.2}
+.motif svg{width:100%;height:44px;display:block;margin-bottom:5px}
+.motif b{display:block;font-size:10.5px;letter-spacing:.06em}
+.motif small{display:block;font-size:10.5px;color:var(--ink-3);font-weight:500}
+.motif:hover{border-color:var(--blue-2)}
+.motif.sel{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue);background:var(--blue-bg)}
+.motif:disabled{cursor:default}
+.motif svg .mo,svg.plan .mo{fill:none;stroke:var(--ink);stroke-width:1.2;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.motif svg .mo.thin,svg.plan .mo.thin{stroke:var(--ink-2);stroke-width:.7}
+.motif svg .mo-text,svg.plan .mo-text{fill:var(--ink);font-family:var(--sans);font-weight:700;letter-spacing:.08em}
+svg.plan .motif-ghost .mo,svg.plan .motif-ghost .mo.thin{stroke:var(--blue-2);opacity:.8}svg.plan .motif-ghost .mo-text{fill:var(--blue-2)}
+svg.plan .l-engrave{pointer-events:none}
 #svg-accueil .part{stroke:var(--blue-2);opacity:.7}#svg-accueil .guard{stroke:var(--blue-2);opacity:.7}
 svg.plan .lim{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:6 4;vector-effect:non-scaling-stroke}
 svg.plan .lim-t{fill:var(--ink-3);font-size:calc(12px*var(--z,1))}
@@ -420,9 +449,9 @@ const L_TOTAL=900;const G_TOTAL=1000;const G=G_TOTAL/L_TOTAL;
 const st={model:'A',stock:'pistolet',designer:'',done1:false,done2:false,done3:false}; // alias techniques de projectState (jamais réinitialisés par un rendu)
 
 /* ===================== ÉTAT DU PROJET — source de vérité ===================== */
-const SCHEMA_VERSION=3,APP_VERSION='BMA-1';const MISSION_COUNT=5;
+const SCHEMA_VERSION=5,APP_VERSION='BMA-1';const MISSION_COUNT=7;
 function defaultState(){return {schemaVersion:SCHEMA_VERSION,appVersion:APP_VERSION,projectId:'',createdAt:'',savedAt:'',student:{name:''},design:{model:'A',stock:'pistolet'},progress:{currentMission:1},
-  missions:{mission1:{status:'not_started',inputs:{rear:'',middle:'',front:''}},mission2:{status:'not_started',inputs:{leg1:'',leg2:'',square:'',rootValue:'',result:''}},mission3:{status:'not_started',inputs:{usableWidth:'',usableHeight:'',scale:'',detailLength:'',detailHeight:''}},mission4:{status:'not_started',inputs:{usableWidth:'',lpi:'',spacing:'',intervals:''}},mission5:{status:'not_started',inputs:{angle:'',offset:'',length:''}}},
+  missions:{mission1:{status:'not_started',inputs:{rear:'',middle:'',front:''}},mission2:{status:'not_started',inputs:{leg1:'',leg2:'',square:'',rootValue:'',result:''}},mission3:{status:'not_started',inputs:{usableWidth:'',usableHeight:'',scale:'',detailLength:'',detailHeight:''}},mission4:{status:'not_started',inputs:{usableWidth:'',lpi:'',spacing:'',intervals:''}},mission5:{status:'not_started',inputs:{angle:'',offset:'',length:''}},mission6:{status:'not_started',inputs:{areaA:'',areaB:'',areaC:'',oneSideArea:'',totalArea:'',totalAreaCm2:'',finish:''}},mission7:{status:'not_started',inputs:{usableWidth:'',usableHeight:'',motif:'',kWidth:'',kHeight:'',kSelected:'',finalWidth:'',finalHeight:'',offsetX:'',offsetY:''}}},
   modules:{conception:{},vente:{},gestion:{},compteResultat:{}}};}
 let projectState=defaultState();
 function newProjectId(){const yy=String(new Date().getFullYear()).slice(-2);let hex='';const a=new Uint8Array(3);if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(a);else for(let i=0;i<3;i++)a[i]=Math.floor(Math.random()*256);for(const b of a)hex+=b.toString(16).padStart(2,'0');return `BMA-${yy}-${hex.toUpperCase()}`;}
@@ -442,15 +471,21 @@ function migrateProjectState(data){let v=Number(data.schemaVersion)||1;let d=dee
     d.missions=isPlainObj(d.missions)?d.missions:{};if(!isPlainObj(d.missions.mission4))d.missions.mission4={status:'not_started',inputs:{usableWidth:'',lpi:'',spacing:'',intervals:''}};v=2;}
   if(v<3){ // v2 → v3 : la mission 5 (plaque de couche) est ajoutée vide
     d.missions=isPlainObj(d.missions)?d.missions:{};if(!isPlainObj(d.missions.mission5))d.missions.mission5={status:'not_started',inputs:{angle:'',offset:'',length:''}};v=3;}
+  if(v<4){ // v3 → v4 : la mission 6 (finition de la crosse) est ajoutée vide
+    d.missions=isPlainObj(d.missions)?d.missions:{};if(!isPlainObj(d.missions.mission6))d.missions.mission6={status:'not_started',inputs:{areaA:'',areaB:'',areaC:'',oneSideArea:'',totalArea:'',totalAreaCm2:'',finish:''}};v=4;}
+  if(v<5){ // v4 → v5 : la mission 7 (gravure personnalisée) est ajoutée vide
+    d.missions=isPlainObj(d.missions)?d.missions:{};if(!isPlainObj(d.missions.mission7))d.missions.mission7={status:'not_started',inputs:{usableWidth:'',usableHeight:'',motif:'',kWidth:'',kHeight:'',kSelected:'',finalWidth:'',finalHeight:'',offsetX:'',offsetY:''}};v=5;}
   const out=deepMerge(defaultState(),d);out.schemaVersion=SCHEMA_VERSION;out.appVersion=APP_VERSION;return out;}
 function stateSummary(){const S=projectState;const e=expected();const m1=S.missions.mission1,m2=S.missions.mission2,m3=S.missions.mission3;const open=firstOpenMission();
-  const S2=STOCKS[S.design.stock];const d3=m3Data();const m4=S.missions.mission4;const d4=m4Data(m4.inputs.lpi?+m4.inputs.lpi:20);const m5=S.missions.mission5;const d5=m5Data(m5.inputs.angle?+m5.inputs.angle:10);
+  const S2=STOCKS[S.design.stock];const d3=m3Data();const m4=S.missions.mission4;const d4=m4Data(m4.inputs.lpi?+m4.inputs.lpi:20);const m5=S.missions.mission5;const d5=m5Data(m5.inputs.angle?+m5.inputs.angle:10);const m6=S.missions.mission6;const d6=m6Data();const fin6=FINISHES.find(f=>f.id===m6.inputs.finish);const m7=S.missions.mission7;const d7=m7Data(m7.inputs.motif||'plaque');const mo7=MOTIFS.find(m=>m.id===m7.inputs.motif);
   return {open,items:[
     {title:'Mission 1 — Proportions',status:m1.status,result:m1.status==='completed'?`Partie arrière ${fmt(e.a)} mm · centrale ${fmt(e.c)} mm · avant ${fmt(e.f)} mm (longueur globale ${fmt(L_TOTAL)} mm)`:'',inputs:[['Partie arrière',m1.inputs.rear],['Partie centrale',m1.inputs.middle],['Partie avant',m1.inputs.front]]},
     {title:'Mission 2 — Profil de crosse',status:m2.status,result:m2.status==='completed'?`AB = ${fmt(S2.ab)} mm (déplacement ${fmt(S2.dx)} mm, dénivelé ${fmt(S2.dy)} mm)`:'',inputs:[['Premier côté',m2.inputs.leg1],['Second côté',m2.inputs.leg2],['AB²',m2.inputs.square],['Sous la racine',m2.inputs.rootValue],['AB',m2.inputs.result]]},
     {title:'Mission 3 — Choisir l\u2019échelle du détail',status:m3.status,result:m3.status==='completed'?`Échelle 1:${fmtN(d3.best)} · fût sur le détail ${fmtN(d3.detL)} × ${fmtN(d3.detH)} mm (zone utile ${d3.uw} × ${d3.uh} mm)`:'',inputs:[['Largeur utile',m3.inputs.usableWidth],['Hauteur utile',m3.inputs.usableHeight],['Échelle',m3.inputs.scale?`1:${fmtN(+m3.inputs.scale)}`:''],['Longueur sur le détail',m3.inputs.detailLength],['Hauteur sur le détail',m3.inputs.detailHeight]]},
     {title:'Mission 4 — Quadrillage de la crosse',status:m4.status,result:m4.status==='completed'?`Densité ${d4.lpi} LPI · espacement ${fmt(d4.spacing,2)} mm · ${d4.intervals} intervalles complets (largeur utile ${d4.usable} mm)`:'',lines:m4.status==='completed'?[`Densité : ${d4.lpi} LPI`,`Espacement : ${fmt(d4.spacing,2)} mm`,`Intervalles complets : ${d4.intervals}`]:null,inputs:[['Largeur utile',m4.inputs.usableWidth],['Densité',m4.inputs.lpi?`${m4.inputs.lpi} LPI`:''],['Espacement',m4.inputs.spacing],['Intervalles',m4.inputs.intervals]]},
-    {title:'Mission 5 — Plaque de couche',status:m5.status,result:m5.status==='completed'?`θ = ${d5.angle}° · d = ${fmt(d5.offset,1)} mm · AB = ${fmt(d5.length,1)} mm (H = ${d5.H} mm)`:'',lines:m5.status==='completed'?[{runs:[['F1','Inclinaison : '],['F3','q'],['F1',` = ${d5.angle}°`]]},`Décalage : d = ${fmt(d5.offset,1)} mm`,`Longueur : AB = ${fmt(d5.length,1)} mm`]:null,inputs:[['Angle',m5.inputs.angle?`${m5.inputs.angle}°`:''],['Décalage d',m5.inputs.offset],['Longueur AB',m5.inputs.length]]}]};}
+    {title:'Mission 5 — Plaque de couche',status:m5.status,result:m5.status==='completed'?`θ = ${d5.angle}° · d = ${fmt(d5.offset,1)} mm · AB = ${fmt(d5.length,1)} mm (H = ${d5.H} mm)`:'',lines:m5.status==='completed'?[{runs:[['F1','Inclinaison : '],['F3','q'],['F1',` = ${d5.angle}°`]]},`Décalage : d = ${fmt(d5.offset,1)} mm`,`Longueur : AB = ${fmt(d5.length,1)} mm`]:null,inputs:[['Angle',m5.inputs.angle?`${m5.inputs.angle}°`:''],['Décalage d',m5.inputs.offset],['Longueur AB',m5.inputs.length]]},
+    {title:'Mission 6 — Finition de la crosse',status:m6.status,result:m6.status==='completed'?`Un flanc ${fmt(d6.oneSide)} mm² · deux flancs ${fmt(d6.total)} mm² = ${fmt(d6.cm2,1)} cm² · finition ${fin6?fin6.name.toLowerCase():'—'}`:'',lines:m6.status==='completed'?[`Surface d’un flanc : ${fmt(d6.oneSide)} mm²`,`Surface totale : ${fmt(d6.total)} mm²`,`Surface : ${fmt(d6.cm2,1)} cm²`,`Finition : ${fin6?fin6.name:'—'}`]:null,inputs:[['Zone A',m6.inputs.areaA],['Zone B',m6.inputs.areaB],['Zone C',m6.inputs.areaC],['Un flanc',m6.inputs.oneSideArea],['Deux flancs',m6.inputs.totalArea],['En cm²',m6.inputs.totalAreaCm2],['Finition',fin6?fin6.name:'']]},
+    {title:'Mission 7 — Gravure personnalisée',status:m7.status,result:m7.status==='completed'?`${mo7?mo7.name:'—'} · k = ${fmt(d7.k,2)} · ${fmt(d7.fW,1)} × ${fmt(d7.fH,1)} mm · X = ${fmt(d7.offX,1)} mm, Y = ${fmt(d7.offY,1)} mm`:'',lines:m7.status==='completed'?[`Motif : ${mo7?mo7.name:'—'}`,`Coefficient : ${fmt(d7.k,2)}`,`Dimensions finales : ${fmt(d7.fW,1)} × ${fmt(d7.fH,1)} mm`,`Position : X = ${fmt(d7.offX,1)} mm · Y = ${fmt(d7.offY,1)} mm`]:null,inputs:[['Largeur utile',m7.inputs.usableWidth],['Hauteur utile',m7.inputs.usableHeight],['Motif',mo7?mo7.name:''],['k largeur',m7.inputs.kWidth],['k hauteur',m7.inputs.kHeight],['k retenu',m7.inputs.kSelected],['Largeur finale',m7.inputs.finalWidth],['Hauteur finale',m7.inputs.finalHeight],['Décalage X',m7.inputs.offsetX],['Décalage Y',m7.inputs.offsetY]]}]};}
 function expected(){const m=MODELS[st.model];const a=m.rear/100*L_TOTAL,c=m.mid/100*L_TOTAL;return {a,c,f:L_TOTAL-a-c,m,ga:a*G,gc:c*G,gf:(L_TOTAL-a-c)*G};}
 
 /* ===================== silhouettes (dessin) ===================== */
@@ -483,13 +518,13 @@ function openPlan(){newProject(st.model,st.stock,($('#designer').value||'').trim
 function enterAtelier(){const m=MODELS[st.model],s=m.stocks.find(x=>x.id===st.stock);
   $('#c-designer').textContent=st.designer||'—';$('#c-model').textContent=`${m.letter} — ${m.name}`;$('#c-stock').textContent=s.name;$('#c-id').textContent=projectState.projectId||'—';
   setTopinfo(1);show('s-atelier');}
-const MISSION_TITLES={1:'Les proportions',2:'Profil de crosse',3:'Échelle du détail',4:'Quadrillage de la crosse',5:'Plaque de couche'};
+const MISSION_TITLES={1:'Les proportions',2:'Profil de crosse',3:'Échelle du détail',4:'Quadrillage de la crosse',5:'Plaque de couche',6:'Finition de la crosse',7:'Gravure personnalisée'};
 function setTopinfo(n,validated){const m=MODELS[st.model];$('#topinfo').innerHTML=`<b>Mission ${n}</b> — ${MISSION_TITLES[n]}${validated?' — validée':''} &nbsp;·&nbsp; Projet ${m.letter} ${m.name}${st.designer?' &nbsp;·&nbsp; '+st.designer:''}`;}
 
 /* ===================== le plan ===================== */
 const svgPlan=$('#svg-plan');
 let layers={};let planGen=0;
-function drawPlan(){planGen++;const svg=svgPlan;while(svg.firstChild)svg.removeChild(svg.firstChild);setVB(VB_FULL);m2.g=null;m3.g=null;m4.g=null;m5.g=null;m5.scene=null;layers.check=null;layers.plate=null;
+function drawPlan(){planGen++;const svg=svgPlan;while(svg.firstChild)svg.removeChild(svg.firstChild);setVB(VB_FULL);m2.g=null;m3.g=null;m4.g=null;m5.g=null;m5.scene=null;m6.g=null;m7.g=null;m7.scene=null;layers.check=null;layers.plate=null;layers.finish=null;layers.engrave=null;
   const defs=el('defs',{},svg);const pat=el('pattern',{id:'grid',width:25,height:25,patternUnits:'userSpaceOnUse'},defs);
   el('path',{d:'M25,0 L0,0 L0,25',fill:'none',stroke:'#e6e9ee','stroke-width':1},pat);
   el('rect',{x:-70,y:-215,width:1140,height:560,fill:'url(#grid)'},svg);
@@ -918,7 +953,7 @@ function verify5(fb,bV,bH,next){const u=m5.ui;const ang=u.getAngle();[u.iD,u.iL]
   [u.iD,u.iL].forEach(i=>{i.classList.add('ok');i.disabled=true;});$$('.lpis .lpi').forEach(b=>b.disabled=true);bV.disabled=true;bH.disabled=true;
   completeMission(5);projectState.modules.conception.buttplate={angle:ang,heelHeight:D.H,offset:Math.round(D.offset*10)/10,length:Math.round(D.length*10)/10};
   setFb(fb,`Inclinaison ${ang}° validée. La plaque se trace…`,'ok');
-  reveal5(ang).then(()=>{setFb(fb,'<div class="big">MISSION 5 VALIDÉE</div><div>L\u2019inclinaison et les dimensions de ta plaque de couche sont définies.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');const soon=h('div',{class:'soon'});bC.addEventListener('click',()=>{bC.disabled=true;soon.textContent='Étape suivante bientôt disponible.';});next.append(bC,soon);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(5,true);});}
+  reveal5(ang).then(()=>{setFb(fb,'<div class="big">MISSION 5 VALIDÉE</div><div>L\u2019inclinaison et les dimensions de ta plaque de couche sont définies.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');bC.addEventListener('click',()=>{bC.disabled=true;startMission6();});next.append(bC);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(5,true);});}
 /* Réussite : cote d, cote AB, les traits auxiliaires s'atténuent, la plaque se trace entre A et B puis devient une pièce nette ; retour en vue générale avec l'annotation θ */
 async function reveal5(ang){if(!m5.scene)drawButtScene();const S=m5.scene,z=S.z;const D=m5Data(ang);const G=buttGeom(ang);const g=S.g;
   S.dq.style.display='none';S.abq.style.display='none';await wait(400);
@@ -936,13 +971,208 @@ function annotateButtplate(fade){const ang=+(projectState.modules.conception.but
 /* Résultat de la mission 5 sans animation (restauration) */
 function renderButtplateResult(fade){const ang=+(projectState.modules.conception.buttplate||{}).angle||+(missionState(5).inputs.angle)||10;drawButtplate(ang,false);annotateButtplate(fade);}
 
+/* ===================== mission 6 : finition de la crosse ===================== */
+/* Données pédagogiques (mm) : flanc simplifié = demi-disque C (rayon r) + rectangle A (L × 2r) + triangle rectangle B (base b, hauteur 2r). Aires en mm² ; π exact ou 3,14 acceptés. */
+const FLANK={pistolet:{L:150,h:72,b:70,r:36},anglaise:{L:160,h:68,b:80,r:34},montecarlo:{L:155,h:76,b:75,r:38},droite:{L:165,h:70,b:70,r:35},pleine:{L:170,h:78,b:80,r:39},squelette:{L:145,h:66,b:65,r:33}};
+const FINISHES=[{id:'huilee',name:'Huilée',desc:'aspect bois naturel mat'},{id:'satinee',name:'Satinée',desc:'aspect légèrement plus uniforme'},{id:'brillante',name:'Brillante',desc:'aspect plus marqué'}];
+function m6Data(){const F=FLANK[st.stock];const A=F.L*F.h,B=F.b*F.h/2,C=Math.PI*F.r*F.r/2,C314=3.14*F.r*F.r/2;const oneSide=Math.round(A+B+C);const total=2*oneSide;return {F,A,B,C,C314,oneSide,total,cm2:Math.round(total/10)/10,oneSide314:A+B+C314};}
+let hints6=0;const m6={ui:null,g:null,phase:1,det:null};
+const KF=0.5; // unités graphiques par mm dans la fenêtre DÉTAIL B
+function flankBox(){const w=600,hgt=w*VB_FULL[3]/VB_FULL[2];return [-80,-165,w,hgt];}
+async function startMission6(opts){opts=opts||{};hints6=0;const gen=planGen;sceneReady=false;setTopinfo(6);projectState.progress.currentMission=6;
+  buildMission6();if(opts.prefill)prefillMission(6);await wait(opts.fast?0:600);if(gen!==planGen)return;
+  if(Math.round(curVB[2])!==VB_FULL[2])await zoomTo(VB_FULL,opts.fast?200:800);if(gen!==planGen)return;
+  layers.net.children[1].classList.add('dim');layers.net.children[2].classList.add('dim');layers.cotes.classList.add('dim');if(m3.g)m3.g.classList.add('dim');if(m5.g)m5.g.classList.add('dim');if(layers.check)layers.check.classList.add('dim2');
+  await zoomTo(flankBox(),opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawFlankScene();sceneDone(m6.ui);}
+/* DÉTAIL B — flanc de crosse simplifié : demi-disque C + rectangle A + triangle B, cotes des données, étiquettes A B C */
+function drawFlankScene(){const z=+svgPlan.style.getPropertyValue('--z')||1;const {F}=m6Data();const g=m6.g=el('g',{class:'l-m6'},svgPlan);
+  const W=215,Hh=80,wx=10,wy=-148;const det=m6.det=el('g',{class:'detail-view'},g);
+  el('text',{x:wx,y:wy-6*z,class:'dt',text:'DÉTAIL B — FLANC DE CROSSE'},det);el('text',{x:wx+W,y:wy-6*z,class:'dt right',text:'vue simplifiée','text-anchor':'end'},det);
+  el('rect',{x:wx,y:wy,width:W,height:Hh,class:'det-frame'},det);
+  const r=F.r*KF,L=F.L*KF,b=F.b*KF,hh=F.h*KF;const tot=r+L+b;const ox=wx+(W-tot)/2-6*z,oy=wy+(Hh-hh)/2-4*z;const cx=ox+r;
+  const shapes=el('g',{class:'flank'},det);
+  const zc=el('path',{d:`M${cx},${oy} A${r},${r} 0 0 0 ${cx},${oy+hh} Z`,class:'fz fz-c'},shapes);
+  const za=el('rect',{x:cx,y:oy,width:L,height:hh,class:'fz fz-a'},shapes);
+  const zb=el('path',{d:`M${cx+L},${oy} L${cx+L+b},${oy} L${cx+L},${oy+hh} Z`,class:'fz fz-b'},shapes);
+  el('text',{x:cx+L/2,y:oy+hh/2+6*z,class:'fz-lab',text:'A','text-anchor':'middle'},shapes);el('text',{x:cx+L+b*0.3,y:oy+hh*0.32+6*z,class:'fz-lab',text:'B','text-anchor':'middle'},shapes);el('text',{x:cx-r*0.45,y:oy+hh/2+6*z,class:'fz-lab',text:'C','text-anchor':'middle'},shapes);
+  // cotes : longueur du rectangle (dessous), base du triangle (dessus), hauteur (à droite), rayon
+  dimAligned(det,[cx,oy+hh],[cx+L,oy+hh],[0,16*z],fmt(F.L),z,'m6-L');dimAligned(det,[cx+L,oy],[cx+L+b,oy],[0,-16*z],fmt(F.b),z,'m6-b');dimAligned(det,[cx+L,oy],[cx+L,oy+hh],[(b+18*z),0],fmt(F.h),z,'m6-h');
+  el('line',{x1:cx,y1:oy+hh/2,x2:cx-r*Math.cos(rad(35)),y2:oy+hh/2-r*Math.sin(rad(35)),class:'cons'},det);el('circle',{cx,cy:oy+hh/2,r:1.6*z,class:'ah'},det);el('text',{x:cx-r*0.9,y:oy+hh/2-r*0.55-4*z,class:'tcons',text:`r ${fmt(F.r)}`,'text-anchor':'end'},det);
+  m6.geo={wx,wy,W,Hh,ox,oy,cx,r,L,b,hh,z,zones:{a:za,b:zb,c:zc},shapes};fadeIn(g,500);}
+function buildMission6(){const {F}=m6Data();const p=$('#panel');p.innerHTML='';m6.phase=1;
+  const top=h('div',{class:'panel-scroll'}),bot=h('div',{class:'panel-fixed'});p.append(top,bot);
+  const mk=(lbl)=>h('input',{type:'text',inputmode:'decimal',placeholder:'…',autocomplete:'off',spellcheck:'false','aria-label':lbl});
+  const iA=mk('Aire de la zone A'),iB=mk('Aire de la zone B'),iC=mk('Aire de la zone C'),iS=mk('Surface d\u2019un flanc'),iT=mk('Surface des deux flancs'),iCm=mk('Surface en cm²');
+  const one=(lbl,inp,unit)=>h('div',{class:'field'},h('label',{},lbl),h('div',{class:'in'},inp,h('span',{class:'u'},unit)));
+  const grp=(ttl,q,inp,unit,lbl)=>h('div',{class:'grp'},h('div',{class:'ttl'},ttl),h('div',{class:'q'},q),one(lbl,inp,unit));
+  const fb=h('div',{class:'fb',id:'fb'});const hints=h('div',{class:'hints',id:'hints'});const bV=h('button',{class:'btn blue',id:'btn-verif'},'VALIDER MES SURFACES');const bH=h('button',{class:'btn ghost',id:'btn-hint'},'Indice');const next=h('div',{class:'next',id:'next'});
+  // choix de finition : affiché seulement quand les surfaces sont justes
+  let finSel=null;const fins=h('div',{class:'lpis fins'});FINISHES.forEach(f=>{const b=h('button',{type:'button',class:'sc lpi','aria-pressed':'false'},h('b',{},f.name.toUpperCase()),h('small',{},f.desc));b.addEventListener('click',()=>{finSel=f.id;setInput(6,'finish',f.id);$$('.fins .lpi').forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-pressed',x===b?'true':'false');});fins.classList.remove('err');applyFinish(f.id,false);});fins.append(b);});
+  const bF=h('button',{class:'btn blue',id:'btn-finish'},'VALIDER MA FINITION');const finBlock=h('div',{class:'grp finblock',style:'display:none'},h('div',{class:'ttl'},'CHOISIS LA FINITION DE TON PROJET'),h('div',{class:'q'},'Choix graphique du projet : les trois finitions sont acceptables. L\u2019aperçu se met à jour sur ta crosse.'),fins,bF);
+  top.append(
+    h('div',{class:'mnum'},'MISSION 6 — FINITION DE LA CROSSE'),h('div',{class:'msub'},'Calculatrice autorisée. Pour π, tu peux utiliser la touche π ou 3,14.'),
+    h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Avant d\u2019appliquer la finition de ta crosse, calcule la surface des deux flancs à traiter.'),h('p',{class:'why'},'Le flanc a été séparé en trois formes simples. Calcule leur aire, additionne-les, puis double le résultat pour obtenir les deux côtés de la crosse.')),
+    h('div',{},h('div',{class:'ttl'},'POURQUOI ?'),h('p',{class:'why'},'Cette surface sera conservée dans ton dossier. Elle servira plus tard à estimer la quantité de produit, le temps de travail et le coût de finition.')),
+    h('div',{class:'card'},h('div',{class:'ttl'},'DONNÉES DU PLAN — DÉTAIL B'),h('div',{class:'dl'},h('span',{},'Zone A — rectangle'),h('b',{},`${fmt(F.L)} mm × ${fmt(F.h)} mm`),h('span',{},'Zone B — triangle'),h('b',{},`base ${fmt(F.b)} mm, hauteur ${fmt(F.h)} mm`),h('span',{},'Zone C — demi-disque'),h('b',{},`rayon ${fmt(F.r)} mm`))),
+    h('div',{class:'card formula'},h('div',{class:'ttl'},'FORMULES UTILES'),h('div',{class:'f'},'Rectangle : A = longueur × largeur'),h('div',{class:'f'},'Triangle : A = base × hauteur / 2'),h('div',{class:'f'},'Disque : A = π × r²'),h('div',{class:'f'},'Demi-disque : A = π × r² / 2'),h('div',{class:'ex'},'Les dimensions sont en mm. Les aires obtenues sont donc en mm².')));
+  bot.append(
+    grp('ZONE A — RECTANGLE',`Dimensions : ${fmt(F.L)} mm × ${fmt(F.h)} mm. Calcule l\u2019aire de la zone A.`,iA,'mm²','Aire zone A'),
+    grp('ZONE B — TRIANGLE',`Base ${fmt(F.b)} mm, hauteur ${fmt(F.h)} mm. Calcule l\u2019aire de la zone B.`,iB,'mm²','Aire zone B'),
+    grp('ZONE C — DEMI-DISQUE',`Rayon ${fmt(F.r)} mm. Calcule l\u2019aire de la zone C. Utilise π ≈ 3,14 et arrondis au mm².`,iC,'mm²','Aire zone C'),
+    grp('UN FLANC COMPLET','Additionne maintenant les trois zones pour obtenir la surface d\u2019UN SEUL côté de la crosse.',iS,'mm²','Un flanc'),
+    grp('LES DEUX CÔTÉS','La crosse possède deux flancs de même surface. Quelle surface totale dois-tu prévoir pour les deux côtés ?',iT,'mm²','Deux flancs'),
+    grp('CONVERSION EN cm²','Pour la fiche de fabrication, exprime maintenant cette surface en cm². Rappel : 1 cm² = 100 mm².',iCm,'cm²','Surface'),
+    finBlock,fb,hints,next);p.append(h('div',{class:'acts'},bV,bH));
+  const all=[iA,iB,iC,iS,iT,iCm];[['areaA',iA],['areaB',iB],['areaC',iC],['oneSideArea',iS],['totalArea',iT],['totalAreaCm2',iCm]].forEach(([k,inp])=>bindState(inp,6,k));
+  all.forEach((inp,i)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();if(i<all.length-1)all[i+1].focus();else bV.click();}});});
+  const HINTS=['Commence par calculer séparément A, B et C.','Pour C, calcule d\u2019abord l\u2019aire du disque complet puis prends-en la moitié.','Après avoir trouvé un flanc, pense au deuxième côté de la crosse.'];
+  bH.addEventListener('click',()=>{if(hints6>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hints6]);hints.append(hn);ensureVisible(hn);hints6++;bH.textContent=hints6<HINTS.length?'Un autre indice':'Indice';if(hints6>=HINTS.length)bH.disabled=true;});
+  m6.ui={iA,iB,iC,iS,iT,iCm,bV,bH,bF,fins,finBlock,n:6,getFinish:()=>finSel,setFinish:id=>{const b=$$('.fins .lpi')[FINISHES.findIndex(f=>f.id===id)];if(b)b.click();}};bV.disabled=true;
+  bV.addEventListener('click',()=>verify6(fb,bV,bH,next));bF.addEventListener('click',()=>finish6(fb,next));setTimeout(()=>iA.focus(),80);}
+function verify6(fb,bV,bH,next){const u=m6.ui;const D=m6Data();const ins=[u.iA,u.iB,u.iC,u.iS,u.iT,u.iCm];ins.forEach(i=>i.classList.remove('err','ok'));
+  const v=ins.map(i=>parseNum(i.value));const bad=(inp,msg)=>{inp.classList.add('err');setFb(fb,msg,'err');inp.focus();};
+  const cOK=x=>Number.isFinite(x)&&x>=Math.min(D.C,D.C314)-1&&x<=Math.max(D.C,D.C314)+1;
+  if(!Number.isFinite(v[0]))return bad(u.iA,'Indique l\u2019aire de la zone A, en mm².');if(!near(v[0],D.A,.5))return bad(u.iA,'La zone A est un rectangle. Vérifie que tu as multiplié ses deux dimensions.');u.iA.classList.add('ok');
+  if(!Number.isFinite(v[1]))return bad(u.iB,'Indique l\u2019aire de la zone B, en mm².');if(!near(v[1],D.B,.5))return bad(u.iB,'La zone B est un triangle. Son aire vaut la moitié du rectangle de même base et de même hauteur.');u.iB.classList.add('ok');
+  if(!Number.isFinite(v[2]))return bad(u.iC,'Indique l\u2019aire de la zone C, en mm².');if(!cOK(v[2]))return bad(u.iC,'Vérifie que tu calcules bien un DEMI-disque et non un disque entier.');u.iC.classList.add('ok');
+  const side=v[0]+v[1]+v[2];
+  if(!Number.isFinite(v[3]))return bad(u.iS,'Indique la surface d\u2019un flanc, en mm².');if(!near(v[3],side,1.5))return bad(u.iS,'La surface d\u2019un flanc correspond à A + B + C.');u.iS.classList.add('ok');
+  if(!Number.isFinite(v[4]))return bad(u.iT,'Indique la surface des deux flancs, en mm².');if(!near(v[4],2*v[3],1.5))return bad(u.iT,'Tu viens de calculer un seul côté. La crosse possède deux flancs identiques.');u.iT.classList.add('ok');
+  if(!Number.isFinite(v[5]))return bad(u.iCm,'Indique la surface en cm².');if(!near(v[5],v[4]/100,.11))return bad(u.iCm,'Pour passer de mm² à cm², rappelle-toi que 1 cm² correspond à 100 mm².');u.iCm.classList.add('ok');
+  ins.forEach(i=>i.disabled=true);bV.disabled=true;m6.phase=2;setFb(fb,`Surfaces conformes : ${fmt(v[4])} mm², soit ${fmt(v[5],1)} cm². Choisis maintenant la finition de ta crosse.`,'ok');
+  u.finBlock.style.display='';ensureVisible(u.finBlock);}
+function finish6(fb,next){const u=m6.ui;const id=u.getFinish();if(!id){u.fins.classList.add('err');setFb(fb,'Choisis la finition que tu veux appliquer à ta crosse.','err');ensureVisible(u.fins);return;}
+  const D=m6Data();u.bF.disabled=true;$$('.fins .lpi').forEach(b=>b.disabled=true);u.bH.disabled=true;
+  completeMission(6);projectState.modules.conception.finish={type:id,oneSideAreaMm2:D.oneSide,totalAreaMm2:D.total,totalAreaCm2:D.cm2};
+  setFb(fb,`Finition ${FINISHES.find(f=>f.id===id).name.toLowerCase()} retenue. Le dossier se complète…`,'ok');
+  reveal6(id).then(()=>{setFb(fb,'<div class="big">MISSION 6 VALIDÉE</div><div>La surface à traiter est calculée et la finition de ta crosse est définie.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');bC.addEventListener('click',()=>{bC.disabled=true;startMission7();});next.append(bC);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(6,true);});}
+/* Réussite : A, B, C colorés tour à tour, « A + B + C = un flanc », duplication du flanc (deux côtés), surface totale, disparition du détail, retour sur l'arme, finition appliquée progressivement */
+async function reveal6(id){if(!m6.geo)drawFlankScene();const G=m6.geo,D=m6Data(),z=G.z;const det=m6.det;
+  for(const k of ['a','b','c']){G.zones[k].classList.add('on');await wait(450);}
+  const t1=el('text',{x:G.cx+G.L/2,y:G.oy+G.hh+34*z,class:'ct',text:`A + B + C = ${fmt(D.oneSide)} mm² (un flanc)`,'text-anchor':'middle'},det);fadeIn(t1,400);await wait(900);
+  const copy=G.shapes.cloneNode(true);copy.setAttribute('transform',`translate(${(G.r+G.L+G.b)*0.12} ${-8*z})`);copy.classList.add('flank-copy');det.insertBefore(copy,G.shapes);anim(copy,[{opacity:0},{opacity:.55}],{duration:500,fill:'both'});await wait(650);
+  t1.textContent=`× 2 flancs = ${fmt(D.total)} mm² = ${fmt(D.cm2,1)} cm²`;fadeIn(t1,300);await wait(1100);
+  anim(m6.g,[{opacity:1},{opacity:0}],{duration:600,fill:'forwards'});await wait(620);while(m6.g.firstChild)m6.g.removeChild(m6.g.firstChild);
+  layers.net.children[1].classList.remove('dim');layers.net.children[2].classList.remove('dim');layers.cotes.classList.remove('dim');if(m3.g)m3.g.classList.remove('dim');if(m5.g)m5.g.classList.remove('dim');if(layers.check)layers.check.classList.remove('dim2');
+  await zoomTo(VB_FULL,1000);applyFinish(id,true);await wait(900);}
+/* Finition : remplissage sobre de la crosse (sous le tracé net, le quadrillage et la plaque restent au-dessus) */
+function applyFinish(id,fade){if(!layers.finish){layers.finish=el('g',{class:'l-finish'});svgPlan.insertBefore(layers.finish,layers.net);}
+  while(layers.finish.firstChild)layers.finish.removeChild(layers.finish.firstChild);const P=parts(st.model,st.stock);const d=P.parts[0].d;
+  const defs=svgPlan.querySelector('defs');if(!defs.querySelector('#fin-gloss')){const lg=el('linearGradient',{id:'fin-gloss',x1:'0',y1:'0',x2:'0',y2:'1'},defs);el('stop',{offset:'0','stop-color':'#f7f1e6'},lg);el('stop',{offset:'.45','stop-color':'#e2d4bd'},lg);el('stop',{offset:'.55','stop-color':'#d9c9ae'},lg);el('stop',{offset:'1','stop-color':'#e9dfcc'},lg);}
+  const p=el('path',{d,class:'finish fin-'+id,'fill-rule':P.parts[0].evenodd?'evenodd':null},layers.finish);if(fade)anim(p,[{opacity:0},{opacity:1}],{duration:1200,fill:'both'});return p;}
+/* Résultat de la mission 6 sans animation (restauration) */
+function renderFinishResult(fade){const id=(projectState.modules.conception.finish||{}).type||missionState(6).inputs.finish||'huilee';applyFinish(id,fade);}
+
+/* ===================== mission 7 : gravure personnalisée ===================== */
+/* Données pédagogiques (mm) : zone décorative sur le flanc du boîtier (par projet), marge 6 mm, trois motifs aux formats d'origine. Dessin à l'échelle du plan (G unités/mm). */
+const ENGRAVE={A:{w:124,h:46},B:{w:132,h:48},C:{w:128,h:50}};const EMARGIN=6;
+const MOTIFS=[{id:'plaque',name:'Plaque nominative',w:80,h:25,desc:'cartouche horizontal'},{id:'ecusson',name:'Écusson géométrique',w:64,h:40,desc:'forme haute, abstraite'},{id:'geometrique',name:'Motif géométrique',w:90,h:30,desc:'lignes contemporaines'}];
+function m7Data(motifId){const Z=ENGRAVE[st.model];const M=MOTIFS.find(m=>m.id===motifId)||MOTIFS[0];const uw=Z.w-2*EMARGIN,uh=Z.h-2*EMARGIN;const kW=uw/M.w,kH=uh/M.h;const k=Math.min(kW,kH);const fW=M.w*k,fH=M.h*k;return {Z,M,uw,uh,kW,kH,k,fW,fH,offX:(uw-fW)/2,offY:(uh-fH)/2};}
+let hints7=0;const m7={ui:null,g:null,scene:null};
+function initials(){const n=(st.designer||'').trim();if(!n)return 'BMA';const parts=n.split(/\s+/).filter(Boolean);if(parts.length>=2)return parts.slice(0,3).map(p=>p[0].toUpperCase()).join('');return n.length<=10?n.toUpperCase():n.slice(0,3).toUpperCase();}
+/* Motif en coordonnées locales (mm, origine en haut à gauche) ; traits non mis à l'échelle */
+function drawMotif(g,id,label){const M=MOTIFS.find(m=>m.id===id);const w=M.w,h=M.h;
+  if(id==='plaque'){el('rect',{x:0.5,y:0.5,width:w-1,height:h-1,rx:2.5,class:'mo'},g);el('rect',{x:3,y:3,width:w-6,height:h-6,rx:1.5,class:'mo thin'},g);el('line',{x1:10,y1:h/2,x2:w*0.28,y2:h/2,class:'mo thin'},g);el('line',{x1:w*0.72,y1:h/2,x2:w-10,y2:h/2,class:'mo thin'},g);
+    const t=el('text',{x:w/2,y:h/2,class:'mo-text',text:label||'BMA','text-anchor':'middle','dominant-baseline':'central'},g);t.setAttribute('font-size',Math.min(11,(w*0.44)/Math.max(2,(label||'BMA').length)*1.6));}
+  else if(id==='ecusson'){el('path',{d:`M${w/2},0 L${w},5 L${w},${h*0.55} C${w},${h*0.8} ${w*0.75},${h*0.95} ${w/2},${h} C${w*0.25},${h*0.95} 0,${h*0.8} 0,${h*0.55} L0,5 Z`,class:'mo'},g);
+    el('path',{d:`M${w/2},4 L${w-4},8 L${w-4},${h*0.53} C${w-4},${h*0.74} ${w*0.72},${h*0.86} ${w/2},${h-5} C${w*0.28},${h*0.86} 4,${h*0.74} 4,${h*0.53} L4,8 Z`,class:'mo thin'},g);
+    el('path',{d:`M${w*0.18},${h*0.36} L${w/2},${h*0.62} L${w*0.82},${h*0.36}`,class:'mo'},g);el('line',{x1:w/2,y1:h*0.14,x2:w/2,y2:h*0.5,class:'mo thin'},g);}
+  else{el('rect',{x:0.5,y:0.5,width:w-1,height:h-1,class:'mo'},g);const n=3,cw=w/n;for(let i=0;i<n;i++){el('line',{x1:i*cw,y1:h,x2:(i+1)*cw,y2:0,class:'mo'},g);el('line',{x1:i*cw,y1:0,x2:(i+1)*cw,y2:h,class:'mo thin'},g);}el('line',{x1:0,y1:h/2,x2:w,y2:h/2,class:'mo thin'},g);}
+  return g;}
+const RECEIVER={A:{y:-32,h:78},B:{y:-27,h:66},C:{y:-34,h:82}}; // rectangle du boîtier tel que dessiné dans parts()
+function engraveGeom(){const Z=ENGRAVE[st.model];const m=MODELS[st.model];const R=RECEIVER[st.model];const x1=m.rear*10-4,x2=(m.rear+m.mid)*10;const cx=(x1+x2)/2,cy=R.y+R.h/2;const w=Z.w*G,hh=Z.h*G,mg=EMARGIN*G;return {Z,zx:cx-w/2,zy:cy-hh/2,w,h:hh,mg,cx,cy};}
+function engraveBox(){const E=engraveGeom();const w=300,hgt=w*VB_FULL[3]/VB_FULL[2];return [E.cx-w/2,E.cy-hgt/2,w,hgt];}
+async function startMission7(opts){opts=opts||{};hints7=0;const gen=planGen;sceneReady=false;setTopinfo(7);projectState.progress.currentMission=7;
+  buildMission7();if(opts.prefill)prefillMission(7);await wait(opts.fast?0:600);if(gen!==planGen)return;
+  if(Math.round(curVB[2])!==VB_FULL[2])await zoomTo(VB_FULL,opts.fast?200:800);if(gen!==planGen)return;
+  layers.net.children[0].classList.add('dim');layers.net.children[2].classList.add('dim');layers.cotes.classList.add('dim');[m2.g,m3.g,m5.g].forEach(x=>{if(x)x.classList.add('dim');});if(layers.check)layers.check.classList.add('dim2');if(layers.finish)layers.finish.classList.add('dim2');
+  await zoomTo(engraveBox(),opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawEngraveScene();sceneDone(m7.ui);}
+/* Scène : ZONE TOTALE cotée, MARGE 6, ZONE UTILE en pointillés, motif fantôme à taille neutre (format d'origine) */
+function drawEngraveScene(){const z=+svgPlan.style.getPropertyValue('--z')||1;const E=engraveGeom();const g=m7.g=el('g',{class:'l-m7'},svgPlan);
+  el('rect',{x:E.zx,y:E.zy,width:E.w,height:E.h,class:'zone-out'},g);el('text',{x:E.zx,y:E.zy-5*z,class:'zone-note',text:'ZONE TOTALE'},g);
+  const us=el('rect',{x:E.zx+E.mg,y:E.zy+E.mg,width:E.w-2*E.mg,height:E.h-2*E.mg,class:'det-usable'},g);el('text',{x:E.zx+E.mg+3*z,y:E.zy+E.mg-2*z,class:'zone-note',text:'MARGE 6'},g);el('text',{x:E.zx+E.w-E.mg-3*z,y:E.zy+E.h-E.mg+8*z,class:'zone-note',text:'ZONE UTILE','text-anchor':'end'},g);
+  dimAligned(g,[E.zx,E.zy+E.h],[E.zx+E.w,E.zy+E.h],[0,16*z],fmt(E.Z.w),z,'m7-w');dimAligned(g,[E.zx+E.w,E.zy],[E.zx+E.w,E.zy+E.h],[16*z,0],fmt(E.Z.h),z,'m7-h');
+  const ghost=el('g',{class:'motif-ghost'},g);const lab=el('text',{x:E.cx,y:E.zy-17*z,class:'ct q',text:'MOTIF À DIMENSIONNER','text-anchor':'middle'},g);
+  m7.scene={g,us,ghost,lab,E,z};m7.scene.setMotif=id=>updateEngraveScene(id);const cur=missionState(7).inputs.motif;if(cur)updateEngraveScene(cur);fadeIn(g,500);}
+function updateEngraveScene(id){const S=m7.scene;if(!S)return;while(S.ghost.firstChild)S.ghost.removeChild(S.ghost.firstChild);if(!id)return;const M=MOTIFS.find(m=>m.id===id);const E=S.E;
+  // taille neutre : format d'origine (k = 1), centré — ne révèle pas le coefficient
+  const gg=el('g',{transform:`translate(${(E.cx-M.w*G/2).toFixed(2)} ${(E.cy-M.h*G/2).toFixed(2)}) scale(${G})`},S.ghost);drawMotif(gg,id,initials());}
+function buildMission7(){const Z=ENGRAVE[st.model];const p=$('#panel');p.innerHTML='';
+  const top=h('div',{class:'panel-scroll'}),bot=h('div',{class:'panel-fixed'});p.append(top,bot);
+  const mk=(lbl)=>h('input',{type:'text',inputmode:'decimal',placeholder:'…',autocomplete:'off',spellcheck:'false','aria-label':lbl});
+  const iW=mk('Largeur utile'),iH=mk('Hauteur utile'),iKW=mk('k largeur'),iKH=mk('k hauteur'),iK=mk('k retenu'),iFW=mk('Largeur finale'),iFH=mk('Hauteur finale'),iX=mk('Décalage horizontal'),iY=mk('Décalage vertical');
+  let motifSel=null;const vMotif=h('b',{},'à choisir');
+  const cards=h('div',{class:'motifs'});MOTIFS.forEach(M=>{const svg=el('svg',{viewBox:`-2 -2 ${M.w+4} ${M.h+4}`,preserveAspectRatio:'xMidYMid meet'});drawMotif(el('g',{},svg),M.id,initials());
+    const b=h('button',{type:'button',class:'motif','aria-pressed':'false'},svg,h('b',{},M.name.toUpperCase()),h('small',{},`${M.w} × ${M.h} mm — ${M.desc}`));
+    b.addEventListener('click',()=>{motifSel=M.id;setInput(7,'motif',M.id);$$('.motifs .motif').forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-pressed',x===b?'true':'false');});cards.classList.remove('err');vMotif.textContent=`${M.w} × ${M.h} mm`;if(m7.scene)m7.scene.setMotif(M.id);});cards.append(b);});
+  const pair=(l1,i1,l2,i2,unit)=>h('div',{class:'pair'},h('label',{},l1,i1,unit!=null?h('span',{class:'u'},unit):null),h('label',{},l2,i2,unit!=null?h('span',{class:'u'},unit):null));
+  const fb=h('div',{class:'fb',id:'fb'});const hints=h('div',{class:'hints',id:'hints'});const bV=h('button',{class:'btn blue',id:'btn-verif'},'VALIDER MA GRAVURE');const bH=h('button',{class:'btn ghost',id:'btn-hint'},'Indice');const next=h('div',{class:'next',id:'next'});
+  top.append(
+    h('div',{class:'mnum'},'MISSION 7 — GRAVURE PERSONNALISÉE'),
+    h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Choisis ta gravure et agrandis-la au maximum dans la zone prévue, sans la déformer et sans dépasser les marges.'),h('ol',{class:'steps'},h('li',{},'Calcule la largeur et la hauteur réellement disponibles.'),h('li',{},'Détermine jusqu\u2019où ton motif peut être agrandi en largeur.'),h('li',{},'Détermine jusqu\u2019où il peut être agrandi en hauteur.'),h('li',{},'Conserve le coefficient qui permet au motif de tenir entièrement.'),h('li',{},'Calcule ses dimensions finales.'),h('li',{},'Calcule sa position pour le centrer.'))),
+    h('div',{},h('div',{class:'ttl'},'POURQUOI ?'),h('p',{class:'why'},'Une gravure doit conserver ses proportions. Si tu agrandis trop dans une direction, elle dépasse de la zone ou se déforme.')),
+    h('div',{class:'card'},h('div',{class:'ttl'},'DONNÉES DU PLAN'),h('div',{class:'dl'},h('span',{},'Dimensions de la zone'),h('b',{},`${Z.w} × ${Z.h} mm`),h('span',{},'Marge'),h('b',{},`${EMARGIN} mm sur chaque côté`),h('span',{},'Dimensions originales du motif'),vMotif)),
+    h('div',{class:'card formula'},h('div',{class:'ttl'},'AGRANDISSEMENT PROPORTIONNEL'),h('div',{class:'f'},'nouvelle dimension = dimension initiale × k'),h('div',{class:'ex',html:'coefficient en largeur = largeur disponible / largeur du motif<br>coefficient en hauteur = hauteur disponible / hauteur du motif<br><b>Pour que le motif tienne dans les DEUX directions, il faut retenir le plus petit des deux coefficients.</b>'})));
+  bot.append(
+    h('div',{class:'grp'},h('div',{class:'ttl'},'1 — ZONE RÉELLEMENT UTILISABLE'),h('div',{class:'q'},`Après avoir retiré les marges de ${EMARGIN} mm sur chaque côté, quelles dimensions restent disponibles pour ta gravure ?`),pair('Largeur',iW,'Hauteur',iH,'mm')),
+    h('div',{class:'grp'},h('div',{class:'ttl'},'2 — CHOIX DU MOTIF'),h('div',{class:'q'},'Trois motifs de personnalisation, tous valides.'),cards),
+    h('div',{class:'grp'},h('div',{class:'ttl'},'3 — AGRANDISSEMENT POSSIBLE'),h('div',{class:'q'},'Arrondis les coefficients au centième pour les afficher, mais effectue tes calculs suivants avec la valeur la plus précise possible.'),pair('k largeur',iKW,'k hauteur',iKH,null),h('div',{class:'field'},h('label',{},'Coefficient retenu k'),h('div',{class:'in'},iK)),h('div',{class:'q'},'Un coefficient peut convenir en largeur mais faire dépasser le motif en hauteur. Le motif doit respecter les deux limites.')),
+    h('div',{class:'grp'},h('div',{class:'ttl'},'4 — DIMENSIONS FINALES'),h('div',{class:'q'},'Avec le coefficient retenu, quelles dimensions aura ta gravure ? Arrondis au dixième de millimètre.'),pair('Largeur',iFW,'Hauteur',iFH,'mm')),
+    h('div',{class:'grp'},h('div',{class:'ttl'},'5 — CENTRER LA GRAVURE'),h('div',{class:'q'},'Espace gauche = espace droit, espace haut = espace bas. Espace horizontal restant = largeur utile − largeur du motif ; la moitié se trouve de chaque côté. Même principe verticalement. Les décalages se mesurent à partir du bord de la zone utile.'),h('div',{class:'q'},'À quelle distance du bord gauche de la zone utile dois-tu placer la gravure ? À quelle distance du bord supérieur ? Arrondis au dixième.'),pair('Décalage horizontal',iX,'Décalage vertical',iY,'mm')),
+    fb,hints,next);p.append(h('div',{class:'acts'},bV,bH));
+  const all=[iW,iH,iKW,iKH,iK,iFW,iFH,iX,iY];[['usableWidth',iW],['usableHeight',iH],['kWidth',iKW],['kHeight',iKH],['kSelected',iK],['finalWidth',iFW],['finalHeight',iFH],['offsetX',iX],['offsetY',iY]].forEach(([k,inp])=>bindState(inp,7,k));
+  all.forEach((inp,i)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();if(i<all.length-1)all[i+1].focus();else bV.click();}});});
+  const HINTS=['Commence par trouver les dimensions de la zone intérieure aux marges.','Calcule séparément le coefficient possible en largeur et celui possible en hauteur.','Le coefficient retenu est le plus petit des deux.','Pour centrer : espace restant ÷ 2.'];
+  bH.addEventListener('click',()=>{if(hints7>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hints7]);hints.append(hn);ensureVisible(hn);hints7++;bH.textContent=hints7<HINTS.length?'Un autre indice':'Indice';if(hints7>=HINTS.length)bH.disabled=true;});
+  m7.ui={iW,iH,iKW,iKH,iK,iFW,iFH,iX,iY,cards,bV,bH,n:7,getMotif:()=>motifSel,setMotif:id=>{const b=$$('.motifs .motif')[MOTIFS.findIndex(m=>m.id===id)];if(b)b.click();}};bV.disabled=true;
+  bV.addEventListener('click',()=>verify7(fb,bV,bH,next));setTimeout(()=>iW.focus(),80);}
+function verify7(fb,bV,bH,next){const u=m7.ui;const all=[u.iW,u.iH,u.iKW,u.iKH,u.iK,u.iFW,u.iFH,u.iX,u.iY];all.forEach(i=>i.classList.remove('err','ok'));u.cards.classList.remove('err');
+  const v=all.map(i=>parseNum(i.value));const bad=(inp,msg)=>{inp.classList.add('err');setFb(fb,msg,'err');inp.focus();};const okI=i=>i.classList.add('ok');
+  const D0=m7Data(u.getMotif()||'plaque');
+  if(!Number.isFinite(v[0])||!Number.isFinite(v[1]))return bad(Number.isFinite(v[0])?u.iH:u.iW,'Indique d\u2019abord la largeur et la hauteur réellement utilisables, en mm.');
+  if(!near(v[0],D0.uw,.01)||!near(v[1],D0.uh,.01)){if(!near(v[0],D0.uw,.01))u.iW.classList.add('err');if(!near(v[1],D0.uh,.01))u.iH.classList.add('err');setFb(fb,`La marge de ${EMARGIN} mm est présente à gauche ET à droite, puis en haut ET en bas.`,'err');(near(v[0],D0.uw,.01)?u.iH:u.iW).focus();return;}okI(u.iW);okI(u.iH);
+  const id=u.getMotif();if(!id){u.cards.classList.add('err');setFb(fb,'Choisis le motif de ta gravure.','err');ensureVisible(u.cards);return;}const D=m7Data(id);
+  if(!Number.isFinite(v[2])||!Number.isFinite(v[3]))return bad(Number.isFinite(v[2])?u.iKH:u.iKW,'Indique les deux coefficients possibles (largeur, hauteur).');
+  if(!near(v[2],D.kW,.006)||!near(v[3],D.kH,.006)){if(!near(v[2],D.kW,.006))u.iKW.classList.add('err');if(!near(v[3],D.kH,.006))u.iKH.classList.add('err');setFb(fb,'Compare la dimension disponible avec la dimension originale du motif dans la même direction.','err');(near(v[2],D.kW,.006)?u.iKH:u.iKW).focus();return;}okI(u.iKW);okI(u.iKH);
+  if(!Number.isFinite(v[4]))return bad(u.iK,'Indique le coefficient retenu.');
+  if(!near(v[4],D.k,.006)){const big=near(v[4],Math.max(D.kW,D.kH),.006);return bad(u.iK,big?'Ton motif doit tenir à la fois en largeur et en hauteur. Si tu conserves le coefficient le plus grand, que se passe-t-il dans l\u2019autre direction ?':'Le coefficient retenu doit être l\u2019un des deux coefficients que tu viens de calculer : celui qui garde le motif entièrement dans la zone.');}okI(u.iK);
+  if(!Number.isFinite(v[5])||!Number.isFinite(v[6]))return bad(Number.isFinite(v[5])?u.iFH:u.iFW,'Indique la largeur et la hauteur finales de la gravure, en mm.');
+  if(!near(v[5],D.fW,.06)||!near(v[6],D.fH,.06)){if(!near(v[5],D.fW,.06))u.iFW.classList.add('err');if(!near(v[6],D.fH,.06))u.iFH.classList.add('err');setFb(fb,'Les deux dimensions du motif doivent être multipliées par le MÊME coefficient, sinon le motif est déformé.','err');(near(v[5],D.fW,.06)?u.iFH:u.iFW).focus();return;}okI(u.iFW);okI(u.iFH);
+  if(!Number.isFinite(v[7])||!Number.isFinite(v[8]))return bad(Number.isFinite(v[7])?u.iY:u.iX,'Indique les deux décalages, à partir du bord de la zone utile, en mm.');
+  if(!near(v[7],D.offX,.06)||!near(v[8],D.offY,.06)){if(!near(v[7],D.offX,.06))u.iX.classList.add('err');if(!near(v[8],D.offY,.06))u.iY.classList.add('err');setFb(fb,'Calcule d\u2019abord l\u2019espace restant, puis répartis-le également des deux côtés.','err');(near(v[7],D.offX,.06)?u.iY:u.iX).focus();return;}okI(u.iX);okI(u.iY);
+  all.forEach(i=>i.disabled=true);$$('.motifs .motif').forEach(b=>b.disabled=true);bV.disabled=true;bH.disabled=true;
+  completeMission(7);projectState.modules.conception.engraving={motif:id,originalWidth:D.M.w,originalHeight:D.M.h,usableWidth:D.uw,usableHeight:D.uh,scaleFactor:Math.round(D.k*10000)/10000,finalWidth:Math.round(D.fW*10)/10,finalHeight:Math.round(D.fH*10)/10,offsetX:Math.round(D.offX*10)/10,offsetY:Math.round(D.offY*10)/10};
+  setFb(fb,`Gravure « ${D.M.name} » validée : k = ${fmt(D.k,2)}. Elle se met en place…`,'ok');
+  reveal7(id).then(()=>{setFb(fb,'<div class="big">MISSION 7 VALIDÉE</div><div>Ta gravure est dimensionnée, centrée et ajoutée à ton projet.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');const soon=h('div',{class:'soon'});bC.addEventListener('click',()=>{bC.disabled=true;soon.textContent='Étape suivante bientôt disponible.';});next.append(bC,soon);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(7,true);});}
+/* Réussite : marges confirmées, zone utile nette, motif au format d'origine, agrandissement progressif jusqu'à k, glissement au centre, cotes finales, effacement de la construction, gravure conservée */
+async function reveal7(id){if(!m7.scene)drawEngraveScene();const S=m7.scene,E=S.E,z=S.z,D=m7Data(id);const g=S.g;
+  S.us.classList.add('check');S.lab.style.display='none';await wait(500);
+  while(S.ghost.firstChild)S.ghost.removeChild(S.ghost.firstChild);
+  if(!layers.engrave){layers.engrave=el('g',{class:'l-engrave'},svgPlan);}
+  const gr=el('g',{class:'engraving'},layers.engrave);const inner=el('g',{},gr);drawMotif(inner,id,initials());
+  const ux=E.zx+E.mg,uy=E.zy+E.mg;const setT=(k,x,y)=>gr.setAttribute('transform',`translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${(k*G).toFixed(4)})`);
+  setT(1,ux,uy);fadeIn(gr,400);await wait(700);
+  // agrandissement progressif puis glissement au centre
+  await tweenFn(900,t=>{const k=1+(D.k-1)*t;setT(k,ux,uy);});await wait(250);
+  const tx=ux+D.offX*G,ty=uy+D.offY*G;await tweenFn(700,t=>setT(D.k,ux+(tx-ux)*t,uy+(ty-uy)*t));await wait(200);
+  const c1=dimAligned(g,[tx,ty+D.fH*G],[tx+D.fW*G,ty+D.fH*G],[0,10*z],fmt(D.fW,1),z,'m7-fw'),c2=dimAligned(g,[tx+D.fW*G,ty],[tx+D.fW*G,ty+D.fH*G],[10*z,0],fmt(D.fH,1),z,'m7-fh');fadeIn(c1,400);fadeIn(c2,400);await wait(1300);
+  anim(g,[{opacity:1},{opacity:0}],{duration:600,fill:'forwards'});await wait(620);while(g.firstChild)g.removeChild(g.firstChild);
+  layers.net.children[0].classList.remove('dim');layers.net.children[2].classList.remove('dim');layers.cotes.classList.remove('dim');[m2.g,m3.g,m5.g].forEach(x=>{if(x)x.classList.remove('dim');});if(layers.check)layers.check.classList.remove('dim2');if(layers.finish)layers.finish.classList.remove('dim2');
+  await zoomTo(VB_FULL,1000);await wait(300);}
+function tweenFn(ms,fn){return new Promise(res=>{if(REDUCED||!window.requestAnimationFrame){fn(1);res();return;}const t0=performance.now();const step=now=>{const k=Math.min(1,(now-t0)/ms),e=1-Math.pow(1-k,3);fn(e);if(k<1)requestAnimationFrame(step);else res();};requestAnimationFrame(step);});}
+/* Gravure restaurée sans animation, à sa taille et sa position calculées */
+function renderEngravingResult(fade){const eg=projectState.modules.conception.engraving||{};const id=eg.motif||missionState(7).inputs.motif||'plaque';const D=m7Data(id),E=engraveGeom();if(!layers.engrave)layers.engrave=el('g',{class:'l-engrave'},svgPlan);
+  const gr=el('g',{class:'engraving',transform:`translate(${(E.zx+E.mg+D.offX*G).toFixed(2)} ${(E.zy+E.mg+D.offY*G).toFixed(2)}) scale(${(D.k*G).toFixed(4)})`},layers.engrave);drawMotif(el('g',{},gr),id,initials());if(fade)fadeIn(gr,500);return gr;}
+
 /* ===================== RESTAURATION DEPUIS L'ÉTAT (rendu sans animation) ===================== */
 function prefillMission(n){const m=missionState(n).inputs;
   if(n===1&&m1.ui){m1.ui.iA.value=m.rear;m1.ui.iC.value=m.middle;m1.ui.iF.value=m.front;}
   if(n===2&&m2.ui){const k=['leg1','leg2','square','rootValue','result'];m2.ui.inputs.forEach((inp,i)=>inp.value=m[k[i]]);}
   if(n===3&&m3.ui){m3.ui.iW.value=m.usableWidth;m3.ui.iH.value=m.usableHeight;m3.ui.iL.value=m.detailLength;m3.ui.iD.value=m.detailHeight;if(m.scale!=='')m3.ui.setScale(+m.scale);}
   if(n===4&&m4.ui){m4.ui.iW.value=m.usableWidth;m4.ui.iS.value=m.spacing;m4.ui.iN.value=m.intervals;if(m.lpi!=='')m4.ui.setLpi(+m.lpi);}
-  if(n===5&&m5.ui){m5.ui.iD.value=m.offset;m5.ui.iL.value=m.length;if(m.angle!=='')m5.ui.setAngle(+m.angle);}}
+  if(n===5&&m5.ui){m5.ui.iD.value=m.offset;m5.ui.iL.value=m.length;if(m.angle!=='')m5.ui.setAngle(+m.angle);}
+  if(n===6&&m6.ui){const u=m6.ui;[['areaA',u.iA],['areaB',u.iB],['areaC',u.iC],['oneSideArea',u.iS],['totalArea',u.iT],['totalAreaCm2',u.iCm]].forEach(([k,inp])=>inp.value=m[k]);if(m.finish!=='')u.setFinish(m.finish);}
+  if(n===7&&m7.ui){const u=m7.ui;[['usableWidth',u.iW],['usableHeight',u.iH],['kWidth',u.iKW],['kHeight',u.iKH],['kSelected',u.iK],['finalWidth',u.iFW],['finalHeight',u.iFH],['offsetX',u.iX],['offsetY',u.iY]].forEach(([k,inp])=>inp.value=m[k]);if(m.motif!=='')u.setMotif(m.motif);}}
 function buildDonePanel(){const p=$('#panel');p.innerHTML='';const top=h('div',{class:'panel-scroll'});p.append(top);const sm=stateSummary();
   top.append(h('div',{class:'mnum'},'PROJET À JOUR'),h('div',{},h('div',{class:'ttl'},'ÉTAT DU PROJET'),h('p',{class:'mission'},'Ton projet est à jour. La prochaine étape n\u2019est pas encore disponible.')),
     h('div',{class:'card'},h('div',{class:'ttl'},'MISSIONS VALIDÉES'),...sm.items.map(it=>h('div',{class:'why',style:'margin:4px 0'},h('b',{},it.title),h('br'),it.result))));}
@@ -950,13 +1180,15 @@ function buildDonePanel(){const p=$('#panel');p.innerHTML='';const top=h('div',{
 async function renderProjectFromState(){const S=projectState;st.model=S.design.model;st.stock=S.design.stock;st.designer=S.student.name||'';
   for(let n=1;n<=MISSION_COUNT;n++)st['done'+n]=missionState(n).status==='completed';
   enterAtelier();drawPlan();
-  if(st.done1)renderZonesResult();if(st.done2)renderABResult(false);if(st.done3)renderFutResult(false);if(st.done4)renderCheckeringResult(false);if(st.done5)renderButtplateResult(false);
+  if(st.done1)renderZonesResult();if(st.done2)renderABResult(false);if(st.done3)renderFutResult(false);if(st.done4)renderCheckeringResult(false);if(st.done5)renderButtplateResult(false);if(st.done6)renderFinishResult(false);if(st.done7)renderEngravingResult(false);
   const open=firstOpenMission();
   if(open===1){buildMission1();prefillMission(1);setTopinfo(1);}
   else if(open===2){await startMission2({fast:true,prefill:true});}
   else if(open===3){await startMission3({fast:true,prefill:true});}
   else if(open===4){await startMission4({fast:true,prefill:true});}
   else if(open===5){await startMission5({fast:true,prefill:true});}
+  else if(open===6){await startMission6({fast:true,prefill:true});}
+  else if(open===7){await startMission7({fast:true,prefill:true});}
   else{setTopinfo(MISSION_COUNT,true);buildDonePanel();}
   return open;}
 
@@ -1057,13 +1289,15 @@ function autoSolve(){
   if($('#s-accueil').classList.contains('on')){$('#btn-start').click();return;}
   if($('#s-projet').classList.contains('on')){$('#btn-open').click();return;}
   const nextBtn=$('#next.on button');if(nextBtn&&!nextBtn.disabled){nextBtn.click();return;}
-  const bV=$('#btn-verif');if(!bV)return;if(bV.disabled){if(!sceneReady)setTimeout(autoSolve,300);return;}
+  const bV=$('#btn-verif');if(!bV)return;if(bV.disabled&&!(m6.phase===2&&/MISSION 6/.test(($('#panel .mnum')||{}).textContent||''))){if(!sceneReady)setTimeout(autoSolve,300);return;}
   const num=($('#panel .mnum')||{}).textContent||'';const set=(inp,v)=>{inp.value=String(v);inp.dispatchEvent(new Event('input',{bubbles:true}));};
   if(/MISSION 1/.test(num)){const e=expected();const ins=$$('#panel .fields input');[e.a,e.c,e.f].forEach((v,i)=>set(ins[i],v));}
   else if(/MISSION 2/.test(num)){const S=STOCKS[st.stock];const sq=S.dx*S.dx+S.dy*S.dy;const ins=$$('#panel .calc input');[S.dx,S.dy,sq,sq,S.ab].forEach((v,i)=>set(ins[i],v));}
   else if(/MISSION 3/.test(num)){const {uw,uh,best,detL,detH}=m3Data();const u=m3.ui;set(u.iW,uw);set(u.iH,uh);u.setScale(best);set(u.iL,detL);set(u.iD,Math.round(detH*10)/10);}
   else if(/MISSION 4/.test(num)){const u=m4.ui;const lpi=+(missionState(4).inputs.lpi)||20;const d=m4Data(lpi);set(u.iW,d.usable);u.setLpi(lpi);set(u.iS,fmt(d.spacing,2));set(u.iN,d.intervals);}
   else if(/MISSION 5/.test(num)){const u=m5.ui;const ang=+(missionState(5).inputs.angle)||10;const d=m5Data(ang);u.setAngle(ang);set(u.iD,fmt(d.offset,1));set(u.iL,fmt(d.length,1));}
+  else if(/MISSION 6/.test(num)){const u=m6.ui;if(m6.phase===2){u.setFinish(missionState(6).inputs.finish||'huilee');u.bF.click();return;}const d=m6Data();set(u.iA,d.A);set(u.iB,d.B);set(u.iC,Math.round(d.C));set(u.iS,d.oneSide);set(u.iT,d.total);set(u.iCm,fmt(d.cm2,1));}
+  else if(/MISSION 7/.test(num)){const u=m7.ui;const id=missionState(7).inputs.motif||'plaque';u.setMotif(id);const d=m7Data(id);set(u.iW,d.uw);set(u.iH,d.uh);set(u.iKW,fmt(d.kW,2));set(u.iKH,fmt(d.kH,2));set(u.iK,fmt(d.k,4));set(u.iFW,fmt(d.fW,2));set(u.iFH,fmt(d.fH,2));set(u.iX,fmt(d.offX,2));set(u.iY,fmt(d.offY,2));}
   else return;
   bV.click();}
 document.addEventListener('keydown',e=>{if(e.ctrlKey||e.altKey||e.metaKey)return;const k=(e.key||'').toLowerCase();if(k.length!==1||!/[a-z]/.test(k)){return;}
@@ -1085,7 +1319,7 @@ function init(){const a=$('#svg-accueil');a.setAttribute('viewBox','-30 -110 106
 init();
 /* Audit de débordement du panneau (à lancer dans la console : __bma.auditPanel()) : éléments plus larges que leur boîte ou sortant du panneau */
 function auditPanel(){const p=$('#panel');if(!p)return [];const pr=p.getBoundingClientRect();const out=[];p.querySelectorAll('*').forEach(e=>{const r=e.getBoundingClientRect();const over=e.scrollWidth>e.clientWidth+1&&getComputedStyle(e).overflowX!=='auto'&&getComputedStyle(e).overflowX!=='scroll';const outside=r.width>0&&(r.left<pr.left-1||r.right>pr.right+1);if(over||outside)out.push({el:e,tag:e.tagName+(e.className?'.'+String(e.className).split(' ').join('.'):''),over,outside,scrollWidth:e.scrollWidth,clientWidth:e.clientWidth});});return out;}
-window.__bma={st,MODELS,STOCKS,M3,FRAME,SCALES,CHECK,LPIS,HEEL,ANGLES,m3Data,m4Data,m5Data,startMission4,startMission5,m4,m5,buttGeom,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
+window.__bma={st,MODELS,STOCKS,M3,FRAME,SCALES,CHECK,LPIS,HEEL,ANGLES,FLANK,FINISHES,ENGRAVE,MOTIFS,m3Data,m4Data,m5Data,m6Data,m7Data,startMission4,startMission5,startMission6,startMission7,m4,m5,m6,m7,buttGeom,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
 })();
 </script>
 </body>
