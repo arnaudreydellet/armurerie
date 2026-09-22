@@ -293,6 +293,42 @@ svg.plan .extra{fill:url(#hatch-extra);stroke:none}
 svg.plan .req-prev{fill:none;stroke:var(--blue);stroke-width:1;stroke-dasharray:4 3;vector-effect:non-scaling-stroke;opacity:.8}
 svg.plan .tcons.q{fill:var(--ink-3)}
 svg.plan .blank-note{font-size:calc(12px*var(--z,1))}
+svg.plan .hide8{opacity:0!important}
+/* étapes progressives et blocs explicatifs (missions 6, 7, 8) */
+/* composant commun d'étape (missions 6, 7, 8) : un bloc = titre + ce que tu connais + ce que tu cherches + ta réponse */
+.step-card{border:1px solid var(--hair);border-left:3px solid var(--blue);background:#fbfcfe;border-radius:2px;padding:12px 14px 14px;margin:6px 0 4px;display:flex;flex-direction:column;gap:0}
+.step-card.done{border-left-color:var(--ok);opacity:.82}
+.step-title{font-size:13.5px;font-weight:700;letter-spacing:.04em;color:var(--ink);margin-bottom:8px}
+.step-card.done .step-title::after{content:"  ✓ TERMINÉ";color:var(--ok);font-size:11px;letter-spacing:.08em}
+.st-sec{margin-top:10px}.st-sec:first-of-type{margin-top:0}
+.step-title+.st-sec{margin-top:0}
+.st-lab{font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--ink-3);margin-bottom:4px}
+.st-txt,.st-lines{font-size:13px;line-height:1.45;color:var(--ink)}
+.st-lines>div{margin:1px 0}
+.st-note{font-size:12px;color:var(--ink-2);line-height:1.4;margin-top:4px}
+.st-q{font-size:12.5px;color:var(--ink-2);margin:6px 0 3px}
+.step-card .schema{margin-top:6px}
+.step-card .fline{margin-top:6px}
+.step-card .echo{border:none;background:transparent;padding:0;margin-top:6px}
+.step-card .field{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.step-card .field label{flex:1 1 150px;min-width:0}
+.step-card .field .in{flex:0 0 150px}
+.step-card .motifs,.step-card .lpis{margin-top:2px}
+.panel{scroll-padding-bottom:90px}
+.panel-fixed{padding-bottom:14px}
+.ks{display:flex;flex-direction:column;gap:2px;font-size:12.5px;line-height:1.4}
+.ks-row{display:grid;grid-template-columns:132px minmax(0,1fr);gap:8px}
+.ks-k{font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--ink-3);padding-top:2px}
+.schema{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--blue);background:var(--blue-bg);border:1px solid var(--blue-3);border-radius:2px;padding:5px 8px;line-height:1.5;overflow-wrap:anywhere}
+.fline{font-size:13px;font-weight:600;color:var(--ink);background:var(--blue-bg);border-left:2px solid var(--blue);padding:4px 8px}
+.grp .sub{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--blue);margin-top:4px}
+.grp .note{font-size:12px;color:var(--ink-3);line-height:1.4}
+.echo{font-size:12.5px;color:var(--ink-2);background:#f6f7f9;border:1px solid var(--hair);border-radius:2px;padding:5px 8px;line-height:1.5}
+.goal{font-size:13px;margin-top:6px;padding:5px 8px;border:1px solid var(--hair);border-radius:2px;background:#fafbfc}
+.term{display:flex;flex-direction:column;gap:1px;margin:4px 0;font-size:12.5px;line-height:1.4}
+.term b{font-size:11px;letter-spacing:.08em;color:var(--ink)}
+.card.synth .dl b{color:var(--ink)}
+.panel ul.steps{list-style:disc}
 #svg-accueil .part{stroke:var(--blue-2);opacity:.7}#svg-accueil .guard{stroke:var(--blue-2);opacity:.7}
 svg.plan .lim{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:6 4;vector-effect:non-scaling-stroke}
 svg.plan .lim-t{fill:var(--ink-3);font-size:calc(12px*var(--z,1))}
@@ -605,7 +641,7 @@ function buildMission1(){const e=expected(),m=e.m;const p=$('#panel');p.innerHTM
   bH.addEventListener('click',()=>{if(hintsShown>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hintsShown]);hints.append(hn);ensureVisible(hn);hintsShown++;bH.textContent=hintsShown<HINTS.length?'Un autre indice':'Indice';if(hintsShown>=HINTS.length)bH.disabled=true;});
   bV.addEventListener('click',()=>verify(iA,iC,iF,fb,bV,bH,next));
   setTimeout(()=>iA.focus(),60);}
-function setFb(fb,msg,kind){fb.innerHTML=msg;fb.className='fb'+(kind?' '+kind:'');if(msg)ensureVisible(fb);}
+function setFb(fb,msg,kind){if(SILENT)return;fb.innerHTML=msg;fb.className='fb'+(kind?' '+kind:'');if(msg)ensureVisible(fb);}
 function ensureVisible(node){try{const p=$('#panel');if(!p||!node)return;const bar=p.querySelector('.acts');const bh=bar?bar.offsetHeight:0;const pr=p.getBoundingClientRect(),nr=node.getBoundingClientRect();if(!nr.height&&!nr.width)return;
   if(nr.bottom>pr.bottom-bh)p.scrollTop+=nr.bottom-(pr.bottom-bh)+8;else if(nr.top<pr.top)p.scrollTop-=(pr.top-nr.top)+8;
   if(node.classList&&node.classList.contains('next'))requestAnimationFrame(()=>{p.scrollTop=p.scrollHeight;});}catch(e){}}
@@ -986,6 +1022,22 @@ function annotateButtplate(fade){const ang=+(projectState.modules.conception.but
 /* Résultat de la mission 5 sans animation (restauration) */
 function renderButtplateResult(fade){const ang=+(projectState.modules.conception.buttplate||{}).angle||+(missionState(5).inputs.angle)||10;drawButtplate(ang,false);annotateButtplate(fade);}
 
+/* ===================== affichage progressif des étapes (missions 6, 7, 8) ===================== */
+/* Une étape = un ou plusieurs blocs .grp.step[data-step]. Seules les étapes atteintes sont visibles ; les étapes terminées restent affichées, verrouillées.
+   La phase n'est pas stockée : à la reprise, elle est retrouvée en rejouant la vérification en mode silencieux sur les valeurs sauvegardées. */
+let SILENT=false;
+function sec(label,...content){return h('div',{class:'st-sec'},h('div',{class:'st-lab'},label),...content.map(c=>typeof c==='string'?h('div',{class:'st-txt'},c):c));}
+function lines(...arr){return h('div',{class:'st-lines'},...arr.map(t=>typeof t==='string'?h('div',{},t):h('div',{},...t)));}
+function stepCard(step,title,...kids){return h('div',{class:'grp step step-card','data-step':String(step)},h('div',{class:'step-title'},title),...kids);}
+function knowSeek(know,seek){return h('div',{class:'ks'},h('div',{class:'ks-row'},h('span',{class:'ks-k'},'CE QUE TU CONNAIS'),h('span',{},know)),h('div',{class:'ks-row'},h('span',{class:'ks-k'},'CE QUE TU CHERCHES'),h('span',{},seek)));}
+function stepGroup(step,title,...kids){return h('div',{class:'grp step','data-step':String(step)},h('div',{class:'ttl'},title),...kids);}
+function initSteps(ui,finalLabel,onStep){ui.step=1;ui.finalLabel=finalLabel;ui.onStep=onStep||null;ui.groups=$$('#panel .grp.step').map(g=>[g,+g.getAttribute('data-step')]);ui.lastStep=Math.max(...ui.groups.map(x=>x[1]));applyStep(ui);}
+function applyStep(ui){ui.groups.forEach(([g,s])=>{g.style.display=s<=ui.step?'':'none';g.classList.toggle('done',s<ui.step);if(s<ui.step)g.querySelectorAll('input,button').forEach(x=>x.disabled=true);});
+  if(ui.bV)ui.bV.textContent=ui.step<ui.lastStep?'VÉRIFIER CETTE ÉTAPE':ui.finalLabel;if(ui.onStep)ui.onStep(ui.step);}
+function gate(ui,s,msg){if(ui.step>=s)return true;ui.step=s;applyStep(ui);if(SILENT)return true;setFb($('#fb'),msg,'ok');const g=ui.groups.find(x=>x[1]===s);if(g){ensureVisible(g[0]);const i=g[0].querySelector('input:not([disabled])');if(i)setTimeout(()=>i.focus(),60);}return false;}
+function restoreSteps(n){const ui={6:m6.ui,7:m7.ui,8:m8.ui}[n];if(!ui)return;SILENT=true;try{const fb=$('#fb'),nx=$('#next');if(n===6)verify6(fb,ui.bV,ui.bH,nx);if(n===7)verify7(fb,ui.bV,ui.bH,nx);if(n===8)verify8(fb,ui.bV,ui.bH,nx);}catch(e){}finally{SILENT=false;}
+  $$('#panel .err').forEach(e=>e.classList.remove('err'));const fb=$('#fb');if(fb){fb.innerHTML='';fb.className='fb';}}
+
 /* ===================== mission 6 : finition de la crosse ===================== */
 /* Données pédagogiques (mm) : flanc simplifié = demi-disque C (rayon r) + rectangle A (L × 2r) + triangle rectangle B (base b, hauteur 2r). Aires en mm² ; π exact ou 3,14 acceptés. */
 const FLANK={pistolet:{L:150,h:72,b:70,r:36},anglaise:{L:160,h:68,b:80,r:34},montecarlo:{L:155,h:76,b:75,r:38},droite:{L:165,h:70,b:70,r:35},pleine:{L:170,h:78,b:80,r:39},squelette:{L:145,h:66,b:65,r:33}};
@@ -993,18 +1045,18 @@ const FINISHES=[{id:'huilee',name:'Huilée',desc:'aspect bois naturel mat'},{id:
 function m6Data(){const F=FLANK[st.stock];const A=F.L*F.h,B=F.b*F.h/2,C=Math.PI*F.r*F.r/2,C314=3.14*F.r*F.r/2;const oneSide=Math.round(A+B+C);const total=2*oneSide;return {F,A,B,C,C314,oneSide,total,cm2:Math.round(total/10)/10,oneSide314:A+B+C314};}
 let hints6=0;const m6={ui:null,g:null,phase:1,det:null};
 const KF=0.5; // unités graphiques par mm dans la fenêtre DÉTAIL B
-function flankBox(){const w=600,hgt=w*VB_FULL[3]/VB_FULL[2];return [-80,-165,w,hgt];}
+function flankBox(){const w=600,hgt=w*VB_FULL[3]/VB_FULL[2];return [-80,-174,w,hgt];}
 async function startMission6(opts){opts=opts||{};hints6=0;const gen=planGen;sceneReady=false;setTopinfo(6);projectState.progress.currentMission=6;
-  buildMission6();if(opts.prefill)prefillMission(6);await wait(opts.fast?0:600);if(gen!==planGen)return;
+  buildMission6();if(opts.prefill){prefillMission(6);restoreSteps(6);}await wait(opts.fast?0:600);if(gen!==planGen)return;
   if(Math.round(curVB[2])!==VB_FULL[2])await zoomTo(VB_FULL,opts.fast?200:800);if(gen!==planGen)return;
   layers.net.children[1].classList.add('dim');layers.net.children[2].classList.add('dim');layers.cotes.classList.add('dim');if(m3.g)m3.g.classList.add('dim');if(m5.g)m5.g.classList.add('dim');if(layers.check)layers.check.classList.add('dim2');
   await zoomTo(flankBox(),opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawFlankScene();sceneDone(m6.ui);}
 /* DÉTAIL B — flanc de crosse simplifié : demi-disque C + rectangle A + triangle B, cotes des données, étiquettes A B C */
 function drawFlankScene(){const z=+svgPlan.style.getPropertyValue('--z')||1;const {F}=m6Data();const g=m6.g=el('g',{class:'l-m6'},svgPlan);
-  const W=215,Hh=80,wx=10,wy=-148;const det=m6.det=el('g',{class:'detail-view'},g);
-  el('text',{x:wx,y:wy-6*z,class:'dt',text:'DÉTAIL B — FLANC DE CROSSE'},det);el('text',{x:wx+W,y:wy-6*z,class:'dt right',text:'vue simplifiée','text-anchor':'end'},det);
+  const W=250,Hh=106,wx=0,wy=-152;const det=m6.det=el('g',{class:'detail-view'},g);
+  el('text',{x:wx,y:wy-20*z,class:'dt',text:'DÉTAIL B — FLANC DE CROSSE'},det);el('text',{x:wx,y:wy-6*z,class:'dt right',text:'UN FLANC = UN CÔTÉ · VUE SIMPLIFIÉE'},det);
   el('rect',{x:wx,y:wy,width:W,height:Hh,class:'det-frame'},det);
-  const r=F.r*KF,L=F.L*KF,b=F.b*KF,hh=F.h*KF;const tot=r+L+b;const ox=wx+(W-tot)/2-6*z,oy=wy+(Hh-hh)/2-4*z;const cx=ox+r;
+  const r=F.r*KF,L=F.L*KF,b=F.b*KF,hh=F.h*KF;const tot=r+L+b;const ox=wx+(W-tot)/2-8*z,oy=wy+(Hh-hh)/2-8*z;const cx=ox+r;
   const shapes=el('g',{class:'flank'},det);
   const zc=el('path',{d:`M${cx},${oy} A${r},${r} 0 0 0 ${cx},${oy+hh} Z`,class:'fz fz-c'},shapes);
   const za=el('rect',{x:cx,y:oy,width:L,height:hh,class:'fz fz-a'},shapes);
@@ -1012,47 +1064,55 @@ function drawFlankScene(){const z=+svgPlan.style.getPropertyValue('--z')||1;cons
   el('text',{x:cx+L/2,y:oy+hh/2+6*z,class:'fz-lab',text:'A','text-anchor':'middle'},shapes);el('text',{x:cx+L+b*0.3,y:oy+hh*0.32+6*z,class:'fz-lab',text:'B','text-anchor':'middle'},shapes);el('text',{x:cx-r*0.45,y:oy+hh/2+6*z,class:'fz-lab',text:'C','text-anchor':'middle'},shapes);
   // cotes : longueur du rectangle (dessous), base du triangle (dessus), hauteur (à droite), rayon
   dimAligned(det,[cx,oy+hh],[cx+L,oy+hh],[0,16*z],fmt(F.L),z,'m6-L');dimAligned(det,[cx+L,oy],[cx+L+b,oy],[0,-16*z],fmt(F.b),z,'m6-b');dimAligned(det,[cx+L,oy],[cx+L,oy+hh],[(b+18*z),0],fmt(F.h),z,'m6-h');
-  el('line',{x1:cx,y1:oy+hh/2,x2:cx-r*Math.cos(rad(35)),y2:oy+hh/2-r*Math.sin(rad(35)),class:'cons'},det);el('circle',{cx,cy:oy+hh/2,r:1.6*z,class:'ah'},det);el('text',{x:cx-r*0.9,y:oy+hh/2-r*0.55-4*z,class:'tcons',text:`r ${fmt(F.r)}`,'text-anchor':'end'},det);
+  el('line',{x1:cx,y1:oy+hh/2,x2:cx-r*Math.cos(rad(35)),y2:oy+hh/2-r*Math.sin(rad(35)),class:'cons'},det);el('circle',{cx,cy:oy+hh/2,r:1.6*z,class:'ah'},det);el('text',{x:cx-r*0.9,y:oy+hh/2-r*0.55-4*z,class:'tcons',text:`r = ${fmt(F.r)} mm`,'text-anchor':'end'},det);
   m6.geo={wx,wy,W,Hh,ox,oy,cx,r,L,b,hh,z,zones:{a:za,b:zb,c:zc},shapes};fadeIn(g,500);}
 function buildMission6(){const {F}=m6Data();const p=$('#panel');p.innerHTML='';m6.phase=1;
   const top=h('div',{class:'panel-scroll'}),bot=h('div',{class:'panel-fixed'});p.append(top,bot);
   const mk=(lbl)=>h('input',{type:'text',inputmode:'decimal',placeholder:'…',autocomplete:'off',spellcheck:'false','aria-label':lbl});
-  const iA=mk('Aire de la zone A'),iB=mk('Aire de la zone B'),iC=mk('Aire de la zone C'),iS=mk('Surface d\u2019un flanc'),iT=mk('Surface des deux flancs'),iCm=mk('Surface en cm²');
+  const iA=mk('Aire de la zone A'),iB=mk('Aire de la zone B'),iC=mk('Aire de la zone C'),iS=mk('Surface d\u2019un flanc'),iT=mk('Surface des deux flancs'),iCm=mk('Surface des deux flancs en cm²');
   const one=(lbl,inp,unit)=>h('div',{class:'field'},h('label',{},lbl),h('div',{class:'in'},inp,h('span',{class:'u'},unit)));
-  const grp=(ttl,q,inp,unit,lbl)=>h('div',{class:'grp'},h('div',{class:'ttl'},ttl),h('div',{class:'q'},q),one(lbl,inp,unit));
   const fb=h('div',{class:'fb',id:'fb'});const hints=h('div',{class:'hints',id:'hints'});const bV=h('button',{class:'btn blue',id:'btn-verif'},'VALIDER MES SURFACES');const bH=h('button',{class:'btn ghost',id:'btn-hint'},'Indice');const next=h('div',{class:'next',id:'next'});
-  // choix de finition : affiché seulement quand les surfaces sont justes
   let finSel=null;const fins=h('div',{class:'lpis fins'});FINISHES.forEach(f=>{const b=h('button',{type:'button',class:'sc lpi','aria-pressed':'false'},h('b',{},f.name.toUpperCase()),h('small',{},f.desc));b.addEventListener('click',()=>{finSel=f.id;setInput(6,'finish',f.id);$$('.fins .lpi').forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-pressed',x===b?'true':'false');});fins.classList.remove('err');applyFinish(f.id,false);});fins.append(b);});
   const bF=h('button',{class:'btn blue',id:'btn-finish'},'VALIDER MA FINITION');const finBlock=h('div',{class:'grp finblock',style:'display:none'},h('div',{class:'ttl'},'CHOISIS LA FINITION DE TON PROJET'),h('div',{class:'q'},'Choix graphique du projet : les trois finitions sont acceptables. L\u2019aperçu se met à jour sur ta crosse.'),fins,bF);
   top.append(
     h('div',{class:'mnum'},'MISSION 6 — FINITION DE LA CROSSE'),h('div',{class:'msub'},'Calculatrice autorisée. Pour π, tu peux utiliser la touche π ou 3,14.'),
-    h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Avant d\u2019appliquer la finition de ta crosse, calcule la surface des deux flancs à traiter.'),h('p',{class:'why'},'Le flanc a été séparé en trois formes simples. Calcule leur aire, additionne-les, puis double le résultat pour obtenir les deux côtés de la crosse.')),
+    h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Nous voulons connaître la surface extérieure des deux côtés de ta crosse.'),h('p',{class:'why'},'Pour y arriver :'),
+      h('ol',{class:'steps'},h('li',{},'calcule séparément les surfaces des zones A, B et C ;'),h('li',{},'additionne A + B + C : tu obtiens UN flanc ;'),h('li',{},'la crosse possède deux flancs identiques : trouve la surface des deux ;'),h('li',{},'transforme enfin cette surface de mm² en cm².')),
+      h('div',{class:'goal'},h('b',{},'À LA FIN, TU DOIS OBTENIR : '),'une surface totale en cm².')),
     h('div',{},h('div',{class:'ttl'},'POURQUOI ?'),h('p',{class:'why'},'Cette surface sera conservée dans ton dossier. Elle servira plus tard à estimer la quantité de produit, le temps de travail et le coût de finition.')),
-    h('div',{class:'card'},h('div',{class:'ttl'},'DONNÉES DU PLAN — DÉTAIL B'),h('div',{class:'dl'},h('span',{},'Zone A — rectangle'),h('b',{},`${fmt(F.L)} mm × ${fmt(F.h)} mm`),h('span',{},'Zone B — triangle'),h('b',{},`base ${fmt(F.b)} mm, hauteur ${fmt(F.h)} mm`),h('span',{},'Zone C — demi-disque'),h('b',{},`rayon ${fmt(F.r)} mm`))),
-    h('div',{class:'card formula'},h('div',{class:'ttl'},'FORMULES UTILES'),h('div',{class:'f'},'Rectangle : A = longueur × largeur'),h('div',{class:'f'},'Triangle : A = base × hauteur / 2'),h('div',{class:'f'},'Disque : A = π × r²'),h('div',{class:'f'},'Demi-disque : A = π × r² / 2'),h('div',{class:'ex'},'Les dimensions sont en mm. Les aires obtenues sont donc en mm².')));
+    h('div',{class:'card'},h('div',{class:'ttl'},'VOCABULAIRE'),h('p',{class:'why'},'Un flanc est un côté extérieur de la crosse. Dans cette activité, on simplifie UN flanc en trois formes : A, B et C. Comme la crosse possède deux côtés, on calculera d\u2019abord un flanc, puis les deux flancs.')),
+    h('div',{class:'card'},h('div',{class:'ttl'},'DONNÉES DU PLAN — DÉTAIL B'),h('div',{class:'dl'},h('span',{},'Zone A — rectangle'),h('b',{},`${fmt(F.L)} mm × ${fmt(F.h)} mm`),h('span',{},'Zone B — triangle'),h('b',{},`base ${fmt(F.b)} mm, hauteur ${fmt(F.h)} mm`),h('span',{},'Zone C — demi-disque'),h('b',{},`rayon r = ${fmt(F.r)} mm`))),
+    h('div',{class:'card formula'},h('div',{class:'ttl'},'FORMULES UTILES'),h('div',{class:'f'},'Aire du rectangle = longueur × largeur'),h('div',{class:'f'},'Aire du triangle = base × hauteur / 2'),h('div',{class:'f'},'Aire du disque = π × rayon²'),h('div',{class:'f'},'Aire du demi-disque = π × rayon² / 2'),
+      h('div',{class:'ex'},'r = rayon : la distance entre le centre du demi-disque et son bord. Les dimensions sont en mm, les aires obtenues sont donc en mm².')));
+  const E6={};const ec6=k=>{const b=h('b',{},'…');(E6[k]=E6[k]||[]).push(b);return b;};
   bot.append(
-    grp('ZONE A — RECTANGLE',`Dimensions : ${fmt(F.L)} mm × ${fmt(F.h)} mm. Calcule l\u2019aire de la zone A.`,iA,'mm²','Aire zone A'),
-    grp('ZONE B — TRIANGLE',`Base ${fmt(F.b)} mm, hauteur ${fmt(F.h)} mm. Calcule l\u2019aire de la zone B.`,iB,'mm²','Aire zone B'),
-    grp('ZONE C — DEMI-DISQUE',`Rayon ${fmt(F.r)} mm. Calcule l\u2019aire de la zone C. Utilise π ≈ 3,14 et arrondis au mm².`,iC,'mm²','Aire zone C'),
-    grp('UN FLANC COMPLET','Additionne maintenant les trois zones pour obtenir la surface d\u2019UN SEUL côté de la crosse.',iS,'mm²','Un flanc'),
-    grp('LES DEUX CÔTÉS','La crosse possède deux flancs de même surface. Quelle surface totale dois-tu prévoir pour les deux côtés ?',iT,'mm²','Deux flancs'),
-    grp('CONVERSION EN cm²','Pour la fiche de fabrication, exprime maintenant cette surface en cm². Rappel : 1 cm² = 100 mm².',iCm,'cm²','Surface'),
+    stepCard(1,'ZONE A — RECTANGLE',sec('CE QUE TU CONNAIS',lines(`Longueur : ${fmt(F.L)} mm`,`Largeur : ${fmt(F.h)} mm`)),sec('CE QUE TU CHERCHES','La surface occupée par le rectangle A.'),sec('TA RÉPONSE',one('Aire de la zone A',iA,'mm²'))),
+    stepCard(1,'ZONE B — TRIANGLE',sec('CE QUE TU CONNAIS',lines(`Base : ${fmt(F.b)} mm`,`Hauteur : ${fmt(F.h)} mm`)),sec('CE QUE TU CHERCHES','La surface occupée par le triangle B.'),sec('TA RÉPONSE',one('Aire de la zone B',iB,'mm²'))),
+    stepCard(1,'ZONE C — DEMI-DISQUE',sec('CE QUE TU CONNAIS',lines(`Rayon r : ${fmt(F.r)} mm`),h('div',{class:'st-note'},'r représente le rayon : la distance entre le centre du demi-disque et son bord.')),sec('CE QUE TU CHERCHES','La surface du demi-disque C.'),
+      sec('ATTENTION','Le dessin représente seulement la moitié d\u2019un disque. Utilise π ≈ 3,14 (ou la touche π) et arrondis au mm².'),sec('TA RÉPONSE',one('Aire de la zone C',iC,'mm²'))),
+    stepCard(2,'UN FLANC COMPLET',sec('CE QUE TU AS DÉJÀ TROUVÉ',lines(['Zone A : ',ec6('a'),' mm²'],['Zone B : ',ec6('b'),' mm²'],['Zone C : ',ec6('c'),' mm²'])),sec('CE QUE TU CHERCHES','La surface d\u2019un seul flanc de la crosse : zone A + zone B + zone C.'),sec('TA RÉPONSE',one('Surface d\u2019un flanc',iS,'mm²'))),
+    stepCard(2,'LES DEUX FLANCS',sec('CE QUE TU AS DÉJÀ TROUVÉ',lines(['Surface d\u2019un flanc : ',ec6('s'),' mm²'])),sec('CE QUE TU CHERCHES','La surface des deux flancs. Le résultat précédent correspond à UN côté ; la crosse possède DEUX flancs identiques.'),sec('TA RÉPONSE',one('Surface des deux flancs',iT,'mm²'))),
+    stepCard(3,'CONVERSION EN cm²',sec('CE QUE TU AS DÉJÀ TROUVÉ',lines(['Surface des deux flancs : ',ec6('t'),' mm²'])),sec('CE QUE TU SAIS','Comme 1 cm = 10 mm, alors 1 cm² = 100 mm².'),sec('CE QUE TU CHERCHES','La surface des deux flancs exprimée en cm², pour la fiche de fabrication.'),sec('TA RÉPONSE',one('Surface des deux flancs',iCm,'cm²'))),
     finBlock,fb,hints,next);p.append(h('div',{class:'acts'},bV,bH));
   const all=[iA,iB,iC,iS,iT,iCm];[['areaA',iA],['areaB',iB],['areaC',iC],['oneSideArea',iS],['totalArea',iT],['totalAreaCm2',iCm]].forEach(([k,inp])=>bindState(inp,6,k));
-  all.forEach((inp,i)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();if(i<all.length-1)all[i+1].focus();else bV.click();}});});
+  all.forEach((inp,i)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();const nx=all.slice(i+1).find(x=>x.offsetParent!==null&&!x.disabled);if(nx)nx.focus();else bV.click();}});});
   const HINTS=['Commence par calculer séparément A, B et C.','Pour C, calcule d\u2019abord l\u2019aire du disque complet puis prends-en la moitié.','Après avoir trouvé un flanc, pense au deuxième côté de la crosse.'];
   bH.addEventListener('click',()=>{if(hints6>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hints6]);hints.append(hn);ensureVisible(hn);hints6++;bH.textContent=hints6<HINTS.length?'Un autre indice':'Indice';if(hints6>=HINTS.length)bH.disabled=true;});
-  m6.ui={iA,iB,iC,iS,iT,iCm,bV,bH,bF,fins,finBlock,n:6,getFinish:()=>finSel,setFinish:id=>{const b=$$('.fins .lpi')[FINISHES.findIndex(f=>f.id===id)];if(b)b.click();}};bV.disabled=true;
+  m6.ui={iA,iB,iC,iS,iT,iCm,bV,bH,bF,fins,finBlock,n:6,getFinish:()=>finSel,setFinish:id=>{const b=$$('.fins .lpi')[FINISHES.findIndex(f=>f.id===id)];if(b)b.click();}};
+  const refresh6=()=>{const put=(k,inp)=>(E6[k]||[]).forEach(b=>b.textContent=inp.value.trim()||'…');put('a',iA);put('b',iB);put('c',iC);put('s',iS);put('t',iT);};[iA,iB,iC,iS,iT].forEach(i=>i.addEventListener('input',refresh6));
+  initSteps(m6.ui,'VALIDER MES SURFACES',()=>refresh6());bV.disabled=true;
   bV.addEventListener('click',()=>verify6(fb,bV,bH,next));bF.addEventListener('click',()=>finish6(fb,next));setTimeout(()=>iA.focus(),80);}
-function verify6(fb,bV,bH,next){const u=m6.ui;const D=m6Data();const ins=[u.iA,u.iB,u.iC,u.iS,u.iT,u.iCm];ins.forEach(i=>i.classList.remove('err','ok'));
-  const v=ins.map(i=>parseNum(i.value));const bad=(inp,msg)=>{inp.classList.add('err');setFb(fb,msg,'err');inp.focus();};
+function verify6(fb,bV,bH,next){const u=m6.ui;const D=m6Data();const ins=[u.iA,u.iB,u.iC,u.iS,u.iT,u.iCm];ins.forEach(i=>i.classList.remove('err'));
+  const v=ins.map(i=>parseNum(i.value));const bad=(inp,msg)=>{inp.classList.add('err');setFb(fb,msg,'err');if(!SILENT)inp.focus();};
   const cOK=x=>Number.isFinite(x)&&x>=Math.min(D.C,D.C314)-1&&x<=Math.max(D.C,D.C314)+1;
   if(!Number.isFinite(v[0]))return bad(u.iA,'Indique l\u2019aire de la zone A, en mm².');if(!near(v[0],D.A,.5))return bad(u.iA,'La zone A est un rectangle. Vérifie que tu as multiplié ses deux dimensions.');u.iA.classList.add('ok');
   if(!Number.isFinite(v[1]))return bad(u.iB,'Indique l\u2019aire de la zone B, en mm².');if(!near(v[1],D.B,.5))return bad(u.iB,'La zone B est un triangle. Son aire vaut la moitié du rectangle de même base et de même hauteur.');u.iB.classList.add('ok');
   if(!Number.isFinite(v[2]))return bad(u.iC,'Indique l\u2019aire de la zone C, en mm².');if(!cOK(v[2]))return bad(u.iC,'Vérifie que tu calcules bien un DEMI-disque et non un disque entier.');u.iC.classList.add('ok');
+  if(!gate(u,2,'Zones A, B et C correctes. Étape suivante : la surface d\u2019un flanc, puis celle des deux flancs.'))return;
   const side=v[0]+v[1]+v[2];
   if(!Number.isFinite(v[3]))return bad(u.iS,'Indique la surface d\u2019un flanc, en mm².');if(!near(v[3],side,1.5))return bad(u.iS,'La surface d\u2019un flanc correspond à A + B + C.');u.iS.classList.add('ok');
   if(!Number.isFinite(v[4]))return bad(u.iT,'Indique la surface des deux flancs, en mm².');if(!near(v[4],2*v[3],1.5))return bad(u.iT,'Tu viens de calculer un seul côté. La crosse possède deux flancs identiques.');u.iT.classList.add('ok');
+  if(!gate(u,3,'Surfaces en mm² correctes. Dernière étape : la conversion en cm².'))return;
   if(!Number.isFinite(v[5]))return bad(u.iCm,'Indique la surface en cm².');if(!near(v[5],v[4]/100,.11))return bad(u.iCm,'Pour passer de mm² à cm², rappelle-toi que 1 cm² correspond à 100 mm².');u.iCm.classList.add('ok');
   ins.forEach(i=>i.disabled=true);bV.disabled=true;m6.phase=2;setFb(fb,`Surfaces conformes : ${fmt(v[4])} mm², soit ${fmt(v[5],1)} cm². Choisis maintenant la finition de ta crosse.`,'ok');
   u.finBlock.style.display='';ensureVisible(u.finBlock);}
@@ -1064,8 +1124,8 @@ function finish6(fb,next){const u=m6.ui;const id=u.getFinish();if(!id){u.fins.cl
 /* Réussite : A, B, C colorés tour à tour, « A + B + C = un flanc », duplication du flanc (deux côtés), surface totale, disparition du détail, retour sur l'arme, finition appliquée progressivement */
 async function reveal6(id){if(!m6.geo)drawFlankScene();const G=m6.geo,D=m6Data(),z=G.z;const det=m6.det;
   for(const k of ['a','b','c']){G.zones[k].classList.add('on');await wait(450);}
-  const t1=el('text',{x:G.cx+G.L/2,y:G.oy+G.hh+34*z,class:'ct',text:`A + B + C = ${fmt(D.oneSide)} mm² (un flanc)`,'text-anchor':'middle'},det);fadeIn(t1,400);await wait(900);
-  const copy=G.shapes.cloneNode(true);copy.setAttribute('transform',`translate(${(G.r+G.L+G.b)*0.12} ${-8*z})`);copy.classList.add('flank-copy');det.insertBefore(copy,G.shapes);anim(copy,[{opacity:0},{opacity:.55}],{duration:500,fill:'both'});await wait(650);
+  const t1=el('text',{x:G.wx+G.W/2,y:G.wy+G.Hh-6*z,class:'ct',text:`A + B + C = ${fmt(D.oneSide)} mm² (un flanc)`,'text-anchor':'middle'},det);fadeIn(t1,400);await wait(900);
+  const copy=G.shapes.cloneNode(true);copy.querySelectorAll('text').forEach(t=>t.remove());copy.setAttribute('transform',`translate(${(G.r+G.L+G.b)*0.12} ${-8*z})`);copy.classList.add('flank-copy');det.insertBefore(copy,G.shapes);anim(copy,[{opacity:0},{opacity:.55}],{duration:500,fill:'both'});await wait(650);
   t1.textContent=`× 2 flancs = ${fmt(D.total)} mm² = ${fmt(D.cm2,1)} cm²`;fadeIn(t1,300);await wait(1100);
   anim(m6.g,[{opacity:1},{opacity:0}],{duration:600,fill:'forwards'});await wait(620);while(m6.g.firstChild)m6.g.removeChild(m6.g.firstChild);
   layers.net.children[1].classList.remove('dim');layers.net.children[2].classList.remove('dim');layers.cotes.classList.remove('dim');if(m3.g)m3.g.classList.remove('dim');if(m5.g)m5.g.classList.remove('dim');if(layers.check)layers.check.classList.remove('dim2');
@@ -1098,7 +1158,7 @@ const RECEIVER={A:{y:-32,h:78},B:{y:-27,h:66},C:{y:-34,h:82}}; // rectangle du b
 function engraveGeom(){const Z=ENGRAVE[st.model];const m=MODELS[st.model];const R=RECEIVER[st.model];const x1=m.rear*10-4,x2=(m.rear+m.mid)*10;const cx=(x1+x2)/2,cy=R.y+R.h/2;const w=Z.w*G,hh=Z.h*G,mg=EMARGIN*G;return {Z,zx:cx-w/2,zy:cy-hh/2,w,h:hh,mg,cx,cy};}
 function engraveBox(){const E=engraveGeom();const w=300,hgt=w*VB_FULL[3]/VB_FULL[2];return [E.cx-w/2,E.cy-hgt/2,w,hgt];}
 async function startMission7(opts){opts=opts||{};hints7=0;const gen=planGen;sceneReady=false;setTopinfo(7);projectState.progress.currentMission=7;
-  buildMission7();if(opts.prefill)prefillMission(7);await wait(opts.fast?0:600);if(gen!==planGen)return;
+  buildMission7();if(opts.prefill){prefillMission(7);restoreSteps(7);}await wait(opts.fast?0:600);if(gen!==planGen)return;
   if(Math.round(curVB[2])!==VB_FULL[2])await zoomTo(VB_FULL,opts.fast?200:800);if(gen!==planGen)return;
   layers.net.children[0].classList.add('dim');layers.net.children[2].classList.add('dim');layers.cotes.classList.add('dim');[m2.g,m3.g,m5.g].forEach(x=>{if(x)x.classList.add('dim');});if(layers.check)layers.check.classList.add('dim2');if(layers.finish)layers.finish.classList.add('dim2');
   await zoomTo(engraveBox(),opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawEngraveScene();sceneDone(m7.ui);}
@@ -1115,46 +1175,72 @@ function updateEngraveScene(id){const S=m7.scene;if(!S)return;while(S.ghost.firs
 function buildMission7(){const Z=ENGRAVE[st.model];const p=$('#panel');p.innerHTML='';
   const top=h('div',{class:'panel-scroll'}),bot=h('div',{class:'panel-fixed'});p.append(top,bot);
   const mk=(lbl)=>h('input',{type:'text',inputmode:'decimal',placeholder:'…',autocomplete:'off',spellcheck:'false','aria-label':lbl});
-  const iW=mk('Largeur utile'),iH=mk('Hauteur utile'),iKW=mk('k largeur'),iKH=mk('k hauteur'),iK=mk('k retenu'),iFW=mk('Largeur finale'),iFH=mk('Hauteur finale'),iX=mk('Décalage horizontal'),iY=mk('Décalage vertical');
-  let motifSel=null;const vMotif=h('b',{},'à choisir');
+  const iW=mk('Largeur disponible'),iH=mk('Hauteur disponible'),iKW=mk('Coefficient limité par la largeur'),iKH=mk('Coefficient limité par la hauteur'),iK=mk('Coefficient final retenu'),iFW=mk('Largeur finale'),iFH=mk('Hauteur finale'),iX=mk('Distance au bord gauche'),iY=mk('Distance au bord supérieur');
+  let motifSel=null;const vMotif=h('b',{},'à choisir');const origin=h('div',{class:'echo'},'Choisis un motif pour voir ses dimensions d\u2019origine.');
+  const E7={};const ec=k=>{const b=h('b',{},'…');(E7[k]=E7[k]||[]).push(b);return b;};
   const cards=h('div',{class:'motifs'});MOTIFS.forEach(M=>{const svg=el('svg',{viewBox:`-2 -2 ${M.w+4} ${M.h+4}`,preserveAspectRatio:'xMidYMid meet'});drawMotif(el('g',{},svg),M.id,initials());
     const b=h('button',{type:'button',class:'motif','aria-pressed':'false'},svg,h('b',{},M.name.toUpperCase()),h('small',{},`${M.w} × ${M.h} mm — ${M.desc}`));
-    b.addEventListener('click',()=>{motifSel=M.id;setInput(7,'motif',M.id);$$('.motifs .motif').forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-pressed',x===b?'true':'false');});cards.classList.remove('err');vMotif.textContent=`${M.w} × ${M.h} mm`;if(m7.scene)m7.scene.setMotif(M.id);});cards.append(b);});
-  const pair=(l1,i1,l2,i2,unit)=>h('div',{class:'pair'},h('label',{},l1,i1,unit!=null?h('span',{class:'u'},unit):null),h('label',{},l2,i2,unit!=null?h('span',{class:'u'},unit):null));
+    b.addEventListener('click',()=>{motifSel=M.id;setInput(7,'motif',M.id);$$('.motifs .motif').forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-pressed',x===b?'true':'false');});cards.classList.remove('err');vMotif.textContent=`${M.w} × ${M.h} mm`;origin.innerHTML=`<b>TON MOTIF D\u2019ORIGINE</b> — largeur : ${M.w} mm · hauteur : ${M.h} mm`;refresh();if(m7.scene)m7.scene.setMotif(M.id);});cards.append(b);});
+  const pair=(l1,i1,l2,i2)=>h('div',{class:'pair'},h('label',{},l1,i1,h('span',{class:'u'},'mm')),h('label',{},l2,i2,h('span',{class:'u'},'mm')));
+  const one=(lbl,inp,unit)=>h('div',{class:'field'},h('label',{},lbl),h('div',{class:'in'},inp,unit?h('span',{class:'u'},unit):null));
+  const vv=inp=>inp.value.trim()||'…';
+  function refresh(){const M=MOTIFS.find(m=>m.id===motifSel);const put=(k,t)=>(E7[k]||[]).forEach(b=>b.textContent=t);put('uw',vv(iW));put('uh',vv(iH));put('ow',M?M.w+' mm':'…');put('oh',M?M.h+' mm':'…');put('kw',vv(iKW));put('kh',vv(iKH));put('k',vv(iK));put('fw',vv(iFW));put('fh',vv(iFH));}
+  [iW,iH,iKW,iKH,iK,iFW,iFH].forEach(i=>i.addEventListener('input',refresh));
   const fb=h('div',{class:'fb',id:'fb'});const hints=h('div',{class:'hints',id:'hints'});const bV=h('button',{class:'btn blue',id:'btn-verif'},'VALIDER MA GRAVURE');const bH=h('button',{class:'btn ghost',id:'btn-hint'},'Indice');const next=h('div',{class:'next',id:'next'});
   top.append(
     h('div',{class:'mnum'},'MISSION 7 — GRAVURE PERSONNALISÉE'),
-    h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Choisis ta gravure et agrandis-la au maximum dans la zone prévue, sans la déformer et sans dépasser les marges.'),h('ol',{class:'steps'},h('li',{},'Calcule la largeur et la hauteur réellement disponibles.'),h('li',{},'Détermine jusqu\u2019où ton motif peut être agrandi en largeur.'),h('li',{},'Détermine jusqu\u2019où il peut être agrandi en hauteur.'),h('li',{},'Conserve le coefficient qui permet au motif de tenir entièrement.'),h('li',{},'Calcule ses dimensions finales.'),h('li',{},'Calcule sa position pour le centrer.'))),
+    h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Tu as choisi une zone pour ta gravure. Le problème est que ton motif n\u2019a pas forcément la même forme que cette zone.'),
+      h('p',{class:'why'},'Tu dois l\u2019agrandir le plus possible SANS :'),h('ul',{class:'steps'},h('li',{},'dépasser de la zone ;'),h('li',{},'étirer uniquement la largeur ;'),h('li',{},'étirer uniquement la hauteur.')),
+      h('p',{class:'why'},'Le motif doit garder exactement les mêmes proportions. Pour cela, nous allons chercher un COEFFICIENT D\u2019AGRANDISSEMENT.')),
     h('div',{},h('div',{class:'ttl'},'POURQUOI ?'),h('p',{class:'why'},'Une gravure doit conserver ses proportions. Si tu agrandis trop dans une direction, elle dépasse de la zone ou se déforme.')),
-    h('div',{class:'card'},h('div',{class:'ttl'},'DONNÉES DU PLAN'),h('div',{class:'dl'},h('span',{},'Dimensions de la zone'),h('b',{},`${Z.w} × ${Z.h} mm`),h('span',{},'Marge'),h('b',{},`${EMARGIN} mm sur chaque côté`),h('span',{},'Dimensions originales du motif'),vMotif)),
-    h('div',{class:'card formula'},h('div',{class:'ttl'},'AGRANDISSEMENT PROPORTIONNEL'),h('div',{class:'f'},'nouvelle dimension = dimension initiale × k'),h('div',{class:'ex',html:'coefficient en largeur = largeur disponible / largeur du motif<br>coefficient en hauteur = hauteur disponible / hauteur du motif<br><b>Pour que le motif tienne dans les DEUX directions, il faut retenir le plus petit des deux coefficients.</b>'})));
+    h('div',{class:'card formula'},h('div',{class:'ttl'},'NOUVEAU MOT : COEFFICIENT D\u2019AGRANDISSEMENT'),h('div',{class:'ex',html:'On note ce coefficient <b>k</b>. k indique combien de fois les dimensions du motif sont multipliées.<br>k = 1 : le motif garde sa taille d\u2019origine.<br>k > 1 : le motif est agrandi.<br>k < 1 : le motif est réduit.<br><b>Important :</b> la largeur ET la hauteur seront multipliées par le même k. C\u2019est ce qui évite de déformer le motif.<br>nouvelle dimension = dimension d\u2019origine × k'})),
+    h('div',{class:'card'},h('div',{class:'ttl'},'DONNÉES DU PLAN'),h('div',{class:'dl'},h('span',{},'Dimensions de la zone'),h('b',{},`${Z.w} × ${Z.h} mm`),h('span',{},'Marge'),h('b',{},`${EMARGIN} mm sur chaque côté`),h('span',{},'Dimensions d\u2019origine du motif'),vMotif)));
+  const kRem=()=>h('div',{class:'st-note'},'k = coefficient d\u2019agrandissement : le nombre par lequel on multiplie les dimensions du motif.');
   bot.append(
-    h('div',{class:'grp'},h('div',{class:'ttl'},'1 — ZONE RÉELLEMENT UTILISABLE'),h('div',{class:'q'},`Après avoir retiré les marges de ${EMARGIN} mm sur chaque côté, quelles dimensions restent disponibles pour ta gravure ?`),pair('Largeur',iW,'Hauteur',iH,'mm')),
-    h('div',{class:'grp'},h('div',{class:'ttl'},'2 — CHOIX DU MOTIF'),h('div',{class:'q'},'Trois motifs de personnalisation, tous valides.'),cards),
-    h('div',{class:'grp'},h('div',{class:'ttl'},'3 — AGRANDISSEMENT POSSIBLE'),h('div',{class:'q'},'Arrondis les coefficients au centième pour les afficher, mais effectue tes calculs suivants avec la valeur la plus précise possible.'),pair('k largeur',iKW,'k hauteur',iKH,null),h('div',{class:'field'},h('label',{},'Coefficient retenu k'),h('div',{class:'in'},iK)),h('div',{class:'q'},'Un coefficient peut convenir en largeur mais faire dépasser le motif en hauteur. Le motif doit respecter les deux limites.')),
-    h('div',{class:'grp'},h('div',{class:'ttl'},'4 — DIMENSIONS FINALES'),h('div',{class:'q'},'Avec le coefficient retenu, quelles dimensions aura ta gravure ? Arrondis au dixième de millimètre.'),pair('Largeur',iFW,'Hauteur',iFH,'mm')),
-    h('div',{class:'grp'},h('div',{class:'ttl'},'5 — CENTRER LA GRAVURE'),h('div',{class:'q'},'Espace gauche = espace droit, espace haut = espace bas. Espace horizontal restant = largeur utile − largeur du motif ; la moitié se trouve de chaque côté. Même principe verticalement. Les décalages se mesurent à partir du bord de la zone utile.'),h('div',{class:'q'},'À quelle distance du bord gauche de la zone utile dois-tu placer la gravure ? À quelle distance du bord supérieur ? Arrondis au dixième.'),pair('Décalage horizontal',iX,'Décalage vertical',iY,'mm')),
+    stepCard(1,'ÉTAPE 1 — ZONE DISPONIBLE',sec('CE QUE TU CONNAIS',lines(`Zone totale : ${Z.w} × ${Z.h} mm`,`Marge : ${EMARGIN} mm sur chacun des quatre côtés`),h('div',{class:'schema'},h('div',{},'horizontalement :  6 mm | ZONE UTILE | 6 mm'),h('div',{},'verticalement :  6 mm / ZONE UTILE / 6 mm'))),
+      sec('CE QUE TU CHERCHES','La largeur et la hauteur qui restent réellement disponibles après avoir retiré les marges.'),sec('TA RÉPONSE',pair('Largeur disponible',iW,'Hauteur disponible',iH))),
+    stepCard(1,'ÉTAPE 2 — CHOIX DU MOTIF',sec('CE QUE TU CHERCHES','Le motif de ta gravure. Les trois motifs sont valides : c\u2019est un choix de personnalisation.'),sec('TA RÉPONSE',cards,origin)),
+    stepCard(2,'ÉTAPE 3 — LIMITE EN LARGEUR',sec('CE QUE TU CONNAIS',lines(['Largeur disponible : ',ec('uw'),' mm'],['Largeur d\u2019origine du motif : ',ec('ow')])),
+      sec('CE QUE TU CHERCHES','Le coefficient limité par la largeur. Il indique combien de fois le motif peut être agrandi avant d\u2019atteindre la limite en largeur.',h('div',{class:'fline'},'k largeur = largeur disponible / largeur d\u2019origine du motif'),kRem()),
+      sec('TA RÉPONSE',one('Coefficient limité par la largeur (k largeur)',iKW,''),h('div',{class:'st-note'},'Arrondis au centième pour l\u2019afficher ; garde la valeur la plus précise pour la suite.'))),
+    stepCard(2,'ÉTAPE 4 — LIMITE EN HAUTEUR',sec('CE QUE TU CONNAIS',lines(['Hauteur disponible : ',ec('uh'),' mm'],['Hauteur d\u2019origine du motif : ',ec('oh')])),
+      sec('CE QUE TU CHERCHES','Le coefficient limité par la hauteur. Il indique combien de fois le motif peut être agrandi avant d\u2019atteindre la limite en hauteur.',h('div',{class:'fline'},'k hauteur = hauteur disponible / hauteur d\u2019origine du motif'),kRem()),
+      sec('TA RÉPONSE',one('Coefficient limité par la hauteur (k hauteur)',iKH,''),h('div',{class:'st-note'},'Arrondis au centième pour l\u2019afficher ; garde la valeur la plus précise pour la suite.'))),
+    stepCard(2,'ÉTAPE 5 — COEFFICIENT RETENU',sec('CE QUE TU CONNAIS',lines(['Limite en largeur : k = ',ec('kw')],['Limite en hauteur : k = ',ec('kh')])),
+      sec('CE QUE TU CHERCHES','Le plus grand agrandissement qui respecte À LA FOIS la largeur et la hauteur disponibles. Si tu utilises le PLUS GRAND des deux coefficients, le motif dépassera dans l\u2019autre direction : il faut donc retenir le PLUS PETIT des deux.'),
+      sec('TA RÉPONSE',one('Coefficient final retenu (k)',iK,''))),
+    stepCard(2,'ÉTAPE 6 — DIMENSIONS FINALES',sec('CE QUE TU CONNAIS',lines(['Largeur d\u2019origine : ',ec('ow')],['Hauteur d\u2019origine : ',ec('oh')],['Coefficient retenu : k = ',ec('k')])),
+      sec('CE QUE TU CHERCHES','La largeur et la hauteur finales de ta gravure. Le coefficient k s\u2019applique aux DEUX dimensions d\u2019origine. Arrondis au dixième de millimètre.'),sec('TA RÉPONSE',pair('Largeur finale',iFW,'Hauteur finale',iFH))),
+    stepCard(3,'ÉTAPE 7 — CENTRAGE',sec('CE QUE TU CONNAIS',lines(['Zone utile : ',ec('uw'),' × ',ec('uh'),' mm'],['Gravure : ',ec('fw'),' × ',ec('fh'),' mm']),h('div',{class:'schema'},h('div',{},'| espace gauche | GRAVURE | espace droit |'),h('div',{},'espace gauche = espace droit'))),
+      sec('CE QUE TU CHERCHES','Les distances qui centrent la gravure. La place restante est partagée également des deux côtés. Les distances se mesurent depuis le bord de la zone utile (sans rajouter la marge de 6 mm). Arrondis au dixième.'),
+      sec('TA RÉPONSE',h('div',{class:'st-q'},'Distance entre le bord GAUCHE de la zone utile et le début de la gravure :'),one('Distance au bord gauche',iX,'mm'),h('div',{class:'st-q'},'Distance entre le bord SUPÉRIEUR de la zone utile et le haut de la gravure :'),one('Distance au bord supérieur',iY,'mm'))),
     fb,hints,next);p.append(h('div',{class:'acts'},bV,bH));
   const all=[iW,iH,iKW,iKH,iK,iFW,iFH,iX,iY];[['usableWidth',iW],['usableHeight',iH],['kWidth',iKW],['kHeight',iKH],['kSelected',iK],['finalWidth',iFW],['finalHeight',iFH],['offsetX',iX],['offsetY',iY]].forEach(([k,inp])=>bindState(inp,7,k));
-  all.forEach((inp,i)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();if(i<all.length-1)all[i+1].focus();else bV.click();}});});
+  all.forEach((inp,i)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();const nx=all.slice(i+1).find(x=>x.offsetParent!==null&&!x.disabled);if(nx)nx.focus();else bV.click();}});});
   const HINTS=['Commence par trouver les dimensions de la zone intérieure aux marges.','Calcule séparément le coefficient possible en largeur et celui possible en hauteur.','Le coefficient retenu est le plus petit des deux.','Pour centrer : espace restant ÷ 2.'];
   bH.addEventListener('click',()=>{if(hints7>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hints7]);hints.append(hn);ensureVisible(hn);hints7++;bH.textContent=hints7<HINTS.length?'Un autre indice':'Indice';if(hints7>=HINTS.length)bH.disabled=true;});
-  m7.ui={iW,iH,iKW,iKH,iK,iFW,iFH,iX,iY,cards,bV,bH,n:7,getMotif:()=>motifSel,setMotif:id=>{const b=$$('.motifs .motif')[MOTIFS.findIndex(m=>m.id===id)];if(b)b.click();}};bV.disabled=true;
+  m7.ui={iW,iH,iKW,iKH,iK,iFW,iFH,iX,iY,cards,bV,bH,n:7,getMotif:()=>motifSel,setMotif:id=>{const b=$$('.motifs .motif')[MOTIFS.findIndex(m=>m.id===id)];if(b)b.click();},refresh};
+  initSteps(m7.ui,'VALIDER MA GRAVURE',()=>refresh());bV.disabled=true;
   bV.addEventListener('click',()=>verify7(fb,bV,bH,next));setTimeout(()=>iW.focus(),80);}
-function verify7(fb,bV,bH,next){const u=m7.ui;const all=[u.iW,u.iH,u.iKW,u.iKH,u.iK,u.iFW,u.iFH,u.iX,u.iY];all.forEach(i=>i.classList.remove('err','ok'));u.cards.classList.remove('err');
-  const v=all.map(i=>parseNum(i.value));const bad=(inp,msg)=>{inp.classList.add('err');setFb(fb,msg,'err');inp.focus();};const okI=i=>i.classList.add('ok');
+function verify7(fb,bV,bH,next){const u=m7.ui;const all=[u.iW,u.iH,u.iKW,u.iKH,u.iK,u.iFW,u.iFH,u.iX,u.iY];all.forEach(i=>i.classList.remove('err'));u.cards.classList.remove('err');if(u.refresh)u.refresh();
+  const v=all.map(i=>parseNum(i.value));const bad=(inp,msg)=>{inp.classList.add('err');setFb(fb,msg,'err');if(!SILENT)inp.focus();};const okI=i=>i.classList.add('ok');
   const D0=m7Data(u.getMotif()||'plaque');
-  if(!Number.isFinite(v[0])||!Number.isFinite(v[1]))return bad(Number.isFinite(v[0])?u.iH:u.iW,'Indique d\u2019abord la largeur et la hauteur réellement utilisables, en mm.');
-  if(!near(v[0],D0.uw,.01)||!near(v[1],D0.uh,.01)){if(!near(v[0],D0.uw,.01))u.iW.classList.add('err');if(!near(v[1],D0.uh,.01))u.iH.classList.add('err');setFb(fb,`La marge de ${EMARGIN} mm est présente à gauche ET à droite, puis en haut ET en bas.`,'err');(near(v[0],D0.uw,.01)?u.iH:u.iW).focus();return;}okI(u.iW);okI(u.iH);
-  const id=u.getMotif();if(!id){u.cards.classList.add('err');setFb(fb,'Choisis le motif de ta gravure.','err');ensureVisible(u.cards);return;}const D=m7Data(id);
-  if(!Number.isFinite(v[2])||!Number.isFinite(v[3]))return bad(Number.isFinite(v[2])?u.iKH:u.iKW,'Indique les deux coefficients possibles (largeur, hauteur).');
-  if(!near(v[2],D.kW,.006)||!near(v[3],D.kH,.006)){if(!near(v[2],D.kW,.006))u.iKW.classList.add('err');if(!near(v[3],D.kH,.006))u.iKH.classList.add('err');setFb(fb,'Compare la dimension disponible avec la dimension originale du motif dans la même direction.','err');(near(v[2],D.kW,.006)?u.iKH:u.iKW).focus();return;}okI(u.iKW);okI(u.iKH);
-  if(!Number.isFinite(v[4]))return bad(u.iK,'Indique le coefficient retenu.');
-  if(!near(v[4],D.k,.006)){const big=near(v[4],Math.max(D.kW,D.kH),.006);return bad(u.iK,big?'Ton motif doit tenir à la fois en largeur et en hauteur. Si tu conserves le coefficient le plus grand, que se passe-t-il dans l\u2019autre direction ?':'Le coefficient retenu doit être l\u2019un des deux coefficients que tu viens de calculer : celui qui garde le motif entièrement dans la zone.');}okI(u.iK);
+  if(!Number.isFinite(v[0])||!Number.isFinite(v[1]))return bad(Number.isFinite(v[0])?u.iH:u.iW,'Indique d\u2019abord la largeur et la hauteur réellement disponibles, en mm.');
+  if(!near(v[0],D0.uw,.01)||!near(v[1],D0.uh,.01)){if(!near(v[0],D0.uw,.01))u.iW.classList.add('err');if(!near(v[1],D0.uh,.01))u.iH.classList.add('err');setFb(fb,`La marge de ${EMARGIN} mm est présente à gauche ET à droite, puis en haut ET en bas.`,'err');if(!SILENT)(near(v[0],D0.uw,.01)?u.iH:u.iW).focus();return;}okI(u.iW);okI(u.iH);
+  const id=u.getMotif();if(!id){u.cards.classList.add('err');setFb(fb,'Choisis le motif de ta gravure.','err');if(!SILENT)ensureVisible(u.cards);return;}const D=m7Data(id);
+  if(!gate(u,2,'Espace disponible et motif retenus. Étape suivante : jusqu\u2019où ton motif peut-il être agrandi ?'))return;
+  if(!Number.isFinite(v[2]))return bad(u.iKW,'Indique le coefficient limité par la largeur (k largeur).');
+  if(!near(v[2],D.kW,.006))return bad(u.iKW,'Pour le coefficient en largeur, tu compares uniquement des LARGEURS : la largeur disponible avec la largeur d\u2019origine de ton motif. Le coefficient indique combien de fois le motif peut être agrandi en largeur.');okI(u.iKW);
+  if(!Number.isFinite(v[3]))return bad(u.iKH,'Indique le coefficient limité par la hauteur (k hauteur).');
+  if(!near(v[3],D.kH,.006))return bad(u.iKH,'Pour le coefficient en hauteur, tu compares uniquement des HAUTEURS : la hauteur disponible avec la hauteur d\u2019origine de ton motif. Le coefficient indique combien de fois le motif peut être agrandi en hauteur.');okI(u.iKH);
+  if(!Number.isFinite(v[4]))return bad(u.iK,'Indique le coefficient final retenu (k).');
+  if(!near(v[4],D.k,.006))return bad(u.iK,'Compare tes deux coefficients. Le plus petit est celui qui empêche le motif de dépasser. C\u2019est celui qu\u2019il faut conserver.');okI(u.iK);
   if(!Number.isFinite(v[5])||!Number.isFinite(v[6]))return bad(Number.isFinite(v[5])?u.iFH:u.iFW,'Indique la largeur et la hauteur finales de la gravure, en mm.');
-  if(!near(v[5],D.fW,.06)||!near(v[6],D.fH,.06)){if(!near(v[5],D.fW,.06))u.iFW.classList.add('err');if(!near(v[6],D.fH,.06))u.iFH.classList.add('err');setFb(fb,'Les deux dimensions du motif doivent être multipliées par le MÊME coefficient, sinon le motif est déformé.','err');(near(v[5],D.fW,.06)?u.iFH:u.iFW).focus();return;}okI(u.iFW);okI(u.iFH);
-  if(!Number.isFinite(v[7])||!Number.isFinite(v[8]))return bad(Number.isFinite(v[7])?u.iY:u.iX,'Indique les deux décalages, à partir du bord de la zone utile, en mm.');
-  if(!near(v[7],D.offX,.06)||!near(v[8],D.offY,.06)){if(!near(v[7],D.offX,.06))u.iX.classList.add('err');if(!near(v[8],D.offY,.06))u.iY.classList.add('err');setFb(fb,'Calcule d\u2019abord l\u2019espace restant, puis répartis-le également des deux côtés.','err');(near(v[7],D.offX,.06)?u.iY:u.iX).focus();return;}okI(u.iX);okI(u.iY);
+  if(!near(v[5],D.fW,.06)||!near(v[6],D.fH,.06)){if(!near(v[5],D.fW,.06))u.iFW.classList.add('err');if(!near(v[6],D.fH,.06))u.iFH.classList.add('err');setFb(fb,'Tu dois conserver les proportions du motif : la largeur ET la hauteur sont agrandies avec le même coefficient k.','err');if(!SILENT)(near(v[5],D.fW,.06)?u.iFH:u.iFW).focus();return;}okI(u.iFW);okI(u.iFH);
+  if(!gate(u,3,'Dimensions finales correctes. Dernière étape : place ta gravure au centre.'))return;
+  if(!Number.isFinite(v[7])||!Number.isFinite(v[8]))return bad(Number.isFinite(v[7])?u.iY:u.iX,'Indique les deux distances, mesurées depuis le bord de la zone utile, en mm.');
+  if(!near(v[7],D.offX,.06)||!near(v[8],D.offY,.06)){if(!near(v[7],D.offX,.06))u.iX.classList.add('err');if(!near(v[8],D.offY,.06))u.iY.classList.add('err');setFb(fb,'Calcule d\u2019abord l\u2019espace restant, puis répartis-le également des deux côtés.','err');if(!SILENT)(near(v[7],D.offX,.06)?u.iY:u.iX).focus();return;}okI(u.iX);okI(u.iY);
+  if(SILENT)return;
   all.forEach(i=>i.disabled=true);$$('.motifs .motif').forEach(b=>b.disabled=true);bV.disabled=true;bH.disabled=true;
   completeMission(7);projectState.modules.conception.engraving={motif:id,originalWidth:D.M.w,originalHeight:D.M.h,usableWidth:D.uw,usableHeight:D.uh,scaleFactor:Math.round(D.k*10000)/10000,finalWidth:Math.round(D.fW*10)/10,finalHeight:Math.round(D.fH*10)/10,offsetX:Math.round(D.offX*10)/10,offsetY:Math.round(D.offY*10)/10};
   setFb(fb,`Gravure « ${D.M.name} » validée : k = ${fmt(D.k,2)}. Elle se met en place…`,'ok');
@@ -1190,9 +1276,9 @@ function prepBox(){const w=700,hgt=w*VB_FULL[3]/VB_FULL[2];return [-60,-125,w,hg
 function stockBBox(){const d=parts(st.model,st.stock).parts[0].d;const nums=d.match(/-?\d+\.?\d*/g).map(Number);const xs=[],ys=[];for(let i=0;i<nums.length;i+=2){xs.push(nums[i]);ys.push(nums[i+1]);}return {d,x:Math.min(...xs),y:Math.min(...ys),w:Math.max(...xs)-Math.min(...xs),h:Math.max(...ys)-Math.min(...ys)};}
 function drawProfileIn(g,x,y,D,cls){const bb=stockBBox();const sx=D.pw*KB/bb.w,sy=D.ph*KB/bb.h;const grp=el('g',{class:cls||'prof',transform:`translate(${x.toFixed(2)} ${y.toFixed(2)})`},g);el('path',{d:bb.d,transform:`scale(${sx.toFixed(5)} ${sy.toFixed(5)}) translate(${-bb.x} ${-bb.y})`,class:'prof-path'},grp);return grp;}
 async function startMission8(opts){opts=opts||{};hints8=0;const gen=planGen;sceneReady=false;setTopinfo(8);projectState.progress.currentMission=8;
-  buildMission8();if(opts.prefill)prefillMission(8);await wait(opts.fast?0:600);if(gen!==planGen)return;
+  buildMission8();if(opts.prefill){prefillMission(8);restoreSteps(8);}await wait(opts.fast?0:600);if(gen!==planGen)return;
   if(Math.round(curVB[2])!==VB_FULL[2])await zoomTo(VB_FULL,opts.fast?200:800);if(gen!==planGen)return;await wait(opts.fast?0:500);
-  layers.net.children[1].classList.add('dim');layers.net.children[2].classList.add('dim');layers.cotes.classList.add('dim');[m2.g,m3.g,m5.g].forEach(x=>{if(x)x.classList.add('dim');});
+  layers.net.children[1].classList.add('dim');layers.net.children[2].classList.add('dim');layers.cotes.classList.add('dim','hide8');[m2.g,m3.g,m5.g].forEach(x=>{if(x)x.classList.add('dim');});
   await zoomTo(prepBox(),opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawPrepScene();sceneDone(m8.ui);}
 /* Vue de préparation : profil extérieur de la crosse dans son rectangle d'encombrement (coté), trois ébauches cotées A, B, C ; aucune n'est remplie avant le choix */
 function drawPrepScene(){const z=+svgPlan.style.getPropertyValue('--z')||1;const D=m8Data();const g=m8.g=el('g',{class:'l-m8'},svgPlan);
@@ -1213,44 +1299,59 @@ function updatePrep(k){const S=m8.scene;if(!S)return;while(S.preview.firstChild)
 function buildMission8(){const D=m8Data();const p=$('#panel');p.innerHTML='';
   const top=h('div',{class:'panel-scroll'}),bot=h('div',{class:'panel-fixed'});p.append(top,bot);
   const mk=(lbl)=>h('input',{type:'text',inputmode:'decimal',placeholder:'…',autocomplete:'off',spellcheck:'false','aria-label':lbl});
-  const iW=mk('Longueur minimale'),iH=mk('Hauteur minimale'),iBA=mk('Surface de l\u2019ébauche'),iRA=mk('Surface minimale'),iE=mk('Surface supplémentaire'),iP=mk('Pourcentage');let choice=null;
+  const iW=mk('Longueur minimale'),iH=mk('Hauteur minimale'),iBA=mk('Surface de l\u2019ébauche'),iRA=mk('Surface minimale nécessaire'),iE=mk('Surface supplémentaire'),iP=mk('Part supplémentaire');let choice=null;
   const cards=h('div',{class:'lpis blanks'});D.list.forEach(b=>{const btn=h('button',{type:'button',class:'sc lpi','aria-pressed':'false'},h('b',{},`ÉBAUCHE ${b.k}`),h('small',{},`${b.w} × ${b.h} mm`));btn.addEventListener('click',()=>{choice=b.k;setInput(8,'blankChoice',b.k);$$('.blanks .lpi').forEach(x=>{x.classList.toggle('sel',x===btn);x.setAttribute('aria-pressed',x===btn?'true':'false');});cards.classList.remove('err');if(m8.scene)m8.scene.setChoice(b.k);});cards.append(btn);});
   const pair=(l1,i1,l2,i2)=>h('div',{class:'pair'},h('label',{},l1,i1,h('span',{class:'u'},'mm')),h('label',{},l2,i2,h('span',{class:'u'},'mm')));
   const one=(lbl,inp,unit)=>h('div',{class:'field'},h('label',{},lbl),h('div',{class:'in'},inp,h('span',{class:'u'},unit)));
+  const synth=h('div',{class:'synth st-lines'},h('div',{},'…'));const E8={};const ec8=k=>{const b=h('b',{},'…');(E8[k]=E8[k]||[]).push(b);return b;};
   const fb=h('div',{class:'fb',id:'fb'});const hints=h('div',{class:'hints',id:'hints'});const bV=h('button',{class:'btn blue',id:'btn-verif'},'VALIDER MON ÉBAUCHE');const bH=h('button',{class:'btn ghost',id:'btn-hint'},'Indice');const next=h('div',{class:'next',id:'next'});
+  const term=(t,d)=>h('div',{class:'term'},h('b',{},t),h('span',{},d));
   top.append(
     h('div',{class:'mnum'},'MISSION 8 — CHOISIR L\u2019ÉBAUCHE'),h('div',{class:'msub'},'Ébauche : rectangle de matière fictif utilisé pour l\u2019exercice.'),
     h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Tu dois choisir l\u2019ébauche qui accueillera le profil de ta crosse. Elle doit :'),h('ol',{class:'steps'},h('li',{},'être assez longue ;'),h('li',{},'être assez haute ;'),h('li',{},'respecter une marge de 10 mm de chaque côté ;'),h('li',{},'être la plus petite possible parmi celles qui conviennent.')),h('p',{class:'why'},'Après ton choix, tu calculeras la quantité de surface supplémentaire.')),
     h('div',{},h('div',{class:'ttl'},'POURQUOI ?'),h('p',{class:'why'},'Une ébauche trop petite ne peut pas contenir le profil. Une ébauche inutilement grande utilise davantage de matière.')),
+    h('div',{class:'card'},h('div',{class:'ttl'},'LES MOTS À CONNAÎTRE'),
+      term('ÉBAUCHE','Dans cette simulation, une ébauche est le rectangle de matière proposé autour de la future crosse.'),
+      term('ENCOMBREMENT DU PROFIL','C\u2019est le plus petit rectangle qui entoure le profil de la crosse, AVANT d\u2019ajouter les marges.'),
+      term('DIMENSIONS MINIMALES NÉCESSAIRES','Ce sont les dimensions que doit avoir au minimum une ébauche pour contenir le profil ET les marges imposées.'),
+      term('SURFACE SUPPLÉMENTAIRE','C\u2019est la partie de la surface de l\u2019ébauche qui dépasse le rectangle minimal nécessaire. Dans cette activité, ce n\u2019est PAS la chute exacte autour de la forme réelle de la crosse.')),
     h('div',{class:'card'},h('div',{class:'ttl'},'DONNÉES DU PLAN'),h('div',{class:'dl'},h('span',{},'Encombrement du profil — longueur'),h('b',{},`${D.pw} mm`),h('span',{},'Encombrement du profil — hauteur'),h('b',{},`${D.ph} mm`),h('span',{},'Marge'),h('b',{},'10 mm sur chaque côté'),...D.list.flatMap(b=>[h('span',{},`Ébauche ${b.k}`),h('b',{},`${b.w} × ${b.h} mm`)]))),
-    h('div',{class:'card formula'},h('div',{class:'ttl'},'RAPPELS'),h('div',{class:'f'},'Une ébauche doit convenir dans les DEUX directions.'),h('div',{class:'ex',html:'longueur ébauche ≥ longueur minimale <b>et</b> hauteur ébauche ≥ hauteur minimale<br>aire d\u2019un rectangle = longueur × hauteur<br>surface supplémentaire = surface de l\u2019ébauche − surface minimale<br>pourcentage = partie / total × 100'})));
+    h('div',{class:'card formula'},h('div',{class:'ttl'},'RAPPEL'),h('div',{class:'f'},'Une ébauche doit convenir dans les DEUX directions.'),h('div',{class:'ex',html:'longueur de l\u2019ébauche ≥ longueur minimale <b>et</b> hauteur de l\u2019ébauche ≥ hauteur minimale'})));
   bot.append(
-    h('div',{class:'grp'},h('div',{class:'ttl'},'1 — DIMENSIONS NÉCESSAIRES'),h('div',{class:'q'},'Quelles dimensions minimales doit avoir l\u2019ébauche pour conserver les marges de 10 mm autour de ta crosse ?'),pair('Longueur minimale',iW,'Hauteur minimale',iH)),
-    h('div',{class:'grp'},h('div',{class:'ttl'},'2 — CHOISIR L\u2019ÉBAUCHE'),h('div',{class:'q'},'Choisis la PLUS PETITE ébauche qui respecte à la fois la longueur minimale et la hauteur minimale. L\u2019aperçu montre ton profil dans l\u2019ébauche sélectionnée.'),cards),
-    h('div',{class:'grp'},h('div',{class:'ttl'},'3 — AIRE DE L\u2019ÉBAUCHE'),h('div',{class:'q'},'Calcule la surface de l\u2019ébauche que tu as retenue.'),one('Surface de l\u2019ébauche',iBA,'mm²')),
-    h('div',{class:'grp'},h('div',{class:'ttl'},'4 — AIRE MINIMALE'),h('div',{class:'q'},'Calcule maintenant l\u2019aire du rectangle minimal nécessaire autour de ta crosse.'),one('Surface minimale',iRA,'mm²')),
-    h('div',{class:'grp'},h('div',{class:'ttl'},'5 — SURFACE SUPPLÉMENTAIRE'),h('div',{class:'q'},'Quelle surface de l\u2019ébauche se trouve en plus par rapport au rectangle minimal nécessaire ?'),one('Surface supplémentaire',iE,'mm²')),
-    h('div',{class:'grp'},h('div',{class:'ttl'},'6 — POURCENTAGE'),h('div',{class:'q'},'Calcule le pourcentage que représente la surface supplémentaire. Ici, le TOTAL est la surface de l\u2019ébauche choisie. Arrondis au dixième de pourcent.'),one('Part supplémentaire',iP,'%')),
+    stepCard(1,'ÉTAPE 1 — DIMENSIONS MINIMALES',sec('CE QUE TU UTILISES',lines(`Encombrement du profil : ${D.pw} × ${D.ph} mm`,'Marge : 10 mm de chaque côté'),h('div',{class:'schema'},h('div',{},'LONGUEUR :  10 mm | PROFIL | 10 mm'),h('div',{},'HAUTEUR :  10 mm / PROFIL / 10 mm'))),
+      sec('CE QUE TU CHERCHES','La longueur minimale et la hauteur minimale de l\u2019ébauche. Il faut conserver 10 mm aux DEUX extrémités : dimension du profil + marge d\u2019un côté + marge de l\u2019autre côté.'),sec('TA RÉPONSE',pair('Longueur minimale',iW,'Hauteur minimale',iH))),
+    stepCard(1,'ÉTAPE 2 — CHOIX DE L\u2019ÉBAUCHE',sec('CE QUE TU UTILISES',lines(['Tes dimensions minimales : ',ec8('rw'),' × ',ec8('rh'),' mm'],'Les dimensions des ébauches A, B et C (données du plan).')),
+      sec('CE QUE TU CHERCHES','L\u2019ébauche qui convient et qui utilise le moins de surface. Élimine d\u2019abord toutes les ébauches trop petites dans au moins une direction ; parmi les ébauches restantes, choisis celle qui utilise le moins de surface. Une ébauche n\u2019est acceptable que si sa longueur est suffisante ET sa hauteur est suffisante.'),
+      sec('TA RÉPONSE',cards,h('div',{class:'st-note'},'L\u2019aperçu montre ton profil dans l\u2019ébauche sélectionnée.'))),
+    stepCard(2,'ÉTAPE 3 — SURFACE DE L\u2019ÉBAUCHE',sec('CE QUE TU UTILISES',synth),sec('CE QUE TU CHERCHES','La surface de tout le rectangle de matière retenu. Utilise uniquement les dimensions de l\u2019ÉBAUCHE RETENUE. Aire d\u2019un rectangle = longueur × hauteur.'),sec('TA RÉPONSE',one('Surface de l\u2019ébauche',iBA,'mm²'))),
+    stepCard(2,'ÉTAPE 4 — SURFACE MINIMALE',sec('CE QUE TU UTILISES',lines(['Tes dimensions minimales (étape 1) : ',ec8('rw'),' × ',ec8('rh'),' mm'])),sec('CE QUE TU CHERCHES','La surface du rectangle minimal nécessaire : les deux dimensions minimales forment elles aussi un rectangle.'),sec('TA RÉPONSE',one('Surface minimale nécessaire',iRA,'mm²'))),
+    stepCard(2,'ÉTAPE 5 — SURFACE SUPPLÉMENTAIRE',sec('CE QUE TU UTILISES',lines(['Surface de l\u2019ébauche : ',ec8('ba'),' mm²'],['Surface minimale : ',ec8('ra'),' mm²'])),sec('CE QUE TU CHERCHES','Ce que l\u2019ébauche possède EN PLUS.',h('div',{class:'fline'},'SURFACE ÉBAUCHE − SURFACE MINIMALE = SURFACE SUPPLÉMENTAIRE')),sec('TA RÉPONSE',one('Surface supplémentaire',iE,'mm²'))),
+    stepCard(2,'ÉTAPE 6 — POURCENTAGE',sec('CE QUE TU UTILISES',lines(['PARTIE = surface supplémentaire : ',ec8('ex'),' mm²'],['TOTAL = surface entière de l\u2019ébauche : ',ec8('ba'),' mm²'])),
+      sec('CE QUE TU CHERCHES','La part de TOUTE L\u2019ÉBAUCHE que représente la surface supplémentaire. Arrondis au dixième de pourcent.',h('div',{class:'fline'},'pourcentage = surface supplémentaire / surface de l\u2019ébauche × 100')),sec('TA RÉPONSE',one('Part supplémentaire',iP,'%'))),
     fb,hints,next);p.append(h('div',{class:'acts'},bV,bH));
   const all=[iW,iH,iBA,iRA,iE,iP];[['requiredWidth',iW],['requiredHeight',iH],['blankArea',iBA],['requiredArea',iRA],['extraArea',iE],['extraPercent',iP]].forEach(([k,inp])=>bindState(inp,8,k));
-  all.forEach((inp,i)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();if(i<all.length-1)all[i+1].focus();else bV.click();}});});
+  all.forEach((inp,i)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();const nx=all.slice(i+1).find(x=>x.offsetParent!==null&&!x.disabled);if(nx)nx.focus();else bV.click();}});});
   const HINTS=['Ajoute la marge des deux côtés de chaque dimension.','Vérifie séparément la longueur ET la hauteur de chaque ébauche.','Parmi celles qui conviennent, cherche la plus petite.','Pour le pourcentage : surface supplémentaire / surface de l\u2019ébauche × 100.'];
   bH.addEventListener('click',()=>{if(hints8>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hints8]);hints.append(hn);ensureVisible(hn);hints8++;bH.textContent=hints8<HINTS.length?'Un autre indice':'Indice';if(hints8>=HINTS.length)bH.disabled=true;});
-  m8.ui={iW,iH,iBA,iRA,iE,iP,cards,bV,bH,n:8,getChoice:()=>choice,setChoice:k=>{const b=$$('.blanks .lpi')[['A','B','C'].indexOf(k)];if(b)b.click();}};bV.disabled=true;
+  m8.ui={iW,iH,iBA,iRA,iE,iP,cards,bV,bH,n:8,getChoice:()=>choice,setChoice:k=>{const b=$$('.blanks .lpi')[['A','B','C'].indexOf(k)];if(b)b.click();}};
+  const refresh8=()=>{const put=(k,inp)=>(E8[k]||[]).forEach(b=>b.textContent=inp.value.trim()||'…');put('rw',iW);put('rh',iH);put('ba',iBA);put('ra',iRA);put('ex',iE);};[iW,iH,iBA,iRA,iE].forEach(i=>i.addEventListener('input',refresh8));
+  initSteps(m8.ui,'VALIDER MON ÉBAUCHE',st=>{refresh8();if(st>=2){const B=D.list.find(b=>b.k===choice)||D.B;synth.innerHTML=`<div>Ébauche retenue : <b>${B.k} — ${B.w} × ${B.h} mm</b></div><div>Dimensions minimales : <b>${D.rw} × ${D.rh} mm</b></div>`;}});bV.disabled=true;
   bV.addEventListener('click',()=>verify8(fb,bV,bH,next));setTimeout(()=>iW.focus(),80);}
-function verify8(fb,bV,bH,next){const u=m8.ui;const D=m8Data();const all=[u.iW,u.iH,u.iBA,u.iRA,u.iE,u.iP];all.forEach(i=>i.classList.remove('err','ok'));u.cards.classList.remove('err');
-  const v=all.map(i=>parseNum(i.value));const bad=(inp,msg)=>{inp.classList.add('err');setFb(fb,msg,'err');inp.focus();};
+function verify8(fb,bV,bH,next){const u=m8.ui;const D=m8Data();const all=[u.iW,u.iH,u.iBA,u.iRA,u.iE,u.iP];all.forEach(i=>i.classList.remove('err'));u.cards.classList.remove('err');
+  const v=all.map(i=>parseNum(i.value));const bad=(inp,msg)=>{inp.classList.add('err');setFb(fb,msg,'err');if(!SILENT)inp.focus();};
   if(!Number.isFinite(v[0])||!Number.isFinite(v[1]))return bad(Number.isFinite(v[0])?u.iH:u.iW,'Indique d\u2019abord la longueur et la hauteur minimales de l\u2019ébauche, en mm.');
-  if(!near(v[0],D.rw,.01)||!near(v[1],D.rh,.01)){if(!near(v[0],D.rw,.01))u.iW.classList.add('err');if(!near(v[1],D.rh,.01))u.iH.classList.add('err');setFb(fb,'La marge de 10 mm se trouve de chaque côté. Vérifie donc les deux extrémités pour la longueur et les deux extrémités pour la hauteur.','err');(near(v[0],D.rw,.01)?u.iH:u.iW).focus();return;}
+  if(!near(v[0],D.rw,.01)||!near(v[1],D.rh,.01)){if(!near(v[0],D.rw,.01))u.iW.classList.add('err');if(!near(v[1],D.rh,.01))u.iH.classList.add('err');setFb(fb,'La marge de 10 mm se trouve de chaque côté. Vérifie donc les deux extrémités pour la longueur et les deux extrémités pour la hauteur.','err');if(!SILENT)(near(v[0],D.rw,.01)?u.iH:u.iW).focus();return;}
   u.iW.classList.add('ok');u.iH.classList.add('ok');
-  const k=u.getChoice();if(!k){u.cards.classList.add('err');setFb(fb,'Choisis l\u2019ébauche qui accueillera le profil de ta crosse.','err');ensureVisible(u.cards);return;}
+  const k=u.getChoice();if(!k){u.cards.classList.add('err');setFb(fb,'Choisis l\u2019ébauche qui accueillera le profil de ta crosse.','err');if(!SILENT)ensureVisible(u.cards);return;}
   const b=D.list.find(x=>x.k===k);
-  if(!b.fitW||!b.fitH){u.cards.classList.add('err');setFb(fb,!b.fitW&&!b.fitH?'Cette ébauche n\u2019est ni assez longue ni assez haute.':!b.fitW?'Cette ébauche est assez haute, mais vérifie sa longueur.':'Cette ébauche est assez longue, mais vérifie sa hauteur.','err');ensureVisible(u.cards);return;}
-  if(k!==D.best){u.cards.classList.add('err');setFb(fb,'Cette ébauche convient, mais une ébauche plus petite respecte déjà les deux dimensions minimales.','err');ensureVisible(u.cards);return;}
-  if(!Number.isFinite(v[2]))return bad(u.iBA,'Indique la surface de l\u2019ébauche retenue, en mm².');if(!near(v[2],D.bArea,.5))return bad(u.iBA,'Vérifie la formule de l\u2019aire d\u2019un rectangle.');u.iBA.classList.add('ok');
-  if(!Number.isFinite(v[3]))return bad(u.iRA,'Indique la surface du rectangle minimal, en mm².');if(!near(v[3],D.rArea,.5))return bad(u.iRA,'Utilise les dimensions minimales que tu as trouvées au début.');u.iRA.classList.add('ok');
-  if(!Number.isFinite(v[4]))return bad(u.iE,'Indique la surface supplémentaire, en mm².');if(!near(v[4],D.extra,.5))return bad(u.iE,'Compare la surface de l\u2019ébauche choisie avec la surface minimale nécessaire.');u.iE.classList.add('ok');
-  if(!Number.isFinite(v[5]))return bad(u.iP,'Indique le pourcentage, arrondi au dixième.');if(!near(v[5],D.pct,.06))return bad(u.iP,'La surface supplémentaire représente une partie de l\u2019ébauche complète. Quel est donc le total à utiliser dans ton calcul ?');u.iP.classList.add('ok');
+  if(!b.fitW||!b.fitH){u.cards.classList.add('err');setFb(fb,!b.fitW&&!b.fitH?'Cette ébauche n\u2019est ni assez longue ni assez haute.':!b.fitW?'Cette ébauche est assez haute, mais vérifie sa longueur.':'Cette ébauche est assez longue, mais vérifie sa hauteur.','err');if(!SILENT)ensureVisible(u.cards);return;}
+  if(k!==D.best){u.cards.classList.add('err');setFb(fb,'Cette ébauche convient, mais une ébauche plus petite respecte déjà les deux dimensions minimales.','err');if(!SILENT)ensureVisible(u.cards);return;}
+  if(!gate(u,2,`Ébauche ${k} retenue. Étape suivante : les surfaces.`))return;
+  if(!Number.isFinite(v[2]))return bad(u.iBA,'Indique la surface de l\u2019ébauche retenue, en mm².');if(!near(v[2],D.bArea,.5))return bad(u.iBA,'Pour cette étape, utilise les dimensions de l\u2019ébauche que tu as choisie, pas les dimensions minimales.');u.iBA.classList.add('ok');
+  if(!Number.isFinite(v[3]))return bad(u.iRA,'Indique la surface minimale nécessaire, en mm².');if(!near(v[3],D.rArea,.5))return bad(u.iRA,'Ici, utilise au contraire la longueur minimale et la hauteur minimale que tu as calculées à l\u2019étape 1.');u.iRA.classList.add('ok');
+  if(!Number.isFinite(v[4]))return bad(u.iE,'Indique la surface supplémentaire, en mm².');if(!near(v[4],D.extra,.5))return bad(u.iE,'Tu cherches ce que l\u2019ébauche possède EN PLUS : surface de l\u2019ébauche − surface minimale.');u.iE.classList.add('ok');
+  if(!Number.isFinite(v[5]))return bad(u.iP,'Indique le pourcentage, arrondi au dixième.');if(!near(v[5],D.pct,.06))return bad(u.iP,'Dans ton calcul de pourcentage : la PARTIE est la surface supplémentaire ; le TOTAL est toute la surface de l\u2019ébauche.');u.iP.classList.add('ok');
+  if(SILENT)return;
   all.forEach(i=>i.disabled=true);$$('.blanks .lpi').forEach(x=>x.disabled=true);bV.disabled=true;bH.disabled=true;
   completeMission(8);projectState.modules.conception.blank={choice:D.best,profileWidth:D.pw,profileHeight:D.ph,margin:BMARGIN,requiredWidth:D.rw,requiredHeight:D.rh,blankWidth:D.B.w,blankHeight:D.B.h,requiredAreaMm2:D.rArea,blankAreaMm2:D.bArea,extraAreaMm2:D.extra,extraPercent:Math.round(D.pct*10)/10};
   setFb(fb,`Ébauche ${D.best} retenue : ${fmt(D.pct,1)} % de surface supplémentaire. Le profil se met en place…`,'ok');
@@ -1262,10 +1363,10 @@ async function reveal8(){if(!m8.scene)drawPrepScene();const S=m8.scene,D=S.D,z=S
   const req=el('rect',{x:R.x,y:R.y,width:D.rw*KB,height:D.rh*KB,class:'req'},S.det);fadeIn(req,400);el('rect',{x:tx,y:ty,width:D.pw*KB,height:D.ph*KB,class:'enc'},S.det);await wait(600);
   const defs=svgPlan.querySelector('defs');if(!defs.querySelector('#hatch-extra')){const pt=el('pattern',{id:'hatch-extra',width:6,height:6,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},defs);el('line',{x1:0,y1:0,x2:0,y2:6,stroke:'#1d5cc4','stroke-width':1.2,opacity:.55},pt);}
   const bw=R.b.w*KB,bh=R.b.h*KB,rw=D.rw*KB,rh=D.rh*KB;const ex=el('path',{d:`M${R.x},${R.y} h${bw} v${bh} h${-bw} Z M${R.x},${R.y} v${rh} h${rw} v${-rh} Z`,'fill-rule':'evenodd',class:'extra'},S.det);
-  const t1=el('text',{x:R.x+bw/2,y:R.y+bh+46*z,class:'ct',text:`ébauche : ${fmt(D.bArea)} mm²`,'text-anchor':'middle'},S.det);fadeIn(t1,400);await wait(700);fadeIn(ex,500);await wait(600);
+  const t1=el('text',{x:R.x+bw/2,y:R.y+bh+62*z,class:'ct',text:`ébauche : ${fmt(D.bArea)} mm²`,'text-anchor':'middle'},S.det);fadeIn(t1,400);await wait(700);fadeIn(ex,500);await wait(600);
   t1.textContent=`supplément : ${fmt(D.extra)} mm² — ${fmt(D.pct,1)} %`;fadeIn(t1,300);await wait(1500);
   anim(S.g,[{opacity:1},{opacity:0}],{duration:600,fill:'forwards'});await wait(620);while(S.g.firstChild)S.g.removeChild(S.g.firstChild);
-  layers.net.children[1].classList.remove('dim');layers.net.children[2].classList.remove('dim');layers.cotes.classList.remove('dim');[m2.g,m3.g,m5.g].forEach(x=>{if(x)x.classList.remove('dim');});
+  layers.net.children[1].classList.remove('dim');layers.net.children[2].classList.remove('dim');layers.cotes.classList.remove('dim','hide8');[m2.g,m3.g,m5.g].forEach(x=>{if(x)x.classList.remove('dim');});
   await zoomTo(VB_FULL,1000);renderBlankResult(true);await wait(400);}
 /* Résultat de la mission 8 sans animation : mention discrète de l'ébauche retenue sous la crosse */
 function renderBlankResult(fade){const bl=projectState.modules.conception.blank;const D=m8Data();const k=(bl&&bl.choice)||D.best;const B=D.list.find(b=>b.k===k)||D.B;if(!m8.g||!m8.g.parentNode)m8.g=el('g',{class:'l-m8'},svgPlan);
@@ -1409,11 +1510,27 @@ function autoSolve(){
   else if(/MISSION 7/.test(num)){const u=m7.ui;const id=missionState(7).inputs.motif||'plaque';u.setMotif(id);const d=m7Data(id);set(u.iW,d.uw);set(u.iH,d.uh);set(u.iKW,fmt(d.kW,2));set(u.iKH,fmt(d.kH,2));set(u.iK,fmt(d.k,4));set(u.iFW,fmt(d.fW,2));set(u.iFH,fmt(d.fH,2));set(u.iX,fmt(d.offX,2));set(u.iY,fmt(d.offY,2));}
   else if(/MISSION 8/.test(num)){const u=m8.ui;const d=m8Data();set(u.iW,d.rw);set(u.iH,d.rh);u.setChoice(d.best);set(u.iBA,d.bArea);set(u.iRA,d.rArea);set(u.iE,d.extra);set(u.iP,fmt(d.pct,1));}
   else return;
-  bV.click();}
+  const su={6:m6.ui,7:m7.ui,8:m8.ui}[+(num.match(/MISSION (\d)/)||[])[1]];if(su&&su.groups){for(let i=0;i<5;i++){const s0=su.step;bV.click();if(su.step===s0)break;}}else bV.click();}
 document.addEventListener('keydown',e=>{if(e.ctrlKey||e.altKey||e.metaKey)return;const k=(e.key||'').toLowerCase();if(k.length!==1||!/[a-z]/.test(k)){return;}
   keyBuf=(keyBuf+k).slice(-CHEAT.length);if(keyBuf!==CHEAT)return;keyBuf='';
   const a=document.activeElement;if(a&&a.tagName==='INPUT'&&/prof$/i.test(a.value||''))a.value=a.value.replace(/prof$/i,'');
   e.preventDefault();autoSolve();});
+
+/* ===================== audit de mise en page (outil professeur / développement) : __bma.auditLayout() ===================== */
+function auditLayout(){const out=[];const mission=projectState.progress.currentMission;const vis=e=>{for(let n=e;n&&n.nodeType===1;n=n.parentNode){const cs=getComputedStyle(n);if(cs.display==='none'||cs.visibility==='hidden'||+cs.opacity===0)return false;}return true;};
+  const name=e=>(e.tagName||'').toLowerCase()+(e.id?'#'+e.id:'')+(e.className&&typeof e.className==='string'?'.'+e.className.trim().split(/\s+/).join('.'):'')+(e.textContent?' « '+e.textContent.trim().slice(0,40)+' »':'');
+  const p=$('#panel');if(p){const pr=p.getBoundingClientRect();
+    p.querySelectorAll('*').forEach(e=>{if(e.closest('svg')&&e.tagName!=='svg')return;if(!vis(e))return;const r=e.getBoundingClientRect();if(!r.width&&!r.height)return;const cs=getComputedStyle(e);
+      if(r.left<pr.left-1||r.right>pr.right+1)out.push({mission,type:'panel-outside',el:name(e)});
+      if(e.clientWidth>0&&e.scrollWidth>e.clientWidth+1&&!/auto|scroll|hidden/.test(cs.overflowX))out.push({mission,type:'panel-overflow',el:name(e),scrollWidth:e.scrollWidth,clientWidth:e.clientWidth});});
+    const ctl=[...p.querySelectorAll('input,button')].filter(vis).map(e=>({e,r:e.getBoundingClientRect(),bar:!!e.closest('.acts')})).filter(x=>x.r.width&&x.r.height);
+    for(let i=0;i<ctl.length;i++)for(let j=i+1;j<ctl.length;j++){const a=ctl[i],b=ctl[j];if(a.bar!==b.bar)continue;const w=Math.min(a.r.right,b.r.right)-Math.max(a.r.left,b.r.left),hh=Math.min(a.r.bottom,b.r.bottom)-Math.max(a.r.top,b.r.top);if(w>2&&hh>2)out.push({mission,type:'control-overlap',a:name(a.e),b:name(b.e)});}}
+  const svg=svgPlan;if(svg){const sr=svg.getBoundingClientRect();const texts=[...svg.querySelectorAll('text')].filter(t=>vis(t)&&t.textContent.trim()&&!t.closest('.l-ghost,.motif-ghost,.engraving,.motifs'));
+    const boxes=texts.map(t=>({t,r:t.getBoundingClientRect()})).filter(x=>x.r.width>0&&x.r.height>0&&x.r.right>sr.left&&x.r.left<sr.right&&x.r.bottom>sr.top&&x.r.top<sr.bottom);
+    boxes.forEach(x=>{if(x.r.left<sr.left-1||x.r.right>sr.right+1||x.r.top<sr.top-1||x.r.bottom>sr.bottom+1)out.push({mission,type:'svg-text-outside',a:x.t.textContent.trim()});});
+    for(let i=0;i<boxes.length;i++)for(let j=i+1;j<boxes.length;j++){const a=boxes[i].r,b=boxes[j].r;const w=Math.min(a.right,b.right)-Math.max(a.left,b.left),hh=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);
+      if(w>0&&hh>0){const inter=w*hh,small=Math.min(a.width*a.height,b.width*b.height);if(inter>0.2*small)out.push({mission,type:'svg-text-overlap',a:boxes[i].t.textContent.trim(),b:boxes[j].t.textContent.trim()});}}}
+  return out;}
 
 /* ===================== diagnostic : aucune erreur interne ne doit rester invisible ===================== */
 function showInternalError(msg){try{const n=$('#save-note');if(n){n.textContent='Erreur interne : '+msg;n.className='save-note err';}const fb=$('#fb');if(fb&&!fb.textContent){fb.innerHTML='Une erreur interne est survenue ('+String(msg).replace(/</g,'&lt;')+'). Ouvre la console (F12) et transmets ce message.';fb.className='fb err';}}catch(e){}}
@@ -1429,7 +1546,7 @@ function init(){const a=$('#svg-accueil');a.setAttribute('viewBox','-30 -110 106
 init();
 /* Audit de débordement du panneau (à lancer dans la console : __bma.auditPanel()) : éléments plus larges que leur boîte ou sortant du panneau */
 function auditPanel(){const p=$('#panel');if(!p)return [];const pr=p.getBoundingClientRect();const out=[];p.querySelectorAll('*').forEach(e=>{const r=e.getBoundingClientRect();const over=e.scrollWidth>e.clientWidth+1&&getComputedStyle(e).overflowX!=='auto'&&getComputedStyle(e).overflowX!=='scroll';const outside=r.width>0&&(r.left<pr.left-1||r.right>pr.right+1);if(over||outside)out.push({el:e,tag:e.tagName+(e.className?'.'+String(e.className).split(' ').join('.'):''),over,outside,scrollWidth:e.scrollWidth,clientWidth:e.clientWidth});});return out;}
-window.__bma={st,MODELS,STOCKS,M3,FRAME,SCALES,CHECK,LPIS,HEEL,ANGLES,FLANK,FINISHES,ENGRAVE,MOTIFS,BLANKS,m8Data,startMission8,m8,m3Data,m4Data,m5Data,m6Data,m7Data,startMission4,startMission5,startMission6,startMission7,m4,m5,m6,m7,buttGeom,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
+window.__bma={auditLayout,st,MODELS,STOCKS,M3,FRAME,SCALES,CHECK,LPIS,HEEL,ANGLES,FLANK,FINISHES,ENGRAVE,MOTIFS,BLANKS,m8Data,startMission8,m8,m3Data,m4Data,m5Data,m6Data,m7Data,startMission4,startMission5,startMission6,startMission7,m4,m5,m6,m7,buttGeom,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
 })();
 </script>
 </body>
