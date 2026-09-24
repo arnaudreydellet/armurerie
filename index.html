@@ -294,6 +294,67 @@ svg.plan .req-prev{fill:none;stroke:var(--blue);stroke-width:1;stroke-dasharray:
 svg.plan .tcons.q{fill:var(--ink-3)}
 svg.plan .blank-note{font-size:calc(12px*var(--z,1))}
 svg.plan .hide8{opacity:0!important}
+/* mission 9 : frise du planning */
+svg.plan .seg{fill:none;stroke:var(--blue-2);stroke-width:1;stroke-dasharray:4 3;vector-effect:non-scaling-stroke;transition:fill .4s,stroke .4s}
+svg.plan .seg.on{stroke:var(--ink);stroke-width:1.2;stroke-dasharray:none}
+svg.plan .seg-f.on{fill:#e8eef8}svg.plan .seg-c.on{fill:#c9d9f0}
+svg.plan .seg-lab{fill:var(--ink-2)}
+svg.plan .seg-min{fill:var(--ink)}
+svg.plan .sess-line{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:5 4;vector-effect:non-scaling-stroke}
+svg.plan .sess-lab{fill:var(--ink-3)}
+svg.plan .last-hi{fill:none;stroke:var(--ok);stroke-width:1.6;vector-effect:non-scaling-stroke}
+svg.plan .last-t{fill:var(--ok)}
+svg.plan .ct.left{text-anchor:start}
+/* mission 10 : présentation finale */
+svg.plan .l-m10{pointer-events:none}
+svg.plan .l-m10 .bg10,svg.plan .l-m10 .pres-view{opacity:0;transition:opacity .6s ease}
+svg.plan .l-m10.b-atelier .bg10-atelier,svg.plan .l-m10.b-fiche .bg10-fiche,svg.plan .l-m10.b-sombre .bg10-sombre{opacity:1}
+svg.plan .l-m10.v-profil-gauche .pv-profil-gauche,svg.plan .l-m10.v-profil-droit .pv-profil-droit,svg.plan .l-m10.v-3d .pv-3d{opacity:1}
+svg.plan .l-m10 .ann,svg.plan .l-m10 .cart10{opacity:0;transition:opacity .45s ease}
+svg.plan .l-m10.m-fiche .ann,svg.plan .l-m10.m-fiche .cart10{opacity:1}
+svg.plan .l-m10 .pres-net .part,svg.plan .l-m10 .pres-net .guard{fill:none;stroke:#1d2229;stroke-width:1.3;opacity:1;vector-effect:non-scaling-stroke}
+svg.plan .l-m10 .pres-net [data-part="boitier"],svg.plan .l-m10 .pres-net [data-part="canon"],svg.plan .l-m10 .pres-net [data-part="bande"]{fill:url(#pres-metal)}
+svg.plan .l-m10 .pres-net .detail{stroke:#58606a;stroke-width:.8;opacity:1}
+svg.plan .l-m10 .pres-net .bead{fill:#1d2229;opacity:1}
+svg.plan .l-m10 .pw-huilee{fill:#d7c09b}svg.plan .l-m10 .pw-satinee{fill:url(#pres-satin)}svg.plan .l-m10 .pw-brillante{fill:url(#pres-gloss)}
+svg.plan .l-m10 .finish{display:none}
+svg.plan .l-m10 .buttplate{fill:#30353b;stroke:#1d2229}
+svg.plan .l-m10 .sil{fill:#5e4d3b;stroke:none}
+svg.plan .l-m10 .t10{fill:#1d2229;font-family:var(--sans)}
+svg.plan .l-m10 .pres-title{font-size:17px;font-weight:700;letter-spacing:.08em}
+svg.plan .l-m10 .pres-sub{font-size:12px;fill:#4d545c}
+svg.plan .l-m10 .ann-t{font-size:12px;font-weight:600;fill:#1d5cc4}
+svg.plan .l-m10 .ann-l{stroke:#1d5cc4;stroke-width:.9;vector-effect:non-scaling-stroke}
+svg.plan .l-m10 .ann-p{fill:#1d5cc4}
+svg.plan .l-m10 .cart-r{fill:#fff;stroke:#1d2229;stroke-width:1;vector-effect:non-scaling-stroke}
+svg.plan .l-m10 .cart-l{stroke:#1d2229;stroke-width:.8;vector-effect:non-scaling-stroke}
+svg.plan .l-m10 .cart-h{font-size:11.5px;font-weight:700;letter-spacing:.1em}
+svg.plan .l-m10 .cart-k{font-size:11.5px;fill:#4d545c}svg.plan .l-m10 .cart-v{font-size:11.5px;font-weight:600}
+svg.plan .l-m10.b-sombre .t10{fill:#e6e9ee}svg.plan .l-m10.b-sombre .pres-sub,svg.plan .l-m10.b-sombre .cart-k{fill:#aeb6c0}
+svg.plan .l-m10.b-sombre .pres-net .part,svg.plan .l-m10.b-sombre .pres-net .guard{stroke:#d3d9e0}
+svg.plan .l-m10.b-sombre .ann-t{fill:#9dbcf0}svg.plan .l-m10.b-sombre .ann-l{stroke:#9dbcf0}svg.plan .l-m10.b-sombre .ann-p{fill:#9dbcf0}
+svg.plan .l-m10.b-sombre .cart-r{fill:#161a1f;stroke:#8a939e}svg.plan .l-m10.b-sombre .cart-l{stroke:#8a939e}
+svg.plan .l-m10.b-sombre .sil{fill:#2a2420}
+.plan-sheet.pres-on .cartouche,.plan-sheet.pres-on .sheet-label{opacity:0;pointer-events:none;transition:opacity .5s}
+.plan-sheet canvas.r3d{position:absolute;z-index:2;opacity:0;pointer-events:none;transition:opacity .7s ease;cursor:grab;touch-action:none}
+.plan-sheet canvas.r3d.on{opacity:1;pointer-events:auto}
+.plan-sheet canvas.r3d:active{cursor:grabbing}
+svg.plan .l-m10.gl-on .pv-3d .fake3d,svg.plan .l-m10.gl-on .pv-3d .ann3d,svg.plan .l-m10 .legend3d{display:none}
+svg.plan .l-m10.gl-on .pv-3d .legend3d{display:inline}
+.card.proj10 .dl b{max-width:none;white-space:nowrap}
+.chk10{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.4;margin:5px 0;cursor:pointer}
+.chk10 input{width:16px;height:16px;margin-top:2px;flex:none}
+.chk10 small{color:var(--ink-3)}
+.chk10.err{color:var(--err)}
+/* mission 9 : fiche de données de temps */
+.card.tdata .tgroup{margin-top:8px;padding-top:6px;border-top:1px solid var(--hair)}
+.card.tdata .tgroup .dl{margin-top:4px}
+.tchoice{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1px 12px;margin:5px 0 0;font-size:12.5px;line-height:1.4}
+.tchoice>b{grid-column:1/3;font-size:10.5px;letter-spacing:.08em;color:var(--ink-2)}
+.tchoice>span{color:var(--ink-2)}
+.tchoice>span:last-child{text-align:right}
+.tchoice>span b{color:var(--ink);font-weight:600}
+svg.plan .data-view .tcons{fill:var(--ink)}
 /* étapes progressives et blocs explicatifs (missions 6, 7, 8) */
 /* composant commun d'étape (missions 6, 7, 8) : un bloc = titre + ce que tu connais + ce que tu cherches + ta réponse */
 .step-card{border:1px solid var(--hair);border-left:3px solid var(--blue);background:#fbfcfe;border-radius:2px;padding:12px 14px 14px;margin:6px 0 4px;display:flex;flex-direction:column;gap:0}
@@ -497,10 +558,10 @@ const L_TOTAL=900;const G_TOTAL=1000;const G=G_TOTAL/L_TOTAL;
 const st={model:'A',stock:'pistolet',designer:'',done1:false,done2:false,done3:false}; // alias techniques de projectState (jamais réinitialisés par un rendu)
 
 /* ===================== ÉTAT DU PROJET — source de vérité ===================== */
-const SCHEMA_VERSION=6,APP_VERSION='BMA-1';const MISSION_COUNT=8;
+const SCHEMA_VERSION=8,APP_VERSION='BMA-1';const MISSION_COUNT=10;
 function defaultState(){return {schemaVersion:SCHEMA_VERSION,appVersion:APP_VERSION,projectId:'',createdAt:'',savedAt:'',student:{name:''},design:{model:'A',stock:'pistolet'},progress:{currentMission:1},
-  missions:{mission1:{status:'not_started',inputs:{rear:'',middle:'',front:''}},mission2:{status:'not_started',inputs:{leg1:'',leg2:'',square:'',rootValue:'',result:''}},mission3:{status:'not_started',inputs:{usableWidth:'',usableHeight:'',scale:'',detailLength:'',detailHeight:''}},mission4:{status:'not_started',inputs:{usableWidth:'',lpi:'',spacing:'',intervals:''}},mission5:{status:'not_started',inputs:{angle:'',offset:'',length:''}},mission6:{status:'not_started',inputs:{areaA:'',areaB:'',areaC:'',oneSideArea:'',totalArea:'',totalAreaCm2:'',finish:''}},mission7:{status:'not_started',inputs:{usableWidth:'',usableHeight:'',motif:'',kWidth:'',kHeight:'',kSelected:'',finalWidth:'',finalHeight:'',offsetX:'',offsetY:''}},mission8:{status:'not_started',inputs:{requiredWidth:'',requiredHeight:'',blankChoice:'',blankArea:'',requiredArea:'',extraArea:'',extraPercent:''}}},
-  modules:{conception:{},vente:{},gestion:{},compteResultat:{}}};}
+  missions:{mission1:{status:'not_started',inputs:{rear:'',middle:'',front:''}},mission2:{status:'not_started',inputs:{leg1:'',leg2:'',square:'',rootValue:'',result:''}},mission3:{status:'not_started',inputs:{usableWidth:'',usableHeight:'',scale:'',detailLength:'',detailHeight:''}},mission4:{status:'not_started',inputs:{usableWidth:'',lpi:'',spacing:'',intervals:''}},mission5:{status:'not_started',inputs:{angle:'',offset:'',length:''}},mission6:{status:'not_started',inputs:{areaA:'',areaB:'',areaC:'',oneSideArea:'',totalArea:'',totalAreaCm2:'',finish:''}},mission7:{status:'not_started',inputs:{usableWidth:'',usableHeight:'',motif:'',kWidth:'',kHeight:'',kSelected:'',finalWidth:'',finalHeight:'',offsetX:'',offsetY:''}},mission8:{status:'not_started',inputs:{requiredWidth:'',requiredHeight:'',blankChoice:'',blankArea:'',requiredArea:'',extraArea:'',extraPercent:''}},mission9:{status:'not_started',inputs:{fixedTime:'',customTime:'',totalTime:'',hours:'',minutes:'',customPercent:'',sessions:'',lastSessionTime:''}},mission10:{status:'not_started',inputs:{viewMode:'',presentationMode:'',backgroundMode:'',checkFinish:false,checkEngraving:false,checkButtplate:false}}},
+  modules:{conception:{},fabrication:{},presentation:{},vente:{},gestion:{},compteResultat:{}}};}
 let projectState=defaultState();
 function newProjectId(){const yy=String(new Date().getFullYear()).slice(-2);let hex='';const a=new Uint8Array(3);if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(a);else for(let i=0;i<3;i++)a[i]=Math.floor(Math.random()*256);for(const b of a)hex+=b.toString(16).padStart(2,'0');return `BMA-${yy}-${hex.toUpperCase()}`;}
 /* Création volontaire d'un NOUVEAU projet : seul endroit où l'avancement est remis à zéro */
@@ -525,9 +586,15 @@ function migrateProjectState(data){let v=Number(data.schemaVersion)||1;let d=dee
     d.missions=isPlainObj(d.missions)?d.missions:{};if(!isPlainObj(d.missions.mission7))d.missions.mission7={status:'not_started',inputs:{usableWidth:'',usableHeight:'',motif:'',kWidth:'',kHeight:'',kSelected:'',finalWidth:'',finalHeight:'',offsetX:'',offsetY:''}};v=5;}
   if(v<6){ // v5 → v6 : la mission 8 (choix de l'ébauche) est ajoutée vide
     d.missions=isPlainObj(d.missions)?d.missions:{};if(!isPlainObj(d.missions.mission8))d.missions.mission8={status:'not_started',inputs:{requiredWidth:'',requiredHeight:'',blankChoice:'',blankArea:'',requiredArea:'',extraArea:'',extraPercent:''}};v=6;}
+  if(v<7){ // v6 → v7 : la mission 9 (planning d'atelier) et le module fabrication sont ajoutés vides
+    d.missions=isPlainObj(d.missions)?d.missions:{};if(!isPlainObj(d.missions.mission9))d.missions.mission9={status:'not_started',inputs:{fixedTime:'',customTime:'',totalTime:'',hours:'',minutes:'',customPercent:'',sessions:'',lastSessionTime:''}};
+    d.modules=isPlainObj(d.modules)?d.modules:{};if(!isPlainObj(d.modules.fabrication))d.modules.fabrication={};v=7;}
+  if(v<8){ // v7 → v8 : la mission 10 (présentation finale) et le module presentation sont ajoutés vides
+    d.missions=isPlainObj(d.missions)?d.missions:{};if(!isPlainObj(d.missions.mission10))d.missions.mission10={status:'not_started',inputs:{viewMode:'',presentationMode:'',backgroundMode:'',checkFinish:false,checkEngraving:false,checkButtplate:false}};
+    d.modules=isPlainObj(d.modules)?d.modules:{};if(!isPlainObj(d.modules.presentation))d.modules.presentation={};v=8;}
   const out=deepMerge(defaultState(),d);out.schemaVersion=SCHEMA_VERSION;out.appVersion=APP_VERSION;return out;}
 function stateSummary(){const S=projectState;const e=expected();const m1=S.missions.mission1,m2=S.missions.mission2,m3=S.missions.mission3;const open=firstOpenMission();
-  const S2=STOCKS[S.design.stock];const d3=m3Data();const m4=S.missions.mission4;const d4=m4Data(m4.inputs.lpi?+m4.inputs.lpi:20);const m5=S.missions.mission5;const d5=m5Data(m5.inputs.angle?+m5.inputs.angle:10);const m6=S.missions.mission6;const d6=m6Data();const fin6=FINISHES.find(f=>f.id===m6.inputs.finish);const m7=S.missions.mission7;const d7=m7Data(m7.inputs.motif||'plaque');const mo7=MOTIFS.find(m=>m.id===m7.inputs.motif);const m8=S.missions.mission8;const d8=m8Data();
+  const S2=STOCKS[S.design.stock];const d3=m3Data();const m4=S.missions.mission4;const d4=m4Data(m4.inputs.lpi?+m4.inputs.lpi:20);const m5=S.missions.mission5;const d5=m5Data(m5.inputs.angle?+m5.inputs.angle:10);const m6=S.missions.mission6;const d6=m6Data();const fin6=FINISHES.find(f=>f.id===m6.inputs.finish);const m7=S.missions.mission7;const d7=m7Data(m7.inputs.motif||'plaque');const mo7=MOTIFS.find(m=>m.id===m7.inputs.motif);const m8=S.missions.mission8;const d8=m8Data();const m9=S.missions.mission9;const d9=m9Data();const m10=S.missions.mission10;const i10=m10.inputs;
   return {open,items:[
     {title:'Mission 1 — Proportions',status:m1.status,result:m1.status==='completed'?`Partie arrière ${fmt(e.a)} mm · centrale ${fmt(e.c)} mm · avant ${fmt(e.f)} mm (longueur globale ${fmt(L_TOTAL)} mm)`:'',inputs:[['Partie arrière',m1.inputs.rear],['Partie centrale',m1.inputs.middle],['Partie avant',m1.inputs.front]]},
     {title:'Mission 2 — Profil de crosse',status:m2.status,result:m2.status==='completed'?`AB = ${fmt(S2.ab)} mm (déplacement ${fmt(S2.dx)} mm, dénivelé ${fmt(S2.dy)} mm)`:'',inputs:[['Premier côté',m2.inputs.leg1],['Second côté',m2.inputs.leg2],['AB²',m2.inputs.square],['Sous la racine',m2.inputs.rootValue],['AB',m2.inputs.result]]},
@@ -536,7 +603,9 @@ function stateSummary(){const S=projectState;const e=expected();const m1=S.missi
     {title:'Mission 5 — Plaque de couche',status:m5.status,result:m5.status==='completed'?`θ = ${d5.angle}° · d = ${fmt(d5.offset,1)} mm · AB = ${fmt(d5.length,1)} mm (H = ${d5.H} mm)`:'',lines:m5.status==='completed'?[{runs:[['F1','Inclinaison : '],['F3','q'],['F1',` = ${d5.angle}°`]]},`Décalage : d = ${fmt(d5.offset,1)} mm`,`Longueur : AB = ${fmt(d5.length,1)} mm`]:null,inputs:[['Angle',m5.inputs.angle?`${m5.inputs.angle}°`:''],['Décalage d',m5.inputs.offset],['Longueur AB',m5.inputs.length]]},
     {title:'Mission 6 — Finition de la crosse',status:m6.status,result:m6.status==='completed'?`Un flanc ${fmt(d6.oneSide)} mm² · deux flancs ${fmt(d6.total)} mm² = ${fmt(d6.cm2,1)} cm² · finition ${fin6?fin6.name.toLowerCase():'—'}`:'',lines:m6.status==='completed'?[`Surface d’un flanc : ${fmt(d6.oneSide)} mm²`,`Surface totale : ${fmt(d6.total)} mm²`,`Surface : ${fmt(d6.cm2,1)} cm²`,`Finition : ${fin6?fin6.name:'—'}`]:null,inputs:[['Zone A',m6.inputs.areaA],['Zone B',m6.inputs.areaB],['Zone C',m6.inputs.areaC],['Un flanc',m6.inputs.oneSideArea],['Deux flancs',m6.inputs.totalArea],['En cm²',m6.inputs.totalAreaCm2],['Finition',fin6?fin6.name:'']]},
     {title:'Mission 7 — Gravure personnalisée',status:m7.status,result:m7.status==='completed'?`${mo7?mo7.name:'—'} · k = ${fmt(d7.k,2)} · ${fmt(d7.fW,1)} × ${fmt(d7.fH,1)} mm · X = ${fmt(d7.offX,1)} mm, Y = ${fmt(d7.offY,1)} mm`:'',lines:m7.status==='completed'?[`Motif : ${mo7?mo7.name:'—'}`,`Coefficient : ${fmt(d7.k,2)}`,`Dimensions finales : ${fmt(d7.fW,1)} × ${fmt(d7.fH,1)} mm`,`Position : X = ${fmt(d7.offX,1)} mm · Y = ${fmt(d7.offY,1)} mm`]:null,inputs:[['Largeur utile',m7.inputs.usableWidth],['Hauteur utile',m7.inputs.usableHeight],['Motif',mo7?mo7.name:''],['k largeur',m7.inputs.kWidth],['k hauteur',m7.inputs.kHeight],['k retenu',m7.inputs.kSelected],['Largeur finale',m7.inputs.finalWidth],['Hauteur finale',m7.inputs.finalHeight],['Décalage X',m7.inputs.offsetX],['Décalage Y',m7.inputs.offsetY]]},
-    {title:'Mission 8 — Choix de l\u2019ébauche',status:m8.status,result:m8.status==='completed'?`Ébauche ${d8.best} · ${d8.B.w} × ${d8.B.h} mm · supplément ${fmt(d8.extra)} mm² (${fmt(d8.pct,1)} %)`:'',lines:m8.status==='completed'?[`Ébauche : ${d8.best}`,`Dimensions : ${d8.B.w} × ${d8.B.h} mm`,`Surface : ${fmt(d8.bArea)} mm²`,`Surface supplémentaire : ${fmt(d8.extra)} mm²`,`Part supplémentaire : ${fmt(d8.pct,1)} %`]:null,inputs:[['Longueur minimale',m8.inputs.requiredWidth],['Hauteur minimale',m8.inputs.requiredHeight],['Ébauche',m8.inputs.blankChoice],['Surface ébauche',m8.inputs.blankArea],['Surface minimale',m8.inputs.requiredArea],['Supplément',m8.inputs.extraArea],['Part',m8.inputs.extraPercent]]}]};}
+    {title:'Mission 8 — Choix de l\u2019ébauche',status:m8.status,result:m8.status==='completed'?`Ébauche ${d8.best} · ${d8.B.w} × ${d8.B.h} mm · supplément ${fmt(d8.extra)} mm² (${fmt(d8.pct,1)} %)`:'',lines:m8.status==='completed'?[`Ébauche : ${d8.best}`,`Dimensions : ${d8.B.w} × ${d8.B.h} mm`,`Surface : ${fmt(d8.bArea)} mm²`,`Surface supplémentaire : ${fmt(d8.extra)} mm²`,`Part supplémentaire : ${fmt(d8.pct,1)} %`]:null,inputs:[['Longueur minimale',m8.inputs.requiredWidth],['Hauteur minimale',m8.inputs.requiredHeight],['Ébauche',m8.inputs.blankChoice],['Surface ébauche',m8.inputs.blankArea],['Surface minimale',m8.inputs.requiredArea],['Supplément',m8.inputs.extraArea],['Part',m8.inputs.extraPercent]]},
+    {title:'Mission 9 — Planning d\u2019atelier',status:m9.status,result:m9.status==='completed'?`${d9.total} min = ${d9.hours} h ${String(d9.minutes).padStart(2,'0')} min · ${d9.sessions} séance(s) · personnalisation ${fmt(d9.pct,1)} %`:'',lines:m9.status==='completed'?[`Temps fixe : ${d9.fixed} min`,`Personnalisation : ${d9.custom} min`,`Temps total : ${d9.hours} h ${String(d9.minutes).padStart(2,'0')} min`,`Part de personnalisation : ${fmt(d9.pct,1)} %`,`Séances : ${d9.sessions}`,`Dernière séance : ${d9.last} min`]:null,inputs:[['Temps fixe',m9.inputs.fixedTime],['Personnalisation',m9.inputs.customTime],['Temps total',m9.inputs.totalTime],['Heures',m9.inputs.hours],['Minutes',m9.inputs.minutes],['Part',m9.inputs.customPercent],['Séances',m9.inputs.sessions],['Dernière séance',m9.inputs.lastSessionTime]]},
+    {title:'Mission 10 — Présentation finale du projet',status:m10.status,result:m10.status==='completed'?`${VIEW_LBL[i10.viewMode]||'—'} · ${MODE_LBL[i10.presentationMode]||'—'} · ${BG_LBL[i10.backgroundMode]||'—'}`:'',lines:m10.status==='completed'?[`Vue : ${VIEW_LBL[i10.viewMode]||'—'}`,`Mode : ${MODE_LBL[i10.presentationMode]||'—'}`,`Fond : ${BG_LBL[i10.backgroundMode]||'—'}`]:null,inputs:[['Vue',VIEW_LBL[i10.viewMode]||''],['Mode',MODE_LBL[i10.presentationMode]||''],['Fond',BG_LBL[i10.backgroundMode]||''],['Vérifications',[i10.checkFinish,i10.checkEngraving,i10.checkButtplate].some(Boolean)?`${[i10.checkFinish,i10.checkEngraving,i10.checkButtplate].filter(Boolean).length}/3`:'']]}]};}
 function expected(){const m=MODELS[st.model];const a=m.rear/100*L_TOTAL,c=m.mid/100*L_TOTAL;return {a,c,f:L_TOTAL-a-c,m,ga:a*G,gc:c*G,gf:(L_TOTAL-a-c)*G};}
 
 /* ===================== silhouettes (dessin) ===================== */
@@ -569,13 +638,13 @@ function openPlan(){newProject(st.model,st.stock,($('#designer').value||'').trim
 function enterAtelier(){const m=MODELS[st.model],s=m.stocks.find(x=>x.id===st.stock);
   $('#c-designer').textContent=st.designer||'—';$('#c-model').textContent=`${m.letter} — ${m.name}`;$('#c-stock').textContent=s.name;$('#c-id').textContent=projectState.projectId||'—';
   setTopinfo(1);show('s-atelier');}
-const MISSION_TITLES={1:'Les proportions',2:'Profil de crosse',3:'Échelle du détail',4:'Quadrillage de la crosse',5:'Plaque de couche',6:'Finition de la crosse',7:'Gravure personnalisée',8:'Choix de l\u2019ébauche'};
+const MISSION_TITLES={1:'Les proportions',2:'Profil de crosse',3:'Échelle du détail',4:'Quadrillage de la crosse',5:'Plaque de couche',6:'Finition de la crosse',7:'Gravure personnalisée',8:'Choix de l\u2019ébauche',9:'Calculer le temps de ton projet',10:'Découvrir ton projet final'};
 function setTopinfo(n,validated){const m=MODELS[st.model];$('#topinfo').innerHTML=`<b>Mission ${n}</b> — ${MISSION_TITLES[n]}${validated?' — validée':''} &nbsp;·&nbsp; Projet ${m.letter} ${m.name}${st.designer?' &nbsp;·&nbsp; '+st.designer:''}`;}
 
 /* ===================== le plan ===================== */
 const svgPlan=$('#svg-plan');
 let layers={};let planGen=0;
-function drawPlan(){planGen++;const svg=svgPlan;while(svg.firstChild)svg.removeChild(svg.firstChild);setVB(VB_FULL);m2.g=null;m3.g=null;m4.g=null;m5.g=null;m5.scene=null;m6.g=null;m7.g=null;m7.scene=null;m8.g=null;m8.scene=null;layers.check=null;layers.plate=null;layers.finish=null;layers.engrave=null;
+function drawPlan(){planGen++;const svg=svgPlan;while(svg.firstChild)svg.removeChild(svg.firstChild);setVB(VB_FULL);m2.g=null;m3.g=null;m4.g=null;m5.g=null;m5.scene=null;m6.g=null;m7.g=null;m7.scene=null;m8.g=null;m8.scene=null;m9.g=null;m9.scene=null;if(typeof R3!=='undefined')r3Stop();m10.g=null;{const sh=document.querySelector('.plan-sheet');if(sh)sh.classList.remove('pres-on');}layers.check=null;layers.plate=null;layers.finish=null;layers.engrave=null;
   const defs=el('defs',{},svg);const pat=el('pattern',{id:'grid',width:25,height:25,patternUnits:'userSpaceOnUse'},defs);
   el('path',{d:'M25,0 L0,0 L0,25',fill:'none',stroke:'#e6e9ee','stroke-width':1},pat);
   el('rect',{x:-70,y:-215,width:1140,height:560,fill:'url(#grid)'},svg);
@@ -1035,7 +1104,7 @@ function initSteps(ui,finalLabel,onStep){ui.step=1;ui.finalLabel=finalLabel;ui.o
 function applyStep(ui){ui.groups.forEach(([g,s])=>{g.style.display=s<=ui.step?'':'none';g.classList.toggle('done',s<ui.step);if(s<ui.step)g.querySelectorAll('input,button').forEach(x=>x.disabled=true);});
   if(ui.bV)ui.bV.textContent=ui.step<ui.lastStep?'VÉRIFIER CETTE ÉTAPE':ui.finalLabel;if(ui.onStep)ui.onStep(ui.step);}
 function gate(ui,s,msg){if(ui.step>=s)return true;ui.step=s;applyStep(ui);if(SILENT)return true;setFb($('#fb'),msg,'ok');const g=ui.groups.find(x=>x[1]===s);if(g){ensureVisible(g[0]);const i=g[0].querySelector('input:not([disabled])');if(i)setTimeout(()=>i.focus(),60);}return false;}
-function restoreSteps(n){const ui={6:m6.ui,7:m7.ui,8:m8.ui}[n];if(!ui)return;SILENT=true;try{const fb=$('#fb'),nx=$('#next');if(n===6)verify6(fb,ui.bV,ui.bH,nx);if(n===7)verify7(fb,ui.bV,ui.bH,nx);if(n===8)verify8(fb,ui.bV,ui.bH,nx);}catch(e){}finally{SILENT=false;}
+function restoreSteps(n){const ui={6:m6.ui,7:m7.ui,8:m8.ui,9:m9.ui}[n];if(!ui)return;const vals=Object.values(missionState(n).inputs||{});if(vals.every(v=>v===''||v==null))return;SILENT=true;try{const fb=$('#fb'),nx=$('#next');if(n===6)verify6(fb,ui.bV,ui.bH,nx);if(n===7)verify7(fb,ui.bV,ui.bH,nx);if(n===8)verify8(fb,ui.bV,ui.bH,nx);if(n===9)verify9(fb,ui.bV,ui.bH,nx);}catch(e){}finally{SILENT=false;}
   $$('#panel .err').forEach(e=>e.classList.remove('err'));const fb=$('#fb');if(fb){fb.innerHTML='';fb.className='fb';}}
 
 /* ===================== mission 6 : finition de la crosse ===================== */
@@ -1355,7 +1424,7 @@ function verify8(fb,bV,bH,next){const u=m8.ui;const D=m8Data();const all=[u.iW,u
   all.forEach(i=>i.disabled=true);$$('.blanks .lpi').forEach(x=>x.disabled=true);bV.disabled=true;bH.disabled=true;
   completeMission(8);projectState.modules.conception.blank={choice:D.best,profileWidth:D.pw,profileHeight:D.ph,margin:BMARGIN,requiredWidth:D.rw,requiredHeight:D.rh,blankWidth:D.B.w,blankHeight:D.B.h,requiredAreaMm2:D.rArea,blankAreaMm2:D.bArea,extraAreaMm2:D.extra,extraPercent:Math.round(D.pct*10)/10};
   setFb(fb,`Ébauche ${D.best} retenue : ${fmt(D.pct,1)} % de surface supplémentaire. Le profil se met en place…`,'ok');
-  reveal8().then(()=>{setFb(fb,'<div class="big">MISSION 8 VALIDÉE</div><div>Ton ébauche est choisie et la quantité de surface supplémentaire est calculée.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');const soon=h('div',{class:'soon'});bC.addEventListener('click',()=>{bC.disabled=true;soon.textContent='La conception est prête. La prochaine étape portera sur la préparation de la fabrication.';});next.append(bC,soon);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(8,true);});}
+  reveal8().then(()=>{setFb(fb,'<div class="big">MISSION 8 VALIDÉE</div><div>Ton ébauche est choisie et la quantité de surface supplémentaire est calculée. La conception est prête : la suite porte sur la préparation de la fabrication.</div>','ok');const bC=h('button',{class:'btn ok'},'CONTINUER');bC.addEventListener('click',()=>{bC.disabled=true;startMission9();});next.append(bC);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(8,true);});}
 /* Réussite : A et C s'atténuent, B reste nette, le profil glisse dans B, marges, aire, surface supplémentaire hachurée, pourcentage, retour au projet */
 async function reveal8(){if(!m8.scene)drawPrepScene();const S=m8.scene,D=S.D,z=S.z;const R=S.rects[D.best];while(S.preview.firstChild)S.preview.removeChild(S.preview.firstChild);
   D.list.forEach(b=>{if(b.k!==D.best){S.rects[b.k].g.classList.add('off');}});await wait(700);
@@ -1370,7 +1439,410 @@ async function reveal8(){if(!m8.scene)drawPrepScene();const S=m8.scene,D=S.D,z=S
   await zoomTo(VB_FULL,1000);renderBlankResult(true);await wait(400);}
 /* Résultat de la mission 8 sans animation : mention discrète de l'ébauche retenue sous la crosse */
 function renderBlankResult(fade){const bl=projectState.modules.conception.blank;const D=m8Data();const k=(bl&&bl.choice)||D.best;const B=D.list.find(b=>b.k===k)||D.B;if(!m8.g||!m8.g.parentNode)m8.g=el('g',{class:'l-m8'},svgPlan);
-  const t=el('text',{x:150,y:200,class:'tcons blank-note',text:`ébauche ${k} : ${B.w} × ${B.h} mm — supplément ${fmt(D.extra)} mm² (${fmt(D.pct,1)} %)`,'text-anchor':'middle'},m8.g);if(fade)fadeIn(t,500);return t;}
+  const t=el('text',{x:300,y:198,class:'tcons blank-note','text-anchor':'middle',text:`ébauche ${k} : ${B.w} × ${B.h} mm — supplément ${fmt(D.extra)} mm² (${fmt(D.pct,1)} %)`,'text-anchor':'middle'},m8.g);if(fade)fadeIn(t,500);return t;}
+
+/* ===================== mission 9 : planning d'atelier ===================== */
+/* Durées fictives, créées pour l'exercice : elles ne décrivent aucune fabrication réelle. Les durées de personnalisation viennent des choix enregistrés (missions 4, 5, 6 et 7). */
+const T9={fixed:[['Préparation du dossier',35],['Préparation de l\u2019ébauche',55],['Mise en forme extérieure',95],['Contrôle final du dossier',25]],lpi:{18:35,20:45,22:55},angle:{8:25,10:30,12:35},finish:{huilee:40,satinee:55,brillante:70},motif:{plaque:20,ecusson:35,geometrique:30}};
+const SESSION=180;
+function m9Data(){const c=projectState.modules.conception||{};const lpi=+((c.checkering||{}).lpi||missionState(4).inputs.lpi||20);const ang=+((c.buttplate||{}).angle||missionState(5).inputs.angle||10);
+  const fin=(c.finish||{}).type||missionState(6).inputs.finish||'huilee';const mo=(c.engraving||{}).motif||missionState(7).inputs.motif||'plaque';
+  const tCheck=T9.lpi[lpi]||45,tPlate=T9.angle[ang]||30,tFin=T9.finish[fin]||40,tEng=T9.motif[mo]||20;const fixed=T9.fixed.reduce((s,f)=>s+f[1],0);const custom=tCheck+tPlate+tFin+tEng;const total=fixed+custom;const sessions=Math.ceil(total/SESSION);
+  return {lpi,ang,fin,finName:(FINISHES.find(f=>f.id===fin)||{}).name||'—',mo,moName:(MOTIFS.find(m=>m.id===mo)||{}).name||'—',tCheck,tPlate,tFin,tEng,fixed,custom,total,hours:Math.floor(total/60),minutes:total%60,pct:custom/total*100,sessions,last:total-SESSION*(sessions-1)};}
+function hhmm(D){return `${D.hours} h ${String(D.minutes).padStart(2,'0')} min`;}
+let hints9=0;const m9={ui:null,g:null,scene:null};
+function planBox(){const w=700,hgt=w*VB_FULL[3]/VB_FULL[2];return [-60,-150,w,hgt];}
+function planSegments(D){return [['DOSSIER',35,'f'],['ÉBAUCHE',55,'f'],['MISE EN FORME',95,'f'],['QUADRILLAGE',D.tCheck,'c'],['PLAQUE',D.tPlate,'c'],['FINITION',D.tFin,'c'],['GRAVURE',D.tEng,'c'],['CONTRÔLE',25,'f']];}
+async function startMission9(opts){opts=opts||{};hints9=0;const gen=planGen;sceneReady=false;setTopinfo(9);projectState.progress.currentMission=9;
+  buildMission9();if(opts.prefill){prefillMission(9);restoreSteps(9);}await wait(opts.fast?0:600);if(gen!==planGen)return;
+  if(Math.round(curVB[2])!==VB_FULL[2])await zoomTo(VB_FULL,opts.fast?200:800);if(gen!==planGen)return;await wait(opts.fast?0:400);
+  [...layers.net.children].forEach(c=>c.classList.add('dim'));layers.cotes.classList.add('dim','hide8');[m2.g,m3.g,m5.g].forEach(x=>{if(x)x.classList.add('dim');});if(m8.g)m8.g.classList.add('hide8');
+  await zoomTo(planBox(),opts.fast?250:1000);await wait(opts.fast?0:150);if(gen!==planGen)return;drawPlanScene();sceneDone(m9.ui);}
+/* Vue de gauche : d'abord les DONNÉES DE TEMPS DU PROJET (deux groupes), puis, une fois le temps total calculé, la frise (segments nommés, puis durées, couleurs, séances) */
+function drawPlanScene(){const z=+svgPlan.style.getPropertyValue('--z')||1;const D=m9Data();const g=m9.g=el('g',{class:'l-m9'},svgPlan);
+  const fx=-48,fy=-138,fw=656,fh=214;const det=el('g',{class:'detail-view'},g);el('rect',{x:fx,y:fy,width:fw,height:fh,class:'det-frame'},det);
+  const title=el('text',{x:fx+14*z,y:fy+20*z,class:'dt',text:'TEMPS DE TON PROJET'},det);const sub=el('text',{x:fx+14*z,y:fy+34*z,class:'tcons q',text:'durées fictives, créées pour l\u2019exercice — ce sont des données, pas des réponses'},det);
+  m9.scene={g,det,title,sub,z,fx,fy,fw,fh,D,mode:null};
+  if(m9.ui&&m9.ui.step>=4)drawTimeline();else drawDataView();fadeIn(g,500);}
+function drawDataView(){const S=m9.scene,D=S.D,z=S.z;const grp=el('g',{class:'data-view'},S.det);S.mode='data';
+  const col=(x,y,head,rows)=>{el('text',{x,y,class:'det-note',text:head},grp);rows.forEach(([n,m],i)=>{el('text',{x,y:y+(i+1)*22*z,class:'tcons',text:`${n} — ${m} min`},grp);});};
+  const y0=S.fy+74*z;col(S.fx+60,y0,'TEMPS COMMUNS',[['DOSSIER',35],['ÉBAUCHE',55],['MISE EN FORME',95],['CONTRÔLE',25]]);
+  col(S.fx+S.fw/2+40,y0,'TES PERSONNALISATIONS',[['QUADRILLAGE',D.tCheck],['PLAQUE',D.tPlate],['FINITION',D.tFin],['GRAVURE',D.tEng]]);
+  el('text',{x:S.fx+60,y:y0+130*z,class:'tcons q',text:'les temps communs s\u2019additionnent entre eux, les temps liés à tes choix aussi ; les deux résultats seront ensuite réunis'},grp);S.dataGroup=grp;}
+function drawTimeline(){const S=m9.scene,D=S.D,z=S.z,det=S.det;S.mode='timeline';S.title.textContent='PLANNING D\u2019ATELIER — PROJET PERSONNALISÉ';S.sub.textContent='durées fictives, créées pour l\u2019exercice';
+  const x0=S.fx+26,y0=S.fy+92,barH=44,spm=(S.fw-52)/405;const segs=planSegments(D);let x=x0;const parts=[];
+  segs.forEach(([name,min,kind])=>{const w=min*spm;const r=el('rect',{x,y:y0,width:w,height:barH,class:'seg seg-'+kind},det);
+    const lab=el('text',{x:x+w/2,y:y0-9*z,class:'zone-note seg-lab',text:name,'text-anchor':'middle'},det);
+    const val=el('text',{x:x+w/2,y:y0+barH/2+4*z,class:'tcons seg-min',text:`${min} min`,'text-anchor':'middle',opacity:0},det);
+    parts.push({r,lab,val,x,w,min,kind});x+=w;});
+  Object.assign(S,{parts,x0,y0,barH,spm,barW:D.total*spm});}
+async function switchToTimeline(){const S=m9.scene;if(!S||S.mode!=='data')return;const grp=S.dataGroup;anim(grp,[{opacity:1},{opacity:0}],{duration:450,fill:'forwards'});await wait(470);if(grp.parentNode)grp.parentNode.removeChild(grp);
+  drawTimeline();S.parts.forEach(p=>{fadeIn(p.r,400);fadeIn(p.lab,400);});}
+function buildMission9(){const D=m9Data();const p=$('#panel');p.innerHTML='';
+  const top=h('div',{class:'panel-scroll'}),bot=h('div',{class:'panel-fixed'});p.append(top,bot);
+  const mk=(lbl)=>h('input',{type:'text',inputmode:'numeric',placeholder:'…',autocomplete:'off',spellcheck:'false','aria-label':lbl});
+  const iF=mk('Temps fixe total'),iC=mk('Temps de personnalisation'),iT=mk('Temps total'),iH=mk('Heures complètes'),iM=mk('Minutes restantes'),iP=mk('Part de personnalisation'),iS=mk('Nombre de séances'),iL=mk('Dernière séance');
+  const one=(lbl,inp,unit)=>h('div',{class:'field'},h('label',{},lbl),h('div',{class:'in'},inp,h('span',{class:'u'},unit)));
+  const E9={};const ec9=k=>{const b=h('b',{},'…');(E9[k]=E9[k]||[]).push(b);return b;};
+  const term=(t,d)=>h('div',{class:'term'},h('b',{},t),h('span',{},d));
+  const fb=h('div',{class:'fb',id:'fb'});const hints=h('div',{class:'hints',id:'hints'});const bV=h('button',{class:'btn blue',id:'btn-verif'},'VALIDER MON PLANNING');const bH=h('button',{class:'btn ghost',id:'btn-hint'},'Indice');const next=h('div',{class:'next',id:'next'});
+  const choice=(name,ch,t)=>h('div',{class:'tchoice'},h('b',{},name),h('span',{},'Ton choix : ',h('b',{},ch)),h('span',{},'Temps associé : ',h('b',{},`${t} min`)));
+  top.append(
+    h('div',{class:'mnum'},'MISSION 9 — CALCULER LE TEMPS DE TON PROJET'),h('div',{class:'msub'},'Toutes les durées de cette activité sont fictives et créées pour l\u2019exercice.'),
+    h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Ton projet est maintenant défini. Les choix que tu as faits dans les missions précédentes demandent chacun un temps de travail fictif. L\u2019application a déjà récupéré TES choix.'),h('p',{class:'why'},'Tu vas maintenant calculer :'),
+      h('ol',{class:'steps'},h('li',{},'le temps commun à tous les projets ;'),h('li',{},'le temps ajouté par tes personnalisations ;'),h('li',{},'la durée totale de ton projet ;'),h('li',{},'cette durée en heures et minutes ;'),h('li',{},'la part du temps consacrée à la personnalisation ;'),h('li',{},'le nombre de séances nécessaires.'))),
+    h('div',{},h('div',{class:'ttl'},'POURQUOI ?'),h('p',{class:'why'},'Ces résultats permettront de construire le planning de TON projet. Ils serviront ensuite pour calculer son coût de travail.')),
+    h('div',{class:'card'},h('div',{class:'ttl'},'LES MOTS À CONNAÎTRE'),
+      term('TEMPS COMMUN','Durée identique pour tous les projets, quel que soit le choix de l\u2019élève.'),
+      term('TEMPS DE PERSONNALISATION','Durée qui dépend de tes choix : quadrillage, plaque de couche, finition et gravure.'),
+      term('TEMPS TOTAL','Somme du temps commun et du temps de personnalisation.'),
+      term('SÉANCE D\u2019ATELIER','Dans cette simulation, une séance contient 180 minutes de travail.')),
+    h('div',{class:'card tdata'},h('div',{class:'ttl'},'TES DONNÉES DE TEMPS'),h('p',{class:'why'},'Tu n\u2019as rien à rechercher : ces informations viennent automatiquement des choix que tu as faits dans les missions précédentes.'),
+      h('div',{class:'tgroup'},h('div',{class:'st-lab'},'TEMPS COMMUNS À TOUS LES PROJETS'),h('div',{class:'st-note'},'Ces durées sont les mêmes pour tous les élèves.'),h('div',{class:'dl'},...T9.fixed.flatMap(f=>[h('span',{},f[0]),h('b',{},`${f[1]} min`)]))),
+      h('div',{class:'tgroup'},h('div',{class:'st-lab'},'TEMPS LIÉS À TON PROJET'),h('div',{class:'st-note'},'Ces durées changent selon les choix que tu as faits.'),
+        choice('QUADRILLAGE',`${D.lpi} LPI`,D.tCheck),choice('PLAQUE DE COUCHE',`${D.ang}°`,D.tPlate),choice('FINITION',D.finName,D.tFin),choice('GRAVURE',D.moName,D.tEng)),
+      h('p',{class:'why'},'Tu vas maintenant utiliser ces durées. Les TEMPS COMMUNS seront additionnés entre eux. Les TEMPS LIÉS À TES CHOIX seront additionnés entre eux. Ensuite, les deux résultats seront réunis.')));
+  bot.append(
+    stepCard(1,'ÉTAPE 1 — CALCULE LE TEMPS COMMUN',h('div',{class:'st-note'},'Le temps commun correspond aux opérations présentes sur TOUS les projets.'),sec('CE QUE TU UTILISES',lines(...T9.fixed.map(f=>`${f[0]} : ${f[1]} min`))),
+      sec('CE QUE TU CHERCHES','La durée totale de ces quatre opérations. Additionne uniquement les quatre durées ci-dessus.'),sec('TA RÉPONSE',one('Temps commun',iF,'min'))),
+    stepCard(2,'ÉTAPE 2 — CALCULE LE TEMPS DE TES PERSONNALISATIONS',h('div',{class:'st-note'},'Le temps de personnalisation correspond uniquement aux options que TU as choisies pour ton projet.'),
+      sec('CE QUE TU UTILISES',lines(`Quadrillage : ${D.tCheck} min`,`Plaque de couche : ${D.tPlate} min`,`Finition : ${D.tFin} min`,`Gravure : ${D.tEng} min`)),
+      sec('CE QUE TU CHERCHES','Le temps total nécessaire pour réaliser tes quatre personnalisations. Additionne uniquement ces quatre durées.'),sec('TA RÉPONSE',one('Temps de personnalisation',iC,'min'))),
+    stepCard(3,'ÉTAPE 3 — CALCULE LA DURÉE TOTALE DE TON PROJET',sec('CE QUE TU AS DÉJÀ TROUVÉ',lines(['Temps commun : ',ec9('f'),' min'],['Temps de personnalisation : ',ec9('c'),' min'])),
+      sec('CE QUE TU CHERCHES','Le temps nécessaire pour réaliser l\u2019ensemble de ton projet.',h('div',{class:'fline'},'temps total = temps commun + temps de personnalisation')),sec('TA RÉPONSE',one('Temps total',iT,'min'))),
+    stepCard(4,'ÉTAPE 4 — EXPRIME CE TEMPS EN HEURES ET MINUTES',sec('CE QUE TU CONNAIS',lines(['Temps total : ',ec9('t'),' min'],'1 heure : 60 min')),
+      sec('CE QUE TU CHERCHES','La même durée écrite sous la forme … heures et … minutes. Cherche combien de groupes COMPLETS de 60 minutes sont contenus dans ton temps total. Chaque groupe complet donne 1 heure. Ce qui reste après les groupes de 60 correspond aux minutes restantes.',
+        h('div',{class:'st-note'},'Exemple de méthode : 190 minutes contient 3 heures complètes = 180 minutes. Il reste alors 10 minutes. 190 min = 3 h 10 min.')),
+      sec('TA RÉPONSE',one('Heures complètes',iH,'h'),one('Minutes restantes',iM,'min'))),
+    stepCard(5,'ÉTAPE 5 — QUELLE PART DU PROJET VIENT DE TES PERSONNALISATIONS ?',h('div',{class:'st-note'},'Nous cherchons : sur tout le temps passé sur ton projet, quelle part vient de tes choix personnels ?'),
+      sec('CE QUE TU UTILISES',lines(['PARTIE : temps de personnalisation = ',ec9('c'),' min'],['TOTAL : temps total du projet = ',ec9('t'),' min']),h('div',{class:'fline'},'pourcentage = PARTIE / TOTAL × 100'),h('div',{class:'st-note'},'Ici : PARTIE = temps de personnalisation ; TOTAL = temps total.')),
+      sec('CE QUE TU CHERCHES','Le pourcentage du temps total consacré aux choix personnalisés de ton projet. Arrondis au dixième.'),sec('TA RÉPONSE',one('Part du temps liée à la personnalisation',iP,'%'))),
+    stepCard(6,'ÉTAPE 6 — COMBIEN DE SÉANCES FAUT-IL ?',h('div',{class:'st-note'},'Dans cette simulation, tu disposes de 180 minutes maximum par séance.'),sec('CE QUE TU CONNAIS',lines(['Temps total du projet : ',ec9('t'),' min'],'Capacité d\u2019une séance : 180 min')),
+      sec('CE QUE TU CHERCHES','Combien de séances faut-il au minimum pour avoir assez de temps pour terminer le projet ? Tu peux remplir une séance jusqu\u2019à 180 minutes maximum. S\u2019il reste encore du travail après une ou plusieurs séances complètes, il faut ajouter une séance supplémentaire.',
+        h('div',{class:'st-note'},'Exemple : 400 min ne tiennent pas dans 2 séances (2 × 180 = 360 min). Il faut donc une troisième séance.')),
+      sec('TA RÉPONSE',one('Nombre minimum de séances',iS,''))),
+    stepCard(7,'ÉTAPE 7 — COMBIEN DE TEMPS SERAS-TU EN ATELIER LORS DE LA DERNIÈRE SÉANCE ?',sec('CE QUE TU CONNAIS',lines(['Temps total : ',ec9('t'),' min'],['Nombre de séances : ',ec9('s')],'Durée maximale d\u2019une séance : 180 min')),
+      sec('CE QUE TU CHERCHES','Le temps utilisé pendant la dernière séance. Toutes les séances AVANT la dernière sont considérées comme complètes : tu dois retirer du temps total ces séances complètes ; ce qui reste correspond au temps utilisé pendant la dernière séance.',
+        h('div',{class:'fline'},'temps de la dernière séance = temps total − temps utilisé pendant les séances complètes précédentes'),h('div',{class:'st-note'},'Exemple : 430 min sur 3 séances. Les 2 premières séances utilisent 2 × 180 = 360 min. Il reste 70 min pour la troisième séance.')),
+      sec('TA RÉPONSE',one('Temps utilisé pendant la dernière séance',iL,'min'))),
+    fb,hints,next);p.append(h('div',{class:'acts'},bV,bH));
+  const all=[iF,iC,iT,iH,iM,iP,iS,iL];[['fixedTime',iF],['customTime',iC],['totalTime',iT],['hours',iH],['minutes',iM],['customPercent',iP],['sessions',iS],['lastSessionTime',iL]].forEach(([k,inp])=>bindState(inp,9,k));
+  all.forEach((inp,i)=>{inp.addEventListener('input',()=>inp.classList.remove('err'));inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();const nx=all.slice(i+1).find(x=>x.offsetParent!==null&&!x.disabled);if(nx)nx.focus();else bV.click();}});});
+  const HINTS=['Sépare bien les temps COMMUNS des temps qui dépendent de tes choix.','Pour convertir des minutes : cherche combien de groupes complets de 60 minutes tu peux former.','Pour un pourcentage : partie / total × 100.','Pour les séances, chaque séance peut contenir au maximum 180 minutes.'];
+  bH.addEventListener('click',()=>{if(hints9>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hints9]);hints.append(hn);ensureVisible(hn);hints9++;bH.textContent=hints9<HINTS.length?'Un autre indice':'Indice';if(hints9>=HINTS.length)bH.disabled=true;});
+  const refresh9=()=>{const put=(k,inp)=>(E9[k]||[]).forEach(b=>b.textContent=inp.value.trim()||'…');put('f',iF);put('c',iC);put('t',iT);put('s',iS);};
+  [iF,iC,iT,iS].forEach(i=>i.addEventListener('input',refresh9));
+  m9.ui={iF,iC,iT,iH,iM,iP,iS,iL,bV,bH,n:9};
+  const BTN={1:'VÉRIFIER LE TEMPS COMMUN',2:'VÉRIFIER LES PERSONNALISATIONS',3:'VÉRIFIER LE TEMPS TOTAL',4:'VÉRIFIER LA CONVERSION',5:'VÉRIFIER LE POURCENTAGE',6:'VÉRIFIER LES SÉANCES',7:'VALIDER MON PLANNING'};
+  initSteps(m9.ui,'VALIDER MON PLANNING',st=>{refresh9();bV.textContent=BTN[st]||'VALIDER MON PLANNING';if(st>=4&&m9.scene&&m9.scene.mode==='data')switchToTimeline();});bV.disabled=true;
+  bV.addEventListener('click',()=>verify9(fb,bV,bH,next));}
+function verify9(fb,bV,bH,next){const u=m9.ui;const D=m9Data();const all=[u.iF,u.iC,u.iT,u.iH,u.iM,u.iP,u.iS,u.iL];all.forEach(i=>i.classList.remove('err'));
+  const v=all.map(i=>parseNum(i.value));const bad=(inp,msg)=>{inp.classList.add('err');setFb(fb,msg,'err');if(!SILENT)inp.focus();};
+  if(!Number.isFinite(v[0]))return bad(u.iF,'Indique le temps commun, en minutes.');if(!near(v[0],D.fixed,.01))return bad(u.iF,'Pour cette étape, utilise uniquement les quatre durées communes à tous les projets : dossier, ébauche, mise en forme et contrôle final.');u.iF.classList.add('ok');
+  if(!gate(u,2,'Temps commun correct. Étape suivante : le temps de tes personnalisations.'))return;
+  if(!Number.isFinite(v[1]))return bad(u.iC,'Indique le temps de personnalisation, en minutes.');if(!near(v[1],D.custom,.01))return bad(u.iC,'Ici, n\u2019utilise PAS les temps communs. Additionne uniquement les quatre durées liées à tes choix : quadrillage, plaque de couche, finition et gravure.');u.iC.classList.add('ok');
+  if(!gate(u,3,'Temps de personnalisation correct. Étape suivante : la durée totale de ton projet.'))return;
+  if(!Number.isFinite(v[2]))return bad(u.iT,'Indique le temps total, en minutes.');if(!near(v[2],D.total,.01))return bad(u.iT,'Ton temps total doit réunir les DEUX parties : temps commun + temps de personnalisation.');u.iT.classList.add('ok');
+  if(!gate(u,4,'Temps total correct. Étape suivante : la conversion en heures et minutes.'))return;
+  if(!Number.isFinite(v[3])||!Number.isFinite(v[4]))return bad(Number.isFinite(v[3])?u.iM:u.iH,'Indique les heures complètes et les minutes restantes.');
+  if(v[4]>=60){u.iM.classList.add('err');setFb(fb,'Une heure contient 60 minutes. Si tu as encore au moins 60 minutes, tu peux former une heure supplémentaire.','err');if(!SILENT)u.iM.focus();return;}
+  if(!near(v[3],D.hours,.01)||!near(v[4],D.minutes,.01)){if(!near(v[3],D.hours,.01))u.iH.classList.add('err');if(!near(v[4],D.minutes,.01))u.iM.classList.add('err');setFb(fb,'Regroupe ton temps total par paquets de 60 minutes. Chaque paquet complet correspond à une heure. Le reste correspond aux minutes.','err');if(!SILENT)(near(v[3],D.hours,.01)?u.iM:u.iH).focus();return;}u.iH.classList.add('ok');u.iM.classList.add('ok');
+  if(!gate(u,5,'Conversion correcte. Étape suivante : la part de personnalisation.'))return;
+  if(!Number.isFinite(v[5]))return bad(u.iP,'Indique le pourcentage, arrondi au dixième.');if(!near(v[5],D.pct,.06))return bad(u.iP,'La PARTIE est ton temps de personnalisation. Le TOTAL est tout le temps du projet.');u.iP.classList.add('ok');
+  if(!gate(u,6,'Part de personnalisation correcte. Étape suivante : les séances.'))return;
+  if(!Number.isFinite(v[6]))return bad(u.iS,'Indique le nombre minimum de séances.');if(!near(v[6],D.sessions,.01))return bad(u.iS,'Une séance contient au maximum 180 minutes. Cherche combien de blocs de 180 minutes sont nécessaires pour contenir tout ton temps de travail.');u.iS.classList.add('ok');
+  if(!gate(u,7,'Nombre de séances correct. Dernière étape : le temps de la dernière séance.'))return;
+  if(!Number.isFinite(v[7]))return bad(u.iL,'Indique le temps utilisé pendant la dernière séance, en minutes.');if(!near(v[7],D.last,.01))return bad(u.iL,'Retire du temps total toutes les séances complètes placées avant la dernière. Le temps qui reste correspond à ta dernière séance.');u.iL.classList.add('ok');
+  if(SILENT)return;
+  all.forEach(i=>i.disabled=true);bV.disabled=true;bH.disabled=true;
+  completeMission(9);projectState.modules.fabrication.planning={fixedTimeMin:D.fixed,checkeringTimeMin:D.tCheck,buttplateTimeMin:D.tPlate,finishTimeMin:D.tFin,engravingTimeMin:D.tEng,customTimeMin:D.custom,totalTimeMin:D.total,hours:D.hours,minutes:D.minutes,customPercent:Math.round(D.pct*10)/10,sessionDurationMin:SESSION,sessions:D.sessions,lastSessionTimeMin:D.last};
+  setFb(fb,`Planning conforme : ${hhmm(D)}. La frise se construit…`,'ok');
+  reveal9().then(()=>{setFb(fb,`<div class="big">MISSION 9 VALIDÉE</div><div>Le planning d\u2019atelier de ton projet est prêt.</div><div>Temps total : ${hhmm(D)} — ${D.sessions} séance(s) nécessaires.</div><div>Ton projet est maintenant prêt à être chiffré.</div>`,'ok');const bC=h('button',{class:'btn ok'},'CONTINUER');bC.addEventListener('click',()=>{bC.disabled=true;startMission10();});next.append(bC);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(9,true);});}
+/* Réussite : durées, couleurs (temps fixes / personnalisation), temps total, séparations toutes les 180 min, séances, dernière séance mise en évidence */
+async function reveal9(){if(!m9.scene)drawPlanScene();if(m9.scene.mode==='data'){await switchToTimeline();await wait(300);}const S=m9.scene,D=S.D,z=S.z,det=S.det;
+  for(const p of S.parts){p.val.setAttribute('opacity','1');anim(p.val,[{opacity:0},{opacity:1}],{duration:260,fill:'both'});p.r.classList.add('on');await wait(170);}
+  await wait(400);
+  const tot=el('text',{x:S.x0,y:S.y0+S.barH+58*z,class:'ct left',text:`temps total : ${hhmm(D)} (${D.total} min)`},det);fadeIn(tot,400);await wait(800);
+  for(let k=1;k<D.sessions;k++){const x=S.x0+k*SESSION*S.spm;const ln=el('line',{x1:x,y1:S.y0-6,x2:x,y2:S.y0+S.barH+14*z,class:'sess-line'},det);drawLine(ln,350);await wait(300);}
+  for(let k=0;k<D.sessions;k++){const a=S.x0+k*SESSION*S.spm,b=Math.min(S.x0+(k+1)*SESSION*S.spm,S.x0+S.barW);
+    const t=el('text',{x:(a+b)/2,y:S.y0+S.barH+30*z,class:'det-note sess-lab',text:`SÉANCE ${k+1}`,'text-anchor':'middle'},det);fadeIn(t,300);await wait(220);}
+  const lx=S.x0+(D.sessions-1)*SESSION*S.spm;el('rect',{x:lx,y:S.y0-3,width:S.barW-(lx-S.x0),height:S.barH+6,class:'last-hi'},det);
+  const lt=el('text',{x:(lx+S.x0+S.barW)/2,y:S.y0+S.barH+44*z,class:'tcons last-t',text:`dernière séance : ${D.last} min`,'text-anchor':'middle'},det);fadeIn(lt,400);await wait(1500);
+  anim(S.g,[{opacity:1},{opacity:0}],{duration:600,fill:'forwards'});await wait(620);while(S.g.firstChild)S.g.removeChild(S.g.firstChild);
+  [...layers.net.children].forEach(c=>c.classList.remove('dim'));layers.cotes.classList.remove('dim','hide8');[m2.g,m3.g,m5.g].forEach(x=>{if(x)x.classList.remove('dim');});if(m8.g)m8.g.classList.remove('hide8');
+  await zoomTo(VB_FULL,1000);renderPlanningResult(true);await wait(400);}
+/* Résultat de la mission 9 sans animation : résumé du planning sous le projet */
+function renderPlanningResult(fade){const D=m9Data();if(!m9.g||!m9.g.parentNode)m9.g=el('g',{class:'l-m9'},svgPlan);
+  const t=el('text',{x:620,y:216,class:'tcons blank-note',text:`planning : ${hhmm(D)} — ${D.sessions} séance(s), dernière ${D.last} min (personnalisation ${fmt(D.pct,1)} %)`,'text-anchor':'middle'},m9.g);if(fade)fadeIn(t,500);return t;}
+
+/* ===================== mission 10 : présentation finale ===================== */
+/* Représentation visuelle fictive et pédagogique : elle réassemble les couches déjà validées (contours, bois, quadrillage, plaque, gravure) dans une mise en scène. Aucune donnée technique réelle. */
+const VIEWS10=[['profil-gauche','PROFIL GAUCHE'],['profil-droit','PROFIL DROIT'],['3d','VUE 3D']];
+const MODES10=[['fiche','FICHE TECHNIQUE','repères et cartouche'],['presentation','PRÉSENTATION VISUELLE','vue épurée']];
+const BGS10=[['atelier','FOND ATELIER'],['fiche','FOND FICHE TECHNIQUE'],['sombre','FOND SOMBRE']];
+const VIEW_LBL={'profil-gauche':'Profil gauche','profil-droit':'Profil droit','3d':'Vue 3D'},MODE_LBL={fiche:'Fiche technique',presentation:'Présentation visuelle'},BG_LBL={atelier:'Fond atelier',fiche:'Fond fiche technique',sombre:'Fond sombre'};
+const M3D='matrix(0.9,-0.12,-0.28,0.78,34,92)';function map3d(p){return [0.9*p[0]-0.28*p[1]+34,-0.12*p[0]+0.78*p[1]+92];}
+const STOCK_LBL={pistolet:'Crosse pistolet',anglaise:'Crosse anglaise',montecarlo:'Monte-Carlo',droite:'Crosse droite',pleine:'Crosse pleine',squelette:'Crosse squelette'};
+function futPoint(){const n=layers.net&&layers.net.children[0]&&layers.net.children[0].querySelector('[data-part="fut"]');if(!n)return [650,30];const v=n.getAttribute('d').match(/-?\d+\.?\d*/g).map(Number);const xs=v.filter((_,i)=>i%2===0),ys=v.filter((_,i)=>i%2===1);const x0=Math.min(...xs),x1=Math.max(...xs);return [x0+0.3*(x1-x0),(Math.min(...ys)+Math.max(...ys))/2];}
+let hints10=0;const m10={ui:null,g:null};
+function setBool10(field,v){const m=missionState(10);m.inputs[field]=!!v;if(m.status==='not_started')m.status='in_progress';}
+function presDefs(){const defs=svgPlan.querySelector('defs');if(defs.querySelector('#pres-metal'))return;
+  const lg=(id,stops,v)=>{const g=el('linearGradient',{id,x1:'0',y1:'0',x2:v?'0':'1',y2:v?'1':'0'},defs);stops.forEach(([o,c,a])=>el('stop',{offset:o,'stop-color':c,'stop-opacity':a==null?1:a},g));};
+  lg('pres-metal',[['0','#aab2bb'],['.35','#eef1f4'],['1','#838c96']],true);lg('pres-satin',[['0','#d8b88e'],['1','#c19667']],true);lg('pres-gloss',[['0','#c79a66'],['.32','#f2dfc3'],['.5','#b98650'],['1','#d6b184']],true);
+  lg('pres-bg-atelier',[['0','#f5f1ea'],['1','#e5dccd']],true);lg('pres-bg-sombre',[['0','#20262e'],['1','#0e1115']],true);
+  const rg=el('radialGradient',{id:'pres-shadow'},defs);el('stop',{offset:'0','stop-color':'#000','stop-opacity':.28},rg);el('stop',{offset:'1','stop-color':'#000','stop-opacity':0},rg);
+  const pt=el('pattern',{id:'pres-grid',width:20,height:20,patternUnits:'userSpaceOnUse'},defs);el('path',{d:'M20 0 L0 0 0 20',fill:'none',stroke:'#e1e6ed','stroke-width':.8},pt);}
+function presArm(parent,opts){opts=opts||{};const g=el('g',{class:'pres-arm'},parent);const src=layers.net&&layers.net.children[0];if(!src)return g;
+  const fin=(projectState.modules.conception.finish||{}).type||missionState(6).inputs.finish||'huilee';
+  ['crosse','fut'].forEach(nm=>{const n=src.querySelector(`[data-part="${nm}"]`);if(n)el('path',{d:n.getAttribute('d'),class:'pres-wood pw-'+fin},g);});
+  const c=src.cloneNode(true);c.removeAttribute('clip-path');c.setAttribute('class','pres-net');c.querySelectorAll('.ab-net').forEach(n=>n.remove());g.append(c);
+  [layers.check,layers.plate].forEach(L=>{if(L){const k=L.cloneNode(true);k.removeAttribute('clip-path');k.classList.remove('dim','dim2');g.append(k);}});
+  if(layers.engrave&&!opts.noEngrave)g.append(layers.engrave.cloneNode(true));return g;}
+function presSil(parent){const g=el('g',{class:'pres-sil'},parent);const src=layers.net.children[0];src.querySelectorAll('path.part').forEach(p=>{if(!p.classList.contains('ab-net'))el('path',{d:p.getAttribute('d'),class:'sil'},g);});const pl=layers.plate&&layers.plate.querySelector('.buttplate');if(pl)el('path',{d:pl.getAttribute('d'),class:'sil'},g);return g;}
+function presAnn(parent,map,side){const g=el('g',{class:'ann'},parent);const D=m9Data();const C=CHECK[st.stock];const G=buttGeom(D.ang);const E=engraveGeom();
+  const items=[['FINITION : '+D.finName,futPoint(),-1],['GRAVURE : '+(side==='d'?'flanc gauche (non visible ici)':D.moName),[E.cx,E.cy],-1],['QUADRILLAGE : '+D.lpi+' LPI',C.c,1],['PLAQUE DE COUCHE : θ = '+D.ang+'°',[(G.A[0]+G.B[0])/2,(G.A[1]+G.B[1])/2],1]];
+  const placed=[];items.forEach(([txt,pt,dir])=>{const p=map(pt);let ly=dir<0?Math.min(p[1]-60,-100):Math.max(p[1]+60,178);let anchor='middle',lx=p[0];if(lx<170){anchor='start';lx=Math.max(-55,lx-12);}else if(lx>830){anchor='end';lx=Math.min(1058,lx+12);}
+    const w=txt.length*8.4,x0=anchor==='start'?lx:anchor==='end'?lx-w:lx-w/2;for(let k=0;k<4&&placed.some(b=>b.dir===dir&&Math.abs(b.y-ly)<18&&x0<b.x1+16&&x0+w>b.x0-16);k++)ly+=dir*22;placed.push({dir,y:ly,x0,x1:x0+w});
+    el('line',{x1:p[0],y1:p[1],x2:p[0],y2:dir<0?ly+6:ly-14,class:'ann-l'},g);el('circle',{cx:p[0],cy:p[1],r:2.6,class:'ann-p'},g);el('text',{x:lx,y:ly,class:'t10 ann-t','text-anchor':anchor,text:txt},g);});return g;}
+function presCart(parent,x,y){const D=m9Data();const M=MODELS[st.model];const g=el('g',{class:'cart10'},parent);const rows=[['Projet',`${st.model} — ${M.name||''}`.replace(/ — $/,'')],['Crosse',STOCK_LBL[st.stock]||st.stock],['Quadrillage',`${D.lpi} LPI`],['Plaque de couche',`${D.ang}°`],['Finition',D.finName],['Gravure',D.moName]];
+  const w=286,hh=34+rows.length*16;el('rect',{x,y,width:w,height:hh,class:'cart-r'},g);el('text',{x:x+10,y:y+17,class:'t10 cart-h',text:'PROJET BMA ARMURIER'},g);el('line',{x1:x,y1:y+24,x2:x+w,y2:y+24,class:'cart-l'},g);
+  rows.forEach(([k,v],i)=>{el('text',{x:x+10,y:y+40+i*16,class:'t10 cart-k',text:k},g);el('text',{x:x+w-10,y:y+40+i*16,class:'t10 cart-v','text-anchor':'end',text:v},g);});return g;}
+function buildPresentation(view,mode,bg){presDefs();if(m10.g&&m10.g.parentNode)m10.g.remove();const root=m10.g=el('g',{class:'l-m10'},svgPlan);const X0=-70,Y0=-195,W=1140,H=560;
+  el('rect',{x:X0,y:Y0,width:W,height:H,class:'bg10 bg10-atelier',fill:'url(#pres-bg-atelier)'},root);
+  const bf=el('g',{class:'bg10 bg10-fiche'},root);el('rect',{x:X0,y:Y0,width:W,height:H,fill:'#fbfcfd'},bf);el('rect',{x:X0,y:Y0,width:W,height:H,fill:'url(#pres-grid)'},bf);
+  el('rect',{x:X0,y:Y0,width:W,height:H,class:'bg10 bg10-sombre',fill:'url(#pres-bg-sombre)'},root);
+  const vg=el('g',{class:'pres-view pv-profil-gauche'},root);el('ellipse',{cx:480,cy:196,rx:540,ry:18,fill:'url(#pres-shadow)'},vg);presArm(vg);presAnn(vg,p=>p,'g');presCart(vg,772,176);
+  const vd=el('g',{class:'pres-view pv-profil-droit'},root);el('ellipse',{cx:520,cy:196,rx:540,ry:18,fill:'url(#pres-shadow)'},vd);presArm(el('g',{transform:'matrix(-1,0,0,1,1000,0)'},vd),{noEngrave:true});presAnn(vd,p=>[1000-p[0],p[1]],'d');presCart(vd,-58,176);
+  const v3=el('g',{class:'pres-view pv-3d'},root);const f3=el('g',{class:'fake3d'},v3);el('ellipse',{cx:470,cy:236,rx:540,ry:24,transform:'rotate(-6 470 236)',fill:'url(#pres-shadow)'},f3);
+  for(let i=7;i>=1;i--)presSil(el('g',{transform:`translate(${(i*1.6).toFixed(1)} ${(i*2.2).toFixed(1)}) ${M3D}`},f3));presArm(el('g',{transform:M3D},f3));presAnn(v3,map3d,'3').classList.add('ann3d');presLegend(v3);presCart(v3,772,222);
+  const M=MODELS[st.model];el('text',{x:-52,y:-164,class:'t10 pres-title',text:'PROJET BMA ARMURIER — PROTOTYPE FINAL'},root);
+  el('text',{x:-52,y:-146,class:'t10 pres-sub',text:`Projet ${st.model}${M&&M.name?' — '+M.name:''} · ${(STOCK_LBL[st.stock]||st.stock).replace(/^Crosse /,'crosse ')}${st.designer?' · concepteur : '+st.designer:''} · représentation fictive`},root);
+  applyPres(view,mode,bg);const sh=document.querySelector('.plan-sheet');if(sh)sh.classList.add('pres-on');return root;}
+function applyPres(view,mode,bg){const r=m10.g;if(!r)return;r.setAttribute('class',`l-m10 v-${view} m-${mode} b-${bg}`+(R3.active&&view==='3d'?' gl-on':''));if(view==='3d')r3Start();else r3Stop();}
+/* légende de la vue 3D temps réel (mode fiche technique) : repères fixes, sans lignes vers un modèle en rotation */
+function presLegend(parent){const D=m9Data();const g=el('g',{class:'ann legend3d'},parent);el('text',{x:-52,y:236,class:'t10 cart-h',text:'TES CHOIX VISIBLES SUR LE MODÈLE'},g);
+  [['Finition',D.finName],['Quadrillage',`${D.lpi} LPI`],['Plaque de couche',`θ = ${D.ang}°`],['Gravure',`${D.moName} (flanc gauche)`]].forEach(([k,v],i)=>{el('text',{x:-52,y:258+i*18,class:'t10 cart-k',text:k},g);el('text',{x:108,y:258+i*18,class:'t10 cart-v',text:v},g);});return g;}
+function curPres(){const I=missionState(10).inputs;return {view:I.viewMode||'3d',mode:I.presentationMode||'presentation',bg:I.backgroundMode||'atelier'};}
+async function startMission10(opts){opts=opts||{};hints10=0;const gen=planGen;sceneReady=false;setTopinfo(10);projectState.progress.currentMission=10;
+  buildMission10();if(opts.prefill)prefillMission(10);const P=curPres();const I=missionState(10).inputs;if(!I.viewMode){setInput(10,'viewMode',P.view);setInput(10,'presentationMode',P.mode);setInput(10,'backgroundMode',P.bg);}
+  await wait(opts.fast?0:500);if(gen!==planGen)return;if(Math.round(curVB[2])!==VB_FULL[2])await zoomTo(VB_FULL,opts.fast?200:800);if(gen!==planGen)return;
+  const root=buildPresentation(opts.fast?P.view:'profil-gauche',P.mode,P.bg);if(!opts.fast){anim(root,[{opacity:0},{opacity:1}],{duration:900,fill:'both'});await wait(1300);if(gen!==planGen)return;applyPres(P.view,P.mode,P.bg);await wait(600);}
+  sceneDone(m10.ui);}
+function renderPresentationResult(){const P=curPres();buildPresentation(P.view,P.mode,P.bg);}
+function buildMission10(){const D=m9Data();const p=$('#panel');p.innerHTML='';const M=MODELS[st.model];
+  const top=h('div',{class:'panel-scroll'}),bot=h('div',{class:'panel-fixed'});p.append(top,bot);
+  const fb=h('div',{class:'fb',id:'fb'});const hints=h('div',{class:'hints',id:'hints'});const bV=h('button',{class:'btn blue',id:'btn-verif'},'VALIDER LA PRÉSENTATION');const bH=h('button',{class:'btn ghost',id:'btn-hint'},'Indice');const next=h('div',{class:'next',id:'next'});
+  const group=(list,key,cls)=>{const box=h('div',{class:'lpis '+cls});list.forEach(([id,lab,small])=>{const b=h('button',{type:'button',class:'sc lpi','data-id':id,'aria-pressed':'false'},h('b',{},lab),small?h('small',{},small):null);b.addEventListener('click',()=>choose(key,id));box.append(b);});return box;};
+  const gV=group(VIEWS10,'viewMode','g10v'),gM=group(MODES10,'presentationMode','g10m'),gB=group(BGS10,'backgroundMode','g10b');
+  const mark=(box,id)=>box.querySelectorAll('.lpi').forEach(b=>{const on=b.getAttribute('data-id')===id;b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on?'true':'false');});
+  function choose(key,id){setInput(10,key,id);const P=curPres();mark(gV,P.view);mark(gM,P.mode);mark(gB,P.bg);applyPres(P.view,P.mode,P.bg);}
+  const chk=(field,label,val)=>{const inp=h('input',{type:'checkbox'});const row=h('label',{class:'chk10'},inp,h('span',{},label,' ',h('small',{},`(ton choix : ${val})`)));inp.addEventListener('change',()=>{setBool10(field,inp.checked);row.classList.remove('err');});return {row,inp,field};};
+  const cF=chk('checkFinish','Ma finition est correcte',D.finName),cE=chk('checkEngraving','Ma gravure est correcte',D.moName),cB=chk('checkButtplate','Ma plaque de couche est correcte',`${D.ang}°`);const checks=[cF,cE,cB];
+  top.append(
+    h('div',{class:'mnum'},'MISSION 10 — DÉCOUVRIR TON PROJET FINAL'),h('div',{class:'msub'},'Représentation visuelle fictive et pédagogique de ton projet.'),
+    h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Tu vas maintenant découvrir la version finale de ton projet. Choisis :'),h('ol',{class:'steps'},h('li',{},'la vue que tu veux afficher ;'),h('li',{},'le mode de présentation ;'),h('li',{},'le fond de présentation.')),h('p',{class:'why'},'Observe ensuite si tous les choix de ton projet apparaissent correctement.')),
+    h('div',{},h('div',{class:'ttl'},'POURQUOI ?'),h('p',{class:'why'},'Cette mission te permet de visualiser le résultat final de ton travail avant de passer à la suite du projet.')),
+    h('div',{class:'card proj10'},h('div',{class:'ttl'},'TON PROJET'),h('div',{class:'dl'},h('span',{},'Projet'),h('b',{},`${st.model}${M&&M.name?' — '+M.name:''}`),h('span',{},'Crosse'),h('b',{},STOCK_LBL[st.stock]||st.stock),h('span',{},'Quadrillage'),h('b',{},`${D.lpi} LPI`),h('span',{},'Plaque de couche'),h('b',{},`${D.ang}°`),h('span',{},'Finition'),h('b',{},D.finName),h('span',{},'Gravure'),h('b',{},D.moName))));
+  bot.append(
+    h('div',{class:'step-card'},h('div',{class:'step-title'},'1 — LA VUE'),sec('CE QUE TU CHOISIS','La vue affichée à gauche. La VUE 3D est la plus complète ; les profils montrent chaque côté.'),sec('TON CHOIX',gV)),
+    h('div',{class:'step-card'},h('div',{class:'step-title'},'2 — LE MODE DE PRÉSENTATION'),sec('CE QUE TU CHOISIS','FICHE TECHNIQUE : repères et cartouche. PRÉSENTATION VISUELLE : vue épurée.'),sec('TON CHOIX',gM)),
+    h('div',{class:'step-card'},h('div',{class:'step-title'},'3 — LE FOND'),sec('CE QUE TU CHOISIS','Le fond qui met le mieux en valeur ton projet.'),sec('TON CHOIX',gB)),
+    h('div',{class:'step-card'},h('div',{class:'step-title'},'4 — VÉRIFIE TON PROJET'),sec('CE QUE TU CHERCHES','Observe le dessin à gauche et coche les éléments corrects. Ce n\u2019est pas un piège : il s\u2019agit de vérifier que ton projet affiche bien tes choix.'),
+      sec('TA RÉPONSE',cF.row,cE.row,cB.row,h('div',{class:'st-note'},'La gravure est placée sur le flanc gauche : en PROFIL DROIT, elle n\u2019est pas visible.'))),
+    fb,hints,next);p.append(h('div',{class:'acts'},bV,bH));
+  const HINTS=['Passe en VUE 3D ou en PROFIL GAUCHE pour voir la gravure.','Le mode FICHE TECHNIQUE affiche un repère pour chacun de tes choix.','Le fond SOMBRE fait ressortir la finition et le quadrillage.'];
+  bH.addEventListener('click',()=>{if(hints10>=HINTS.length)return;const hn=h('div',{class:'hint'},HINTS[hints10]);hints.append(hn);ensureVisible(hn);hints10++;bH.textContent=hints10<HINTS.length?'Un autre indice':'Indice';if(hints10>=HINTS.length)bH.disabled=true;});
+  m10.ui={bV,bH,n:10,checks,setView:id=>choose('viewMode',id),setMode:id=>choose('presentationMode',id),setBg:id=>choose('backgroundMode',id),
+    setChecks:m=>checks.forEach(c=>{c.inp.checked=!!m[c.field];}),checkAll:()=>checks.forEach(c=>{c.inp.checked=true;setBool10(c.field,true);})};
+  const P=curPres();mark(gV,P.view);mark(gM,P.mode);mark(gB,P.bg);bV.disabled=true;
+  bV.addEventListener('click',()=>verify10(fb,bV,bH,next));}
+function verify10(fb,bV,bH,next){const u=m10.ui;const miss=u.checks.filter(c=>!c.inp.checked);u.checks.forEach(c=>c.row.classList.toggle('err',!c.inp.checked));
+  if(miss.length){setFb(fb,'Observe ton projet à gauche, puis coche les trois éléments : finition, gravure et plaque de couche.','err');ensureVisible(u.checks[0].row);return;}
+  u.checks.forEach(c=>{c.inp.disabled=true;setBool10(c.field,true);});$$('#panel .lpis .lpi').forEach(b=>b.disabled=true);bV.disabled=true;bH.disabled=true;
+  const P=curPres();completeMission(10);projectState.modules.presentation=projectState.modules.presentation||{};projectState.modules.presentation.finalView={viewMode:P.view,presentationMode:P.mode,backgroundMode:P.bg};
+  setFb(fb,'<div class="big">MISSION 10 VALIDÉE</div><div>Ton projet final est prêt à être présenté.</div><div>Tu peux maintenant passer à l\u2019étape suivante du projet.</div>','ok');
+  const bC=h('button',{class:'btn ok'},'CONTINUER');const soon=h('div',{class:'soon'});bC.addEventListener('click',()=>{bC.disabled=true;soon.textContent='La prochaine étape permettra de tester ton projet sur une cible.';});next.append(bC,soon);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(10,true);}
+
+/* ===================== mission 10 : rendu 3D temps réel (WebGL natif, aucune bibliothèque) =====================
+   Le modèle est reconstruit à partir des contours déjà validés du projet (crosse, fût, boîtier, canon, bande, plaque, pontet) :
+   extrusion à arêtes arrondies, canon en cylindre, pontet en tube, bois procédural selon la finition, quadrillage et gravure
+   appliqués en décalcomanie. Représentation fictive et pédagogique : aucune donnée fonctionnelle. Repli automatique sur la vue SVG
+   si WebGL est indisponible. */
+const R3={fit:null,cv:null,gl:null,ok:false,failed:false,active:false,raf:0,prog:null,sprog:null,meshes:[],caps:[],shadow:null,angle:0.62,tilt:-0.24,
+  user:false,lastUser:0,drag:null,t0:0,lastT:0,key:'',bb:null,center:[0,0],dist:2400,dec:{L:null,R:null},fin:0,ro:null};
+const R3_REGION=[-62,-134,1122,346]; // zone du plan (x, y, largeur, hauteur) réservée au modèle : ni titre, ni cartouche, ni légende
+function r3Rings(d,step){const T=d.match(/[a-zA-Z]|-?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/gi)||[];let i=0,cmd='',x=0,y=0,sx=0,sy=0,px=0,py=0,prev='';const rings=[];let cur=null;
+  const num=()=>parseFloat(T[i++]);const push=(X,Y)=>{if(!cur)cur=[[x,y]];cur.push([X,Y]);};
+  const line=(X,Y)=>{const n=Math.max(1,Math.ceil(Math.hypot(X-x,Y-y)/step));for(let k=1;k<=n;k++)push(x+(X-x)*k/n,y+(Y-y)*k/n);x=X;y=Y;};
+  const cubic=(x1,y1,x2,y2,X,Y)=>{const L=Math.hypot(x1-x,y1-y)+Math.hypot(x2-x1,y2-y1)+Math.hypot(X-x2,Y-y2);const n=Math.max(2,Math.ceil(L/step));
+    for(let k=1;k<=n;k++){const t=k/n,m=1-t;push(m*m*m*x+3*m*m*t*x1+3*m*t*t*x2+t*t*t*X,m*m*m*y+3*m*m*t*y1+3*m*t*t*y2+t*t*t*Y);}px=x2;py=y2;x=X;y=Y;};
+  const quad=(x1,y1,X,Y)=>{const L=Math.hypot(x1-x,y1-y)+Math.hypot(X-x1,Y-y1);const n=Math.max(2,Math.ceil(L/step));for(let k=1;k<=n;k++){const t=k/n,m=1-t;push(m*m*x+2*m*t*x1+t*t*X,m*m*y+2*m*t*y1+t*t*Y);}px=x1;py=y1;x=X;y=Y;};
+  const arc=(rx,ry,ph,fa,fs,X,Y)=>{rx=Math.abs(rx);ry=Math.abs(ry);if(!rx||!ry){line(X,Y);return;}const c=Math.cos(ph*Math.PI/180),s=Math.sin(ph*Math.PI/180);const dx=(x-X)/2,dy=(y-Y)/2;
+    const x1=c*dx+s*dy,y1=-s*dx+c*dy;let lam=x1*x1/(rx*rx)+y1*y1/(ry*ry);if(lam>1){rx*=Math.sqrt(lam);ry*=Math.sqrt(lam);}
+    const nm=rx*rx*ry*ry-rx*rx*y1*y1-ry*ry*x1*x1,dn=rx*rx*y1*y1+ry*ry*x1*x1;const co=(fa===fs?-1:1)*Math.sqrt(Math.max(0,nm/dn));const cxp=co*rx*y1/ry,cyp=-co*ry*x1/rx;
+    const cx=c*cxp-s*cyp+(x+X)/2,cy=s*cxp+c*cyp+(y+Y)/2;const ang=(ux,uy,vx,vy)=>Math.atan2(ux*vy-uy*vx,ux*vx+uy*vy);
+    const t1=ang(1,0,(x1-cxp)/rx,(y1-cyp)/ry);let dt=ang((x1-cxp)/rx,(y1-cyp)/ry,(-x1-cxp)/rx,(-y1-cyp)/ry);if(!fs&&dt>0)dt-=2*Math.PI;if(fs&&dt<0)dt+=2*Math.PI;
+    const n=Math.max(4,Math.ceil(Math.abs(dt)*Math.max(rx,ry)/step));for(let k=1;k<=n;k++){const t=t1+dt*k/n;push(cx+rx*Math.cos(t)*c-ry*Math.sin(t)*s,cy+rx*Math.cos(t)*s+ry*Math.sin(t)*c);}x=X;y=Y;};
+  while(i<T.length){const t=T[i];if(/[a-zA-Z]/.test(t)){cmd=t;i++;}else if(!cmd)break;const rel=cmd!==cmd.toUpperCase(),C=cmd.toUpperCase();
+    if(C==='M'){let X=num(),Y=num();if(rel){X+=x;Y+=y;}if(cur&&cur.length>2)rings.push(cur);cur=[[X,Y]];x=sx=X;y=sy=Y;cmd=rel?'l':'L';}
+    else if(C==='L'){let X=num(),Y=num();if(rel){X+=x;Y+=y;}line(X,Y);}
+    else if(C==='H'){let X=num();if(rel)X+=x;line(X,y);}
+    else if(C==='V'){let Y=num();if(rel)Y+=y;line(x,Y);}
+    else if(C==='C'){let a=[num(),num(),num(),num(),num(),num()];if(rel)a=a.map((v,k)=>v+(k%2?y:x));cubic(...a);}
+    else if(C==='S'){let a=[num(),num(),num(),num()];if(rel)a=a.map((v,k)=>v+(k%2?y:x));const r1=/[CS]/.test(prev)?2*x-px:x,r2=/[CS]/.test(prev)?2*y-py:y;cubic(r1,r2,...a);}
+    else if(C==='Q'){let a=[num(),num(),num(),num()];if(rel)a=a.map((v,k)=>v+(k%2?y:x));quad(...a);}
+    else if(C==='T'){let a=[num(),num()];if(rel){a[0]+=x;a[1]+=y;}const r1=/[QT]/.test(prev)?2*x-px:x,r2=/[QT]/.test(prev)?2*y-py:y;quad(r1,r2,...a);}
+    else if(C==='A'){let a=[num(),num(),num(),num(),num(),num(),num()];if(rel){a[5]+=x;a[6]+=y;}arc(a[0],a[1],a[2],a[3],a[4],a[5],a[6]);}
+    else if(C==='Z'){if(cur){if(Math.hypot(x-sx,y-sy)>1e-6)line(sx,sy);if(cur.length>2)rings.push(cur);}cur=null;x=sx;y=sy;}
+    else{i++;}prev=C;}
+  if(cur&&cur.length>2)rings.push(cur);
+  return rings.map(r=>{const o=[];r.forEach(p=>{const q=o[o.length-1];if(!q||Math.hypot(p[0]-q[0],p[1]-q[1])>0.35)o.push(p);});const a=o[0],b=o[o.length-1];if(o.length>1&&Math.hypot(a[0]-b[0],a[1]-b[1])<0.35)o.pop();return o;}).filter(r=>r.length>=3);}
+function r3Area(r){let s=0;for(let i=0;i<r.length;i++){const a=r[i],b=r[(i+1)%r.length];s+=a[0]*b[1]-b[0]*a[1];}return s/2;}
+/* extrusion à arêtes arrondies : rings en coordonnées « monde » (y vers le haut), épaisseur t, rayon d'arrondi b */
+function r3Extrude(rings,t,b,mat,decal){if(!rings.length)return null;rings=rings.map(r=>r.slice());let oi=0;rings.forEach((r,k)=>{if(Math.abs(r3Area(r))>Math.abs(r3Area(rings[oi])))oi=k;});
+  rings.forEach((r,k)=>{const a=r3Area(r);if((k===oi&&a<0)||(k!==oi&&a>0))r.reverse();});if(oi)rings.unshift(rings.splice(oi,1)[0]);
+  b=Math.max(0,Math.min(b,t/2-0.4));const prof=[];[0,30,60,90].forEach(dg=>{const f=dg*Math.PI/180;prof.push([-b+b*Math.sin(f),t/2-b+b*Math.cos(f),Math.sin(f),Math.cos(f)]);});
+  [90,60,30,0].forEach(dg=>{const f=dg*Math.PI/180;prof.push([-b+b*Math.sin(f),-(t/2-b+b*Math.cos(f)),Math.sin(f),-Math.cos(f)]);});
+  const V=[],I=[];const caps=[[],[]];
+  rings.forEach(r=>{const n=r.length,N=[];for(let i=0;i<n;i++){const p0=r[(i-1+n)%n],p1=r[i],p2=r[(i+1)%n];let a=[p1[1]-p0[1],-(p1[0]-p0[0])],c=[p2[1]-p1[1],-(p2[0]-p1[0])];
+      const la=Math.hypot(...a)||1,lc=Math.hypot(...c)||1;let m=[a[0]/la+c[0]/lc,a[1]/la+c[1]/lc];const lm=Math.hypot(...m)||1;N.push([m[0]/lm,m[1]/lm]);}
+    const base=V.length/8;for(let i=0;i<n;i++)prof.forEach(([o,z,nx,nz])=>{V.push(r[i][0]+N[i][0]*o,r[i][1]+N[i][1]*o,z,N[i][0]*nx,N[i][1]*nx,nz,0,0);});
+    const P=prof.length;for(let i=0;i<n;i++){const i2=(i+1)%n;for(let j=0;j<P-1;j++){const a=base+i*P+j,b2=base+i2*P+j;I.push(a,b2,b2+1,a,b2+1,a+1);}}
+    caps[0].push(r.map((p,i)=>[p[0]-N[i][0]*b,p[1]-N[i][1]*b]));caps[1].push(r.map((p,i)=>[p[0]-N[i][0]*b,p[1]-N[i][1]*b]));});
+  return {kind:'mesh',V:new Float32Array(V),I:new Uint16Array(I),mat,cap:0,capRings:caps[0],t,decal};}
+function r3Tube(pts,rad,mat,closed){const V=[],I=[],S=10;const n=pts.length;for(let i=0;i<n;i++){const p=pts[i],a=pts[Math.max(0,i-1)],c=pts[Math.min(n-1,i+1)];let tx=c[0]-a[0],ty=c[1]-a[1];const l=Math.hypot(tx,ty)||1;tx/=l;ty/=l;const nx=-ty,ny=tx;
+    for(let k=0;k<S;k++){const f=k/S*Math.PI*2,cs=Math.cos(f),sn=Math.sin(f);V.push(p[0]+rad*cs*nx,p[1]+rad*cs*ny,rad*sn,cs*nx,cs*ny,sn,0,0);}}
+  const m=closed?n:n-1;for(let i=0;i<m;i++){const i2=(i+1)%n;for(let k=0;k<S;k++){const k2=(k+1)%S;I.push(i*S+k,i2*S+k,i2*S+k2,i*S+k,i2*S+k2,i*S+k2);}}
+  return {kind:'mesh',V:new Float32Array(V),I:new Uint16Array(I),mat};}
+function r3Cylinder(x0,x1,yc,r,mat){const V=[],I=[],S=40;for(const x of [x0,x1])for(let k=0;k<S;k++){const f=k/S*Math.PI*2;V.push(x,yc+r*Math.cos(f),r*Math.sin(f),0,Math.cos(f),Math.sin(f),0,0);}
+  for(let k=0;k<S;k++){const k2=(k+1)%S;I.push(k,S+k,S+k2,k,S+k2,k2);}
+  const c0=V.length/8;V.push(x1,yc,0,1,0,0,0,0);for(let k=0;k<S;k++){const f=k/S*Math.PI*2;V.push(x1,yc+r*Math.cos(f),r*Math.sin(f),1,0,0,0,0);}for(let k=0;k<S;k++)I.push(c0,c0+1+k,c0+1+(k+1)%S);
+  return {kind:'mesh',V:new Float32Array(V),I:new Uint16Array(I),mat};}
+function r3Disc(x,yc,r,mat){const V=[x,yc,0,1,0,0,0,0],I=[],S=24;for(let k=0;k<S;k++){const f=k/S*Math.PI*2;V.push(x,yc+r*Math.cos(f),r*Math.sin(f),1,0,0,0,0);}for(let k=0;k<S;k++)I.push(0,1+k,1+(k+1)%S);return {kind:'mesh',V:new Float32Array(V),I:new Uint16Array(I),mat};}
+/* construction du modèle à partir des contours du projet */
+function r3Build(){const src=layers.net&&layers.net.children[0];if(!src)throw new Error('contours indisponibles');const get=nm=>{const n=src.querySelector(`[data-part="${nm}"]`);return n?n.getAttribute('d'):null;};
+  const all=[];const partRings={};['crosse','fut','boitier','canon','bande'].forEach(nm=>{const d=get(nm);partRings[nm]=d?r3Rings(d,2.2):[];partRings[nm].forEach(r=>all.push(...r));});
+  const pl=layers.plate&&layers.plate.querySelector('.buttplate');partRings.plaque=pl?r3Rings(pl.getAttribute('d'),1.5):[];partRings.plaque.forEach(r=>all.push(...r));
+  const xs=all.map(p=>p[0]),ys=all.map(p=>p[1]);const bb={x0:Math.min(...xs),x1:Math.max(...xs),y0:Math.min(...ys),y1:Math.max(...ys)};bb.w=bb.x1-bb.x0;bb.h=bb.y1-bb.y0;R3.bb=bb;
+  const cx=(bb.x0+bb.x1)/2,cy=(bb.y0+bb.y1)/2;R3.center=[cx,cy];const W=r=>r.map(p=>[p[0]-cx,cy-p[1]]);
+  const M=[];const ex=(nm,t,b,mat,decal)=>{const rr=partRings[nm].map(W);if(rr.length){const m=r3Extrude(rr,t,b,mat,decal);if(m)M.push(m);}};
+  ex('crosse',38,10,0,'wood');ex('fut',30,8,0,'wood');ex('boitier',30,3,1,'metal');ex('bande',7,1.5,2,null);ex('plaque',38.5,4,3,null);
+  const cr=partRings.canon.flat();if(cr.length){const cxs=cr.map(p=>p[0]),cys=cr.map(p=>p[1]);const x0=Math.min(...cxs),x1=Math.max(...cxs),y0=Math.min(...cys),y1=Math.max(...cys);const r=Math.max(3.2,(y1-y0)/2);
+    M.push(r3Cylinder(x0-cx,x1-cx,cy-(y0+y1)/2,r,2));M.push(r3Disc(x1-cx+0.2,cy-(y0+y1)/2,r*0.42,4));}
+  src.querySelectorAll('.guard').forEach(g=>{r3Rings(g.getAttribute('d'),1.6).forEach(r=>M.push(r3Tube(W(r),2.4,4,false)));});
+  src.querySelectorAll('circle.bead').forEach(c=>{const x=+c.getAttribute('cx'),y=+c.getAttribute('cy'),r=Math.max(2,+c.getAttribute('r'));const ring=[];for(let k=0;k<16;k++){const f=k/16*Math.PI*2;ring.push([x+r*Math.cos(f),y+r*Math.sin(f)]);}const m=r3Extrude([W(ring)],5,1.2,4,null);if(m)M.push(m);});
+  return M;}
+const R3_VS=`attribute vec3 aP;attribute vec3 aN;uniform mat4 uM;uniform mat4 uVP;uniform mat3 uNM;varying vec3 vW;varying vec3 vN;varying vec3 vO;void main(){vec4 w=uM*vec4(aP,1.0);vW=w.xyz;vN=uNM*aN;vO=aP;gl_Position=uVP*w;}`;
+const R3_FS=`precision highp float;varying vec3 vW;varying vec3 vN;varying vec3 vO;uniform vec3 uEye;uniform float uMat;uniform float uFin;uniform float uCap;uniform sampler2D uDec;uniform float uDecOn;uniform vec4 uBB;uniform vec2 uC;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n2(vec2 p){vec2 i=floor(p);vec2 f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(h(i),h(i+vec2(1.0,0.0)),f.x),mix(h(i+vec2(0.0,1.0)),h(i+vec2(1.0,1.0)),f.x),f.y);}
+float fbm(vec2 p){float s=0.0;float a=0.5;for(int i=0;i<4;i++){s+=a*n2(p);p*=2.03;a*=0.5;}return s;}
+void main(){vec3 N=normalize(vN);vec3 V=normalize(uEye-vW);if(dot(N,V)<0.0)N=-N;
+ vec3 L1=normalize(vec3(-0.35,0.78,0.52));vec3 L2=normalize(vec3(0.7,0.2,-0.35));vec3 L3=normalize(vec3(0.1,-0.35,0.9));
+ vec3 base;float sp;float sh;float env;
+ if(uMat<0.5){float g=vO.y*0.11+vO.z*0.015+fbm(vec2(vO.x*0.004,vO.y*0.03+vO.z*0.02))*1.7+n2(vec2(vO.x*0.05,vO.y*0.6))*0.25;float ring=abs(fract(g)-0.5)*2.0;
+   vec3 dk=vec3(0.28,0.15,0.07);vec3 lt=vec3(0.54,0.32,0.15);if(uFin<0.5){dk=vec3(0.40,0.26,0.14);lt=vec3(0.64,0.47,0.29);}else if(uFin>1.5){dk=vec3(0.24,0.12,0.05);lt=vec3(0.50,0.28,0.12);}
+   base=mix(dk,lt,0.35+0.65*smoothstep(0.05,0.95,ring))*(0.9+0.2*fbm(vec2(vO.x*0.02,vO.y*0.35)));
+   sp=uFin<0.5?0.05:(uFin<1.5?0.30:0.95);sh=uFin<0.5?8.0:(uFin<1.5?22.0:120.0);env=uFin<0.5?0.0:(uFin<1.5?0.07:0.30);}
+ else if(uMat<1.5){base=vec3(0.50,0.53,0.57)*(0.93+0.14*n2(vec2(vO.x*0.03,vO.y*1.4)));sp=0.95;sh=46.0;env=0.35;}
+ else if(uMat<2.5){base=vec3(0.16,0.18,0.21);sp=0.9;sh=70.0;env=0.30;}
+ else if(uMat<3.5){base=vec3(0.07,0.075,0.08);sp=0.05;sh=6.0;env=0.0;}
+ else{base=vec3(0.10,0.11,0.12);sp=0.6;sh=40.0;env=0.18;}
+ if(uDecOn>0.5&&uCap>0.5){vec2 uv=vec2((vO.x+uC.x-uBB.x)/uBB.z,(uC.y-vO.y-uBB.y)/uBB.w);vec4 d=texture2D(uDec,uv);base=mix(base,d.rgb,d.a);sp*=(1.0-0.6*d.a);}
+ float d1=max(dot(N,L1),0.0);float d2=max(dot(N,L2),0.0);float d3=max(dot(N,L3),0.0);
+ vec3 col=base*(0.24+0.80*d1+0.30*d2+0.22*d3);
+ col+=vec3(sp*pow(max(dot(N,normalize(L1+V)),0.0),sh));col+=vec3(sp*0.45*pow(max(dot(N,normalize(L2+V)),0.0),sh));
+ vec3 R=reflect(-V,N);vec3 sky=mix(vec3(0.22,0.23,0.25),vec3(0.96,0.97,0.99),smoothstep(-0.25,0.85,R.y));float fr=pow(1.0-max(dot(N,V),0.0),3.0);
+ col+=env*sky*(0.35+0.65*fr);col+=fr*0.06;
+ gl_FragColor=vec4(pow(clamp(col,0.0,1.0),vec3(0.92)),1.0);}`;
+const R3_SVS=`attribute vec3 aP;uniform mat4 uM;uniform mat4 uVP;varying vec2 vQ;void main(){vQ=aP.xz;gl_Position=uVP*uM*vec4(aP,1.0);}`;
+const R3_SFS=`precision mediump float;varying vec2 vQ;uniform vec2 uS;uniform float uA;void main(){vec2 q=vQ/uS;float d=length(q);gl_FragColor=vec4(0.0,0.0,0.0,uA*(1.0-smoothstep(0.25,1.0,d)));}`;
+const R3_CVS=`attribute vec3 aP;uniform mat4 uM;uniform mat4 uVP;void main(){gl_Position=uVP*uM*vec4(aP,1.0);}`;
+const R3_CFS=`precision mediump float;void main(){gl_FragColor=vec4(0.0);}`;
+function r3Prog(gl,vs,fs){const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(o));return o;};
+  const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_SHADER,vs));gl.attachShader(p,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));
+  const u={},a={};const nu=gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);for(let i=0;i<nu;i++){const n=gl.getActiveUniform(p,i).name;u[n]=gl.getUniformLocation(p,n);}
+  const na=gl.getProgramParameter(p,gl.ACTIVE_ATTRIBUTES);for(let i=0;i<na;i++){const n=gl.getActiveAttrib(p,i).name;a[n]=gl.getAttribLocation(p,n);}return {p,u,a};}
+function r3Upload(gl,m){m.vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,m.vb);gl.bufferData(gl.ARRAY_BUFFER,m.V,gl.STATIC_DRAW);m.ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,m.ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,m.I,gl.STATIC_DRAW);m.n=m.I.length;
+  if(m.capRings){m.capGL=[];[1,-1].forEach(side=>{const z=side*m.t/2;const outer=m.capRings[0];const o=outer[0];const F=[];m.capRings.forEach(r=>{for(let i=0;i<r.length;i++){const a=r[i],b=r[(i+1)%r.length];F.push(o[0],o[1],z,a[0],a[1],z,b[0],b[1],z);}});
+    const xs=outer.map(p=>p[0]),ys=outer.map(p=>p[1]);const x0=Math.min(...xs)-1,x1=Math.max(...xs)+1,y0=Math.min(...ys)-1,y1=Math.max(...ys)+1;
+    const Q=[x0,y0,z,0,0,side,0,0,x1,y0,z,0,0,side,0,0,x1,y1,z,0,0,side,0,0,x0,y1,z,0,0,side,0,0];
+    const fb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,fb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(F),gl.STATIC_DRAW);const qb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,qb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(Q),gl.STATIC_DRAW);
+    m.capGL.push({side,fb,fn:F.length/3,qb});});}}
+function r3Mat(){return new Float32Array(16);}
+function r3Mul(a,b){const o=r3Mat();for(let i=0;i<4;i++)for(let j=0;j<4;j++){let s=0;for(let k=0;k<4;k++)s+=a[k*4+j]*b[i*4+k];o[i*4+j]=s;}return o;}
+function r3Id(){const m=r3Mat();m[0]=m[5]=m[10]=m[15]=1;return m;}
+function r3RotX(a){const m=r3Id(),c=Math.cos(a),s=Math.sin(a);m[5]=c;m[6]=s;m[9]=-s;m[10]=c;return m;}
+function r3RotY(a){const m=r3Id(),c=Math.cos(a),s=Math.sin(a);m[0]=c;m[2]=-s;m[8]=s;m[10]=c;return m;}
+function r3Tr(x,y,z){const m=r3Id();m[12]=x;m[13]=y;m[14]=z;return m;}
+function r3Persp(fy,a,n,f){const m=r3Mat(),t=1/Math.tan(fy/2);m[0]=t/a;m[5]=t;m[10]=(f+n)/(n-f);m[11]=-1;m[14]=2*f*n/(n-f);return m;}
+function r3NM(m){return new Float32Array([m[0],m[1],m[2],m[4],m[5],m[6],m[8],m[9],m[10]]);}
+function r3Init(){if(R3.ok)return true;if(R3.failed)return false;try{
+  const sheet=document.querySelector('.plan-sheet');if(!sheet)throw new Error('feuille absente');const cv=document.createElement('canvas');cv.className='r3d';sheet.insertBefore(cv,svgPlan.nextSibling);R3.cv=cv;r3Size();
+  const gl=cv.getContext('webgl',{stencil:true,antialias:true,alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:false})||cv.getContext('experimental-webgl',{stencil:true,antialias:true,alpha:true});
+  if(!gl)throw new Error('WebGL indisponible');if(!gl.getContextAttributes().stencil)throw new Error('stencil indisponible');R3.gl=gl;
+  R3.prog=r3Prog(gl,R3_VS,R3_FS);R3.sprog=r3Prog(gl,R3_SVS,R3_SFS);R3.cprog=r3Prog(gl,R3_CVS,R3_CFS);
+  const sq=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,sq);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,0,-1,1,0,-1,1,0,1,-1,0,1]),gl.STATIC_DRAW);R3.sq=sq;
+  const blank=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,blank);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([0,0,0,0]));R3.blank=blank;
+  cv.addEventListener('webglcontextlost',e=>{e.preventDefault();R3.ok=false;R3.failed=true;r3Stop();if(m10.g)m10.g.classList.remove('gl-on');});
+  cv.addEventListener('pointerdown',e=>{R3.drag={x:e.clientX,y:e.clientY,a:R3.angle,t:R3.tilt};R3.user=true;try{cv.setPointerCapture(e.pointerId);}catch(_){}});
+  cv.addEventListener('pointermove',e=>{if(!R3.drag)return;R3.angle=R3.drag.a+(e.clientX-R3.drag.x)*0.01;R3.tilt=Math.max(-0.6,Math.min(0.15,R3.drag.t+(e.clientY-R3.drag.y)*0.004));});
+  const up=()=>{if(R3.drag){R3.drag=null;R3.lastUser=performance.now();}};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+  if(window.ResizeObserver){R3.ro=new ResizeObserver(()=>r3Size());R3.ro.observe(svgPlan);}window.addEventListener('resize',r3Size);
+  R3.ok=true;return true;}catch(err){R3.failed=true;if(R3.cv){R3.cv.remove();R3.cv=null;}console.warn('Vue 3D temps réel indisponible, vue SVG conservée :',err&&err.message);return false;}}
+function r3Size(){const cv=R3.cv;if(!cv)return;const sheet=cv.parentNode;const sr=svgPlan.getBoundingClientRect(),pr=sheet.getBoundingClientRect();let w=sr.width,h=sr.height;if(!w||!h){w=1280;h=Math.round(1280*560/1140);}
+  cv.style.left=(sr.left-pr.left||0)+'px';cv.style.top=(sr.top-pr.top||0)+'px';cv.style.width=w+'px';cv.style.height=h+'px';const dpr=Math.min(2,window.devicePixelRatio||1);const W=Math.round(w*dpr),H=Math.round(h*dpr);
+  if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;const ext=R3.gl&&R3.gl.getExtension&&R3.gl.getExtension('STACKGL_resize_drawingbuffer');if(ext)ext.resize(W,H);}R3.size=[W,H];}
+function r3Key(){const c=projectState.modules.conception||{};return [st.model,st.stock,(c.checkering||{}).lpi,(c.buttplate||{}).angle,(c.finish||{}).type,(c.engraving||{}).motif,st.designer].join('|');}
+function r3Prepare(){const gl=R3.gl;const k=r3Key();if(R3.key===k&&R3.meshes.length)return;R3.meshes.forEach(m=>{gl.deleteBuffer(m.vb);gl.deleteBuffer(m.ib);});
+  R3.meshes=r3Build();R3.meshes.forEach(m=>r3Upload(gl,m));R3.key=k;const fin=(projectState.modules.conception.finish||{}).type||'huilee';R3.fin=fin==='huilee'?0:fin==='satinee'?1:2;
+  R3.dec={L:null,R:null};['L','R'].forEach(side=>r3Decal(side).then(tex=>{if(R3.key===k)R3.dec[side]=tex;}).catch(()=>{}));}
+/* décalcomanies : quadrillage (deux flancs) + gravure (flanc gauche) rendus depuis les couches SVG validées */
+function r3DecalSVG(side){const bb=R3.bb;const W=2048,H=Math.max(64,Math.round(2048*bb.h/bb.w));const parts=[];const ids=new Set();
+  const take=L=>{if(!L)return;const c=L.cloneNode(true);c.removeAttribute('class');[c,...c.querySelectorAll('[clip-path]')].forEach(n=>{const m=(n.getAttribute('clip-path')||'').match(/#([^)]+)\)/);if(m)ids.add(m[1]);});c.querySelectorAll('[vector-effect]').forEach(n=>n.removeAttribute('vector-effect'));parts.push(new XMLSerializer().serializeToString(c));};
+  take(layers.check);if(side==='L')take(layers.engrave);const defs=[...ids].map(id=>{const n=svgPlan.querySelector('#'+CSS.escape(id));return n?new XMLSerializer().serializeToString(n):'';}).join('');
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="${bb.x0} ${bb.y0} ${bb.w} ${bb.h}"><style>.ck{fill:none;stroke:#120a04;stroke-width:0.95;stroke-opacity:.9}.mo{fill:none;stroke:#23272c;stroke-width:1.1}.mo.thin{stroke:#3a3f45;stroke-width:.55}.mo-text{fill:#23272c;font-family:Arial,Helvetica,sans-serif;font-weight:700;letter-spacing:.08em}</style><defs>${defs}</defs>${parts.join('')}</svg>`;return {svg,W,H};}
+function r3Decal(side){const {svg,W,H}=r3DecalSVG(side);const gl=R3.gl;const make=(src,raw)=>{const tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);
+    if(raw)gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,raw.width,raw.height,0,gl.RGBA,gl.UNSIGNED_BYTE,raw.data);else gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,src);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);return tex;};
+  if(window.__r3DecalLoader)return Promise.resolve(window.__r3DecalLoader(svg,W,H)).then(raw=>make(null,raw));
+  return new Promise((res,rej)=>{const img=new Image();img.onload=()=>{try{const c=document.createElement('canvas');c.width=W;c.height=H;c.getContext('2d').drawImage(img,0,0,W,H);res(make(c));}catch(e){rej(e);}};img.onerror=rej;img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);});}
+function r3Frame(now){const gl=R3.gl;if(!gl||!R3.active)return;const dt=R3.lastT?Math.min(0.1,(now-R3.lastT)/1000):0;R3.lastT=now;
+  if(!R3.drag&&!REDUCED&&(!R3.user||now-R3.lastUser>2600))R3.angle+=dt*0.42;
+  r3Draw();R3.raf=requestAnimationFrame(r3Frame);}
+function r3Draw(){const gl=R3.gl;const [W,H]=R3.size;const vb=[-70,-195,1140,560];const s=Math.min(W/vb[2],H/vb[3]);const ox=(W-vb[2]*s)/2,oy=(H-vb[3]*s)/2;
+  const rx=ox+(R3_REGION[0]-vb[0])*s,ry=oy+(R3_REGION[1]-vb[1])*s,rw=R3_REGION[2]*s,rh=R3_REGION[3]*s;
+  gl.viewport(0,0,W,H);gl.clearColor(0,0,0,0);gl.clearStencil(0);gl.clearDepth(1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);
+  gl.viewport(Math.round(rx),Math.round(H-ry-rh),Math.round(rw),Math.round(rh));
+  const aspect=rw/rh,fy=9*Math.PI/180;const half=Math.max(R3.bb.w/2,1);const dist=half/(Math.tan(fy/2)*aspect*0.93);R3.dist=dist;
+  const P=r3Persp(fy,aspect,Math.max(10,dist-900),dist+900);const Vw=r3Tr(0,0,-dist);const VP=r3Mul(P,Vw);
+  const bob=Math.sin(performance.now()/1400)*3;const R0=r3Mul(r3Tr(0,bob,0),r3Mul(r3RotX(-R3.tilt),r3RotY(R3.angle)));const eye=[0,0,dist];
+  // cadrage automatique : le modèle ne sort jamais de sa zone, quel que soit l'angle (perspective du bout le plus proche)
+  const ext=sc=>{const M=r3Mul(VP,r3Mul(R0,r3Mat4Scale(sc,sc,sc)));let mx=0,my=0;for(const x of [-R3.bb.w/2,R3.bb.w/2])for(const y of [-R3.bb.h/2,R3.bb.h/2])for(const z of [-21,21]){const cw=M[3]*x+M[7]*y+M[11]*z+M[15];const cx=(M[0]*x+M[4]*y+M[8]*z+M[12])/cw,cy=(M[1]*x+M[5]*y+M[9]*z+M[13])/cw;mx=Math.max(mx,Math.abs(cx));my=Math.max(my,Math.abs(cy));}return [mx,my];};
+  let tgt=1;for(let it=0;it<3;it++){const [mx,my]=ext(tgt);const f=Math.min(0.97/mx,0.9/my,1);if(f>=0.999)break;tgt*=f;}
+  R3.fit=R3.fit==null?tgt:(tgt<R3.fit?tgt:R3.fit+(tgt-R3.fit)*0.06);const Mo=r3Mul(R0,r3Mat4Scale(R3.fit,R3.fit,R3.fit));
+  gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);gl.disable(gl.BLEND);
+  // ombre au sol (sous le modèle, suit la rotation)
+  const gy=-(R3.bb.h/2)-10;const S=R3.sprog;gl.useProgram(S.p);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);
+  const Ms=r3Mul(r3Tr(0,(gy+bob*0.2)*R3.fit,0),r3Mul(r3RotX(-R3.tilt),r3Mul(r3RotY(R3.angle),r3Mat4Scale(half*1.05*R3.fit,1,48*R3.fit))));
+  gl.uniformMatrix4fv(S.u.uM,false,Ms);gl.uniformMatrix4fv(S.u.uVP,false,VP);gl.uniform2f(S.u.uS,1,1);gl.uniform1f(S.u.uA,0.30);
+  gl.bindBuffer(gl.ARRAY_BUFFER,R3.sq);gl.enableVertexAttribArray(S.a.aP);gl.vertexAttribPointer(S.a.aP,3,gl.FLOAT,false,12,0);gl.drawArrays(gl.TRIANGLE_FAN,0,4);gl.disableVertexAttribArray(S.a.aP);
+  gl.depthMask(true);gl.disable(gl.BLEND);
+  const G=R3.prog;gl.useProgram(G.p);gl.uniformMatrix4fv(G.u.uM,false,Mo);gl.uniformMatrix4fv(G.u.uVP,false,VP);gl.uniformMatrix3fv(G.u.uNM,false,r3NM(Mo));gl.uniform3f(G.u.uEye,...eye);gl.uniform1f(G.u.uFin,R3.fin);
+  gl.uniform4f(G.u.uBB,R3.bb.x0,R3.bb.y0,R3.bb.w,R3.bb.h);gl.uniform2f(G.u.uC,R3.center[0],R3.center[1]);gl.uniform1i(G.u.uDec,0);gl.activeTexture(gl.TEXTURE0);
+  const bindMesh=(buf,stride)=>{gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.enableVertexAttribArray(G.a.aP);gl.vertexAttribPointer(G.a.aP,3,gl.FLOAT,false,stride,0);if(G.a.aN!=null&&G.a.aN>=0){if(stride===32){gl.enableVertexAttribArray(G.a.aN);gl.vertexAttribPointer(G.a.aN,3,gl.FLOAT,false,32,12);}else{gl.disableVertexAttribArray(G.a.aN);gl.vertexAttrib3f(G.a.aN,0,0,1);}}};
+  for(const m of R3.meshes){gl.uniform1f(G.u.uMat,m.mat);gl.uniform1f(G.u.uCap,0);gl.uniform1f(G.u.uDecOn,0);gl.bindTexture(gl.TEXTURE_2D,R3.blank);bindMesh(m.vb,32);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,m.ib);gl.drawElements(gl.TRIANGLES,m.n,gl.UNSIGNED_SHORT,0);
+    if(m.capGL)for(const c of m.capGL){ // faces planes : remplissage pair-impair par le tampon stencil (trous et formes concaves sans triangulation)
+      gl.enable(gl.STENCIL_TEST);gl.colorMask(false,false,false,false);gl.depthMask(false);gl.disable(gl.DEPTH_TEST);gl.stencilFunc(gl.ALWAYS,0,1);gl.stencilOp(gl.KEEP,gl.KEEP,gl.INVERT);gl.stencilMask(1);
+      gl.bindBuffer(gl.ARRAY_BUFFER,c.fb);gl.enableVertexAttribArray(G.a.aP);gl.vertexAttribPointer(G.a.aP,3,gl.FLOAT,false,12,0);if(G.a.aN>=0){gl.disableVertexAttribArray(G.a.aN);gl.vertexAttrib3f(G.a.aN,0,0,c.side);}gl.drawArrays(gl.TRIANGLES,0,c.fn);
+      gl.colorMask(true,true,true,true);gl.depthMask(true);gl.enable(gl.DEPTH_TEST);gl.stencilFunc(gl.EQUAL,1,1);gl.stencilOp(gl.ZERO,gl.ZERO,gl.ZERO);
+      const tex=m.decal==='wood'?(R3.dec[c.side>0?'L':'R']):m.decal==='metal'&&c.side>0?R3.dec.L:null;gl.bindTexture(gl.TEXTURE_2D,tex||R3.blank);gl.uniform1f(G.u.uDecOn,tex?1:0);gl.uniform1f(G.u.uCap,1);
+      bindMesh(c.qb,32);gl.drawArrays(gl.TRIANGLE_FAN,0,4);gl.disable(gl.STENCIL_TEST);gl.uniform1f(G.u.uCap,0);gl.uniform1f(G.u.uDecOn,0);}}
+  if(G.a.aN>=0)gl.disableVertexAttribArray(G.a.aN);gl.disableVertexAttribArray(G.a.aP);}
+function r3Mat4Scale(x,y,z){const m=r3Id();m[0]=x;m[5]=y;m[10]=z;return m;}
+function r3Start(){if(!r3Init())return false;try{r3Prepare();}catch(err){console.warn('Modèle 3D indisponible :',err&&err.message);R3.failed=true;r3Stop();return false;}
+  r3Size();R3.fit=null;R3.active=true;R3.cv.classList.add('on');if(m10.g)m10.g.classList.add('gl-on');cancelAnimationFrame(R3.raf);R3.lastT=0;R3.raf=requestAnimationFrame(r3Frame);return true;}
+function r3Stop(){R3.active=false;cancelAnimationFrame(R3.raf);if(R3.cv)R3.cv.classList.remove('on');if(m10.g)m10.g.classList.remove('gl-on');}
 
 /* ===================== RESTAURATION DEPUIS L'ÉTAT (rendu sans animation) ===================== */
 function prefillMission(n){const m=missionState(n).inputs;
@@ -1381,7 +1853,9 @@ function prefillMission(n){const m=missionState(n).inputs;
   if(n===5&&m5.ui){m5.ui.iD.value=m.offset;m5.ui.iL.value=m.length;if(m.angle!=='')m5.ui.setAngle(+m.angle);}
   if(n===6&&m6.ui){const u=m6.ui;[['areaA',u.iA],['areaB',u.iB],['areaC',u.iC],['oneSideArea',u.iS],['totalArea',u.iT],['totalAreaCm2',u.iCm]].forEach(([k,inp])=>inp.value=m[k]);if(m.finish!=='')u.setFinish(m.finish);}
   if(n===7&&m7.ui){const u=m7.ui;[['usableWidth',u.iW],['usableHeight',u.iH],['kWidth',u.iKW],['kHeight',u.iKH],['kSelected',u.iK],['finalWidth',u.iFW],['finalHeight',u.iFH],['offsetX',u.iX],['offsetY',u.iY]].forEach(([k,inp])=>inp.value=m[k]);if(m.motif!=='')u.setMotif(m.motif);}
-  if(n===8&&m8.ui){const u=m8.ui;[['requiredWidth',u.iW],['requiredHeight',u.iH],['blankArea',u.iBA],['requiredArea',u.iRA],['extraArea',u.iE],['extraPercent',u.iP]].forEach(([k,inp])=>inp.value=m[k]);if(m.blankChoice!=='')u.setChoice(m.blankChoice);}}
+  if(n===8&&m8.ui){const u=m8.ui;[['requiredWidth',u.iW],['requiredHeight',u.iH],['blankArea',u.iBA],['requiredArea',u.iRA],['extraArea',u.iE],['extraPercent',u.iP]].forEach(([k,inp])=>inp.value=m[k]);if(m.blankChoice!=='')u.setChoice(m.blankChoice);}
+  if(n===9&&m9.ui){const u=m9.ui;[['fixedTime',u.iF],['customTime',u.iC],['totalTime',u.iT],['hours',u.iH],['minutes',u.iM],['customPercent',u.iP],['sessions',u.iS],['lastSessionTime',u.iL]].forEach(([k,inp])=>inp.value=m[k]);}
+  if(n===10&&m10.ui){const u=m10.ui;u.setView(m.viewMode||'3d');u.setMode(m.presentationMode||'presentation');u.setBg(m.backgroundMode||'atelier');u.setChecks(m);}}
 function buildDonePanel(){const p=$('#panel');p.innerHTML='';const top=h('div',{class:'panel-scroll'});p.append(top);const sm=stateSummary();
   top.append(h('div',{class:'mnum'},'PROJET À JOUR'),h('div',{},h('div',{class:'ttl'},'ÉTAT DU PROJET'),h('p',{class:'mission'},'Ton projet est à jour. La prochaine étape n\u2019est pas encore disponible.')),
     h('div',{class:'card'},h('div',{class:'ttl'},'MISSIONS VALIDÉES'),...sm.items.map(it=>h('div',{class:'why',style:'margin:4px 0'},h('b',{},it.title),h('br'),it.result))));}
@@ -1389,7 +1863,7 @@ function buildDonePanel(){const p=$('#panel');p.innerHTML='';const top=h('div',{
 async function renderProjectFromState(){const S=projectState;st.model=S.design.model;st.stock=S.design.stock;st.designer=S.student.name||'';
   for(let n=1;n<=MISSION_COUNT;n++)st['done'+n]=missionState(n).status==='completed';
   enterAtelier();drawPlan();
-  if(st.done1)renderZonesResult();if(st.done2)renderABResult(false);if(st.done3)renderFutResult(false);if(st.done4)renderCheckeringResult(false);if(st.done5)renderButtplateResult(false);if(st.done6)renderFinishResult(false);if(st.done7)renderEngravingResult(false);if(st.done8)renderBlankResult(false);
+  if(st.done1)renderZonesResult();if(st.done2)renderABResult(false);if(st.done3)renderFutResult(false);if(st.done4)renderCheckeringResult(false);if(st.done5)renderButtplateResult(false);if(st.done6)renderFinishResult(false);if(st.done7)renderEngravingResult(false);if(st.done8)renderBlankResult(false);if(st.done9)renderPlanningResult(false);if(st.done10)renderPresentationResult();
   const open=firstOpenMission();
   if(open===1){buildMission1();prefillMission(1);setTopinfo(1);}
   else if(open===2){await startMission2({fast:true,prefill:true});}
@@ -1399,6 +1873,8 @@ async function renderProjectFromState(){const S=projectState;st.model=S.design.m
   else if(open===6){await startMission6({fast:true,prefill:true});}
   else if(open===7){await startMission7({fast:true,prefill:true});}
   else if(open===8){await startMission8({fast:true,prefill:true});}
+  else if(open===9){await startMission9({fast:true,prefill:true});}
+  else if(open===10){await startMission10({fast:true,prefill:true});}
   else{setTopinfo(MISSION_COUNT,true);buildDonePanel();}
   return open;}
 
@@ -1501,6 +1977,7 @@ function autoSolve(){
   const nextBtn=$('#next.on button');if(nextBtn&&!nextBtn.disabled){nextBtn.click();return;}
   const bV=$('#btn-verif');if(!bV)return;if(bV.disabled&&!(m6.phase===2&&/MISSION 6/.test(($('#panel .mnum')||{}).textContent||''))){if(!sceneReady)setTimeout(autoSolve,300);return;}
   const num=($('#panel .mnum')||{}).textContent||'';const set=(inp,v)=>{inp.value=String(v);inp.dispatchEvent(new Event('input',{bubbles:true}));};
+  if(/MISSION 10/.test(num)){m10.ui.checkAll();bV.click();return;}
   if(/MISSION 1/.test(num)){const e=expected();const ins=$$('#panel .fields input');[e.a,e.c,e.f].forEach((v,i)=>set(ins[i],v));}
   else if(/MISSION 2/.test(num)){const S=STOCKS[st.stock];const sq=S.dx*S.dx+S.dy*S.dy;const ins=$$('#panel .calc input');[S.dx,S.dy,sq,sq,S.ab].forEach((v,i)=>set(ins[i],v));}
   else if(/MISSION 3/.test(num)){const {uw,uh,best,detL,detH}=m3Data();const u=m3.ui;set(u.iW,uw);set(u.iH,uh);u.setScale(best);set(u.iL,detL);set(u.iD,Math.round(detH*10)/10);}
@@ -1509,8 +1986,9 @@ function autoSolve(){
   else if(/MISSION 6/.test(num)){const u=m6.ui;if(m6.phase===2){u.setFinish(missionState(6).inputs.finish||'huilee');u.bF.click();return;}const d=m6Data();set(u.iA,d.A);set(u.iB,d.B);set(u.iC,Math.round(d.C));set(u.iS,d.oneSide);set(u.iT,d.total);set(u.iCm,fmt(d.cm2,1));}
   else if(/MISSION 7/.test(num)){const u=m7.ui;const id=missionState(7).inputs.motif||'plaque';u.setMotif(id);const d=m7Data(id);set(u.iW,d.uw);set(u.iH,d.uh);set(u.iKW,fmt(d.kW,2));set(u.iKH,fmt(d.kH,2));set(u.iK,fmt(d.k,4));set(u.iFW,fmt(d.fW,2));set(u.iFH,fmt(d.fH,2));set(u.iX,fmt(d.offX,2));set(u.iY,fmt(d.offY,2));}
   else if(/MISSION 8/.test(num)){const u=m8.ui;const d=m8Data();set(u.iW,d.rw);set(u.iH,d.rh);u.setChoice(d.best);set(u.iBA,d.bArea);set(u.iRA,d.rArea);set(u.iE,d.extra);set(u.iP,fmt(d.pct,1));}
+  else if(/MISSION 9/.test(num)){const u=m9.ui,d=m9Data();set(u.iF,d.fixed);set(u.iC,d.custom);set(u.iT,d.total);set(u.iH,d.hours);set(u.iM,d.minutes);set(u.iP,fmt(d.pct,1));set(u.iS,d.sessions);set(u.iL,d.last);}
   else return;
-  const su={6:m6.ui,7:m7.ui,8:m8.ui}[+(num.match(/MISSION (\d)/)||[])[1]];if(su&&su.groups){for(let i=0;i<5;i++){const s0=su.step;bV.click();if(su.step===s0)break;}}else bV.click();}
+  const su={6:m6.ui,7:m7.ui,8:m8.ui,9:m9.ui}[+(num.match(/MISSION (\d)/)||[])[1]];if(su&&su.groups){for(let i=0;i<12;i++){const s0=su.step;bV.click();if(su.step===s0)break;}}else bV.click();}
 document.addEventListener('keydown',e=>{if(e.ctrlKey||e.altKey||e.metaKey)return;const k=(e.key||'').toLowerCase();if(k.length!==1||!/[a-z]/.test(k)){return;}
   keyBuf=(keyBuf+k).slice(-CHEAT.length);if(keyBuf!==CHEAT)return;keyBuf='';
   const a=document.activeElement;if(a&&a.tagName==='INPUT'&&/prof$/i.test(a.value||''))a.value=a.value.replace(/prof$/i,'');
@@ -1546,7 +2024,7 @@ function init(){const a=$('#svg-accueil');a.setAttribute('viewBox','-30 -110 106
 init();
 /* Audit de débordement du panneau (à lancer dans la console : __bma.auditPanel()) : éléments plus larges que leur boîte ou sortant du panneau */
 function auditPanel(){const p=$('#panel');if(!p)return [];const pr=p.getBoundingClientRect();const out=[];p.querySelectorAll('*').forEach(e=>{const r=e.getBoundingClientRect();const over=e.scrollWidth>e.clientWidth+1&&getComputedStyle(e).overflowX!=='auto'&&getComputedStyle(e).overflowX!=='scroll';const outside=r.width>0&&(r.left<pr.left-1||r.right>pr.right+1);if(over||outside)out.push({el:e,tag:e.tagName+(e.className?'.'+String(e.className).split(' ').join('.'):''),over,outside,scrollWidth:e.scrollWidth,clientWidth:e.clientWidth});});return out;}
-window.__bma={auditLayout,st,MODELS,STOCKS,M3,FRAME,SCALES,CHECK,LPIS,HEEL,ANGLES,FLANK,FINISHES,ENGRAVE,MOTIFS,BLANKS,m8Data,startMission8,m8,m3Data,m4Data,m5Data,m6Data,m7Data,startMission4,startMission5,startMission6,startMission7,m4,m5,m6,m7,buttGeom,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
+window.__bma={R3,r3Draw,r3Start,r3Rings,r3Build,auditLayout,T9,m9Data,startMission9,m9,m10,startMission10,VIEWS10,MODES10,BGS10,st,MODELS,STOCKS,M3,FRAME,SCALES,CHECK,LPIS,HEEL,ANGLES,FLANK,FINISHES,ENGRAVE,MOTIFS,BLANKS,m8Data,startMission8,m8,m3Data,m4Data,m5Data,m6Data,m7Data,startMission4,startMission5,startMission6,startMission7,m4,m5,m6,m7,buttGeom,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
 })();
 </script>
 </body>
