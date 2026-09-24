@@ -342,6 +342,22 @@ svg.plan .l-m10.b-sombre .sil{fill:#2a2420}
 svg.plan .l-m10.gl-on .pv-3d .fake3d,svg.plan .l-m10.gl-on .pv-3d .ann3d,svg.plan .l-m10 .legend3d{display:none}
 svg.plan .l-m10.gl-on .pv-3d .legend3d{display:inline}
 .card.proj10 .dl b{max-width:none;white-space:nowrap}
+/* transition : essai en stand de tir */
+svg.plan .l-stand{pointer-events:none}
+svg.plan .l-stand .st-shade{opacity:.6}
+svg.plan .l-stand .st-lab{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;fill:#e3e6ea}
+svg.plan .l-stand .st-h{font-family:var(--sans);font-size:19px;font-weight:700;letter-spacing:.1em;fill:#f2f4f6}
+svg.plan .l-stand .st-s{font-family:var(--sans);font-size:12.5px;fill:#c9ced4}
+svg.plan .l-stand .st-tag{font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.16em;fill:#e8b04b}
+.st-dl b{max-width:none;white-space:nowrap}
+svg.plan .l-stand .pres-net .part,svg.plan .l-stand .pres-net .guard{fill:none;stroke:#1d2229;stroke-width:1;vector-effect:non-scaling-stroke}
+svg.plan .l-stand .pres-net [data-part="boitier"],svg.plan .l-stand .pres-net [data-part="canon"],svg.plan .l-stand .pres-net [data-part="bande"]{fill:url(#pres-metal)}
+svg.plan .l-stand .pres-net .detail{stroke:#58606a;stroke-width:.6}
+svg.plan .l-stand .pres-net .bead{fill:#1d2229}
+svg.plan .l-stand .pw-huilee{fill:#d7c09b}svg.plan .l-stand .pw-satinee{fill:url(#pres-satin)}svg.plan .l-stand .pw-brillante{fill:url(#pres-gloss)}
+svg.plan .l-stand .finish{display:none}
+svg.plan .l-stand .buttplate{fill:#30353b;stroke:#1d2229}
+.st-entry{margin-top:12px}
 .chk10{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.4;margin:5px 0;cursor:pointer}
 .chk10 input{width:16px;height:16px;margin-top:2px;flex:none}
 .chk10 small{color:var(--ink-3)}
@@ -605,7 +621,7 @@ function stateSummary(){const S=projectState;const e=expected();const m1=S.missi
     {title:'Mission 7 — Gravure personnalisée',status:m7.status,result:m7.status==='completed'?`${mo7?mo7.name:'—'} · k = ${fmt(d7.k,2)} · ${fmt(d7.fW,1)} × ${fmt(d7.fH,1)} mm · X = ${fmt(d7.offX,1)} mm, Y = ${fmt(d7.offY,1)} mm`:'',lines:m7.status==='completed'?[`Motif : ${mo7?mo7.name:'—'}`,`Coefficient : ${fmt(d7.k,2)}`,`Dimensions finales : ${fmt(d7.fW,1)} × ${fmt(d7.fH,1)} mm`,`Position : X = ${fmt(d7.offX,1)} mm · Y = ${fmt(d7.offY,1)} mm`]:null,inputs:[['Largeur utile',m7.inputs.usableWidth],['Hauteur utile',m7.inputs.usableHeight],['Motif',mo7?mo7.name:''],['k largeur',m7.inputs.kWidth],['k hauteur',m7.inputs.kHeight],['k retenu',m7.inputs.kSelected],['Largeur finale',m7.inputs.finalWidth],['Hauteur finale',m7.inputs.finalHeight],['Décalage X',m7.inputs.offsetX],['Décalage Y',m7.inputs.offsetY]]},
     {title:'Mission 8 — Choix de l\u2019ébauche',status:m8.status,result:m8.status==='completed'?`Ébauche ${d8.best} · ${d8.B.w} × ${d8.B.h} mm · supplément ${fmt(d8.extra)} mm² (${fmt(d8.pct,1)} %)`:'',lines:m8.status==='completed'?[`Ébauche : ${d8.best}`,`Dimensions : ${d8.B.w} × ${d8.B.h} mm`,`Surface : ${fmt(d8.bArea)} mm²`,`Surface supplémentaire : ${fmt(d8.extra)} mm²`,`Part supplémentaire : ${fmt(d8.pct,1)} %`]:null,inputs:[['Longueur minimale',m8.inputs.requiredWidth],['Hauteur minimale',m8.inputs.requiredHeight],['Ébauche',m8.inputs.blankChoice],['Surface ébauche',m8.inputs.blankArea],['Surface minimale',m8.inputs.requiredArea],['Supplément',m8.inputs.extraArea],['Part',m8.inputs.extraPercent]]},
     {title:'Mission 9 — Planning d\u2019atelier',status:m9.status,result:m9.status==='completed'?`${d9.total} min = ${d9.hours} h ${String(d9.minutes).padStart(2,'0')} min · ${d9.sessions} séance(s) · personnalisation ${fmt(d9.pct,1)} %`:'',lines:m9.status==='completed'?[`Temps fixe : ${d9.fixed} min`,`Personnalisation : ${d9.custom} min`,`Temps total : ${d9.hours} h ${String(d9.minutes).padStart(2,'0')} min`,`Part de personnalisation : ${fmt(d9.pct,1)} %`,`Séances : ${d9.sessions}`,`Dernière séance : ${d9.last} min`]:null,inputs:[['Temps fixe',m9.inputs.fixedTime],['Personnalisation',m9.inputs.customTime],['Temps total',m9.inputs.totalTime],['Heures',m9.inputs.hours],['Minutes',m9.inputs.minutes],['Part',m9.inputs.customPercent],['Séances',m9.inputs.sessions],['Dernière séance',m9.inputs.lastSessionTime]]},
-    {title:'Mission 10 — Présentation finale du projet',status:m10.status,result:m10.status==='completed'?`${VIEW_LBL[i10.viewMode]||'—'} · ${MODE_LBL[i10.presentationMode]||'—'} · ${BG_LBL[i10.backgroundMode]||'—'}`:'',lines:m10.status==='completed'?[`Vue : ${VIEW_LBL[i10.viewMode]||'—'}`,`Mode : ${MODE_LBL[i10.presentationMode]||'—'}`,`Fond : ${BG_LBL[i10.backgroundMode]||'—'}`]:null,inputs:[['Vue',VIEW_LBL[i10.viewMode]||''],['Mode',MODE_LBL[i10.presentationMode]||''],['Fond',BG_LBL[i10.backgroundMode]||''],['Vérifications',[i10.checkFinish,i10.checkEngraving,i10.checkButtplate].some(Boolean)?`${[i10.checkFinish,i10.checkEngraving,i10.checkButtplate].filter(Boolean).length}/3`:'']]}]};}
+    {title:'Mission 10 — Présentation finale du projet',status:m10.status,result:m10.status==='completed'?`${VIEW_LBL[i10.viewMode]||'—'} · ${MODE_LBL[i10.presentationMode]||'—'} · ${BG_LBL[i10.backgroundMode]||'—'}`:'',lines:m10.status==='completed'?[`Vue : ${VIEW_LBL[i10.viewMode]||'—'}`,`Mode : ${MODE_LBL[i10.presentationMode]||'—'}`,`Fond : ${BG_LBL[i10.backgroundMode]||'—'}`,...((S.modules.presentation||{}).standReached?['Stand de tir : scène d\u2019essai atteinte (simulation)']:[])]:null,inputs:[['Vue',VIEW_LBL[i10.viewMode]||''],['Mode',MODE_LBL[i10.presentationMode]||''],['Fond',BG_LBL[i10.backgroundMode]||''],['Vérifications',[i10.checkFinish,i10.checkEngraving,i10.checkButtplate].some(Boolean)?`${[i10.checkFinish,i10.checkEngraving,i10.checkButtplate].filter(Boolean).length}/3`:'']]}]};}
 function expected(){const m=MODELS[st.model];const a=m.rear/100*L_TOTAL,c=m.mid/100*L_TOTAL;return {a,c,f:L_TOTAL-a-c,m,ga:a*G,gc:c*G,gf:(L_TOTAL-a-c)*G};}
 
 /* ===================== silhouettes (dessin) ===================== */
@@ -644,7 +660,7 @@ function setTopinfo(n,validated){const m=MODELS[st.model];$('#topinfo').innerHTM
 /* ===================== le plan ===================== */
 const svgPlan=$('#svg-plan');
 let layers={};let planGen=0;
-function drawPlan(){planGen++;const svg=svgPlan;while(svg.firstChild)svg.removeChild(svg.firstChild);setVB(VB_FULL);m2.g=null;m3.g=null;m4.g=null;m5.g=null;m5.scene=null;m6.g=null;m7.g=null;m7.scene=null;m8.g=null;m8.scene=null;m9.g=null;m9.scene=null;if(typeof R3!=='undefined')r3Stop();m10.g=null;{const sh=document.querySelector('.plan-sheet');if(sh)sh.classList.remove('pres-on');}layers.check=null;layers.plate=null;layers.finish=null;layers.engrave=null;
+function drawPlan(){planGen++;const svg=svgPlan;while(svg.firstChild)svg.removeChild(svg.firstChild);setVB(VB_FULL);m2.g=null;m3.g=null;m4.g=null;m5.g=null;m5.scene=null;m6.g=null;m7.g=null;m7.scene=null;m8.g=null;m8.scene=null;m9.g=null;m9.scene=null;if(typeof R3!=='undefined')r3Stop();m10.g=null;if(typeof STAND!=='undefined'){STAND.g=null;STAND.on=false;}{const sh=document.querySelector('.plan-sheet');if(sh)sh.classList.remove('pres-on');}layers.check=null;layers.plate=null;layers.finish=null;layers.engrave=null;
   const defs=el('defs',{},svg);const pat=el('pattern',{id:'grid',width:25,height:25,patternUnits:'userSpaceOnUse'},defs);
   el('path',{d:'M25,0 L0,0 L0,25',fill:'none',stroke:'#e6e9ee','stroke-width':1},pat);
   el('rect',{x:-70,y:-215,width:1140,height:560,fill:'url(#grid)'},svg);
@@ -1660,8 +1676,8 @@ function verify10(fb,bV,bH,next){const u=m10.ui;const miss=u.checks.filter(c=>!c
   if(miss.length){setFb(fb,'Observe ton projet à gauche, puis coche les trois éléments : finition, gravure et plaque de couche.','err');ensureVisible(u.checks[0].row);return;}
   u.checks.forEach(c=>{c.inp.disabled=true;setBool10(c.field,true);});$$('#panel .lpis .lpi').forEach(b=>b.disabled=true);bV.disabled=true;bH.disabled=true;
   const P=curPres();completeMission(10);projectState.modules.presentation=projectState.modules.presentation||{};projectState.modules.presentation.finalView={viewMode:P.view,presentationMode:P.mode,backgroundMode:P.bg};
-  setFb(fb,'<div class="big">MISSION 10 VALIDÉE</div><div>Ton projet final est prêt à être présenté.</div><div>Tu peux maintenant passer à l\u2019étape suivante du projet.</div>','ok');
-  const bC=h('button',{class:'btn ok'},'CONTINUER');const soon=h('div',{class:'soon'});bC.addEventListener('click',()=>{bC.disabled=true;soon.textContent='La prochaine étape permettra de tester ton projet sur une cible.';});next.append(bC,soon);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(10,true);}
+  setFb(fb,'<div class="big">MISSION 10 VALIDÉE</div><div>Ton projet final est prêt à être présenté.</div><div>Ton projet est prêt : tu vas maintenant le tester dans un stand de tir simulé.</div>','ok');
+  const bC=h('button',{class:'btn ok'},'ENTRER DANS LE STAND DE TIR');bC.addEventListener('click',()=>{bC.disabled=true;openStand();});next.append(bC);next.classList.add('on');ensureVisible(next);bC.focus();setTopinfo(10,true);}
 
 /* ===================== mission 10 : rendu 3D temps réel (WebGL natif, aucune bibliothèque) =====================
    Le modèle est reconstruit à partir des contours déjà validés du projet (crosse, fût, boîtier, canon, bande, plaque, pontet) :
@@ -1844,6 +1860,102 @@ function r3Start(){if(!r3Init())return false;try{r3Prepare();}catch(err){console
   r3Size();R3.fit=null;R3.active=true;R3.cv.classList.add('on');if(m10.g)m10.g.classList.add('gl-on');cancelAnimationFrame(R3.raf);R3.lastT=0;R3.raf=requestAnimationFrame(r3Frame);return true;}
 function r3Stop(){R3.active=false;cancelAnimationFrame(R3.raf);if(R3.cv)R3.cv.classList.remove('on');if(m10.g)m10.g.classList.remove('gl-on');}
 
+/* ===================== transition vers la mission 11 : ESSAI EN STAND DE TIR (mise en scène seule, aucune logique de tir) =====================
+   Stand intérieur illustré en coupe oblique : poste de tir, tablette, ligne de tir, séparations, couloir en profondeur, cible au fond.
+   L'arme posée sur la tablette reprend les couches validées du projet (contours, bois, quadrillage, plaque, gravure). Simulation pédagogique.
+   État mémorisé sobrement : modules.presentation.standReached = true (aucune nouvelle mission, aucun changement de schéma). */
+const STAND={g:null,on:false};const SVP=[1400,70];
+function stYC(x){return -150+(SVP[1]+150)*(x+70)/(SVP[0]+70);}   // ligne plafond / mur (fuite vers la droite)
+function stYF(x){return 262+(SVP[1]-262)*(x+70)/(SVP[0]+70);}    // pied de mur / sol
+function standDefs(){const defs=svgPlan.querySelector('defs');if(defs.querySelector('#st-wall'))return;
+  const lg=(id,stops,v,extra)=>{const g=el('linearGradient',Object.assign({id,x1:'0',y1:'0',x2:v?'0':'1',y2:v?'1':'0'},extra||{}),defs);stops.forEach(([o,c,a])=>el('stop',{offset:o,'stop-color':c,'stop-opacity':a==null?1:a},g));};
+  lg('st-wall',[['0','#4a5058'],['1','#2f343a']],false);lg('st-booth',[['0','#6a7079'],['1','#555b63']],false);lg('st-floor',[['0','#5d6166'],['1','#7a7e83']],true);lg('st-ceil',[['0','#1c1f23'],['1','#2a2e33']],true);
+  lg('st-bench',[['0','#8a6a47'],['1','#6e5236']],true);lg('st-cone',[['0','#fff6e0',.2],['1','#fff6e0',0]],true);
+  const rg=el('radialGradient',{id:'st-glow'},defs);el('stop',{offset:'0','stop-color':'#fff4dc','stop-opacity':.55},rg);el('stop',{offset:'1','stop-color':'#fff4dc','stop-opacity':0},rg);
+  const tg=el('radialGradient',{id:'st-tlight',cx:'.5',cy:'.45',r:'.6'},defs);el('stop',{offset:'0','stop-color':'#fffaf0','stop-opacity':.35},tg);el('stop',{offset:'1','stop-color':'#fffaf0','stop-opacity':0},tg);}
+function standPerson(g,x,feet){const P=el('g',{class:'st-person'},g);const H=250,top=feet-H;const skin='#d6ab86',jacket='#33445c',pants='#3b4047',dark='#1f2327';
+  // jambes (une derrière l'autre), chaussures
+  el('path',{d:`M${x-9},${top+140} L${x-14},${feet-6} L${x-2},${feet-6} L${x+2},${top+150} Z`,fill:'#30353b'},P);
+  el('path',{d:`M${x+2},${top+140} L${x+6},${feet-6} L${x+18},${feet-6} L${x+15},${top+140} Z`,fill:pants},P);
+  el('path',{d:`M${x-16},${feet-7} h20 q6,0 6,5 v2 h-26 Z`,fill:dark},P);el('path',{d:`M${x+4},${feet-7} h20 q7,0 7,5 v2 h-27 Z`,fill:dark},P);
+  // buste (veste de travail), col
+  el('path',{d:`M${x-16},${top+58} C${x-20},${top+90} ${x-20},${top+120} ${x-14},${top+146} L${x+18},${top+146} C${x+22},${top+118} ${x+22},${top+86} ${x+16},${top+58} Q${x},${top+50} ${x-16},${top+58} Z`,fill:jacket},P);
+  el('path',{d:`M${x-5},${top+54} L${x+2},${top+66} L${x+9},${top+54}`,fill:'none',stroke:'#e9ecef','stroke-width':3,'stroke-linejoin':'round'},P);
+  el('rect',{x:x-15,y:top+120,width:33,height:5,fill:'#2a3748'},P);
+  // cou et tête
+  el('rect',{x:x-4,y:top+40,width:10,height:14,rx:3,fill:skin},P);
+  el('ellipse',{cx:x+2,cy:top+24,rx:15,ry:18,fill:skin},P);el('path',{d:`M${x+15},${top+22} q5,3 1,7`,fill:skin},P);
+  el('path',{d:`M${x-13},${top+22} C${x-15},${top+4} ${x+4},${top-2} ${x+15},${top+10} C${x+10},${top+9} ${x+2},${top+10} ${x-2},${top+17} Z`,fill:'#4a3527'},P);
+  // lunettes et casque antibruit (équipement du stand)
+  el('path',{d:`M${x+6},${top+19} h11`,stroke:dark,'stroke-width':2.2,'stroke-linecap':'round'},P);el('rect',{x:x+9,y:top+17,width:8,height:5,rx:1.5,fill:'#9fb7c9','fill-opacity':.75,stroke:dark,'stroke-width':1},P);
+  el('path',{d:`M${x-12},${top+18} C${x-12},${top-2} ${x+10},${top-6} ${x+12},${top+10}`,fill:'none',stroke:'#23272c','stroke-width':3.2},P);
+  el('rect',{x:x-9,y:top+16,width:11,height:16,rx:5,fill:'#c0392b'},P);el('rect',{x:x-7,y:top+19,width:7,height:10,rx:3,fill:'#9b2d22'},P);
+  // bras (côté visible) : main posée sur la tablette
+  el('path',{d:`M${x+6},${top+64} C${x+14},${top+86} ${x+22},${top+100} ${x+30},${top+112}`,fill:'none',stroke:jacket,'stroke-width':12,'stroke-linecap':'round'},P);
+  el('path',{d:`M${x+30},${top+112} L${x+52},${top+124}`,fill:'none',stroke:jacket,'stroke-width':10,'stroke-linecap':'round'},P);
+  el('ellipse',{cx:x+58,cy:top+127,rx:7,ry:5,fill:skin},P);return P;}
+function standTarget(g,cx,cy,s){const T=el('g',{class:'st-target'},g);el('rect',{x:cx-24*s,y:cy-32*s,width:48*s,height:64*s,fill:'#efe9dc',stroke:'#9a9384','stroke-width':.8},T);
+  [26,22,18,14,10,6].forEach((r,i)=>el('circle',{cx,cy,r:r*s*.92,fill:i>=3?'#1f1f1f':'none',stroke:i>=3?'#efe9dc':'#1f1f1f','stroke-width':.7},T));el('circle',{cx,cy,r:1.6*s,fill:'#efe9dc'},T);
+  el('rect',{x:cx-4,y:cy-32*s-7,width:8,height:7,fill:'#50565e'},T);return T;}
+function buildStand(){presDefs();standDefs();if(STAND.g&&STAND.g.parentNode)STAND.g.remove();const root=STAND.g=el('g',{class:'l-stand'},svgPlan);const X0=-70,Y0=-195,W=1140,H=560;
+  const shade=el('rect',{x:X0,y:Y0,width:W,height:H,fill:'#0b0d10',class:'st-shade'},root);
+  const cam=el('g',{class:'st-cam'},root);const room=el('g',{class:'st-room'},cam);
+  el('rect',{x:X0,y:Y0,width:W,height:H,fill:'url(#st-wall)'},room);
+  const yc=stYC,yf=stYF,R=1070;
+  el('path',{d:`M${X0},${Y0} L${R},${Y0} L${R},${yc(R)} L${X0},${yc(X0)} Z`,fill:'url(#st-ceil)'},room);
+  el('path',{d:`M${X0},${H+Y0} L${R},${H+Y0} L${R},${yf(R)} L${X0},${yf(X0)} Z`,fill:'url(#st-floor)'},room);
+  // séparation du poste (panneau acoustique) et fin de cabine
+  const bx=440,bt=x=>yc(x)+(yf(x)-yc(x))*0.34;el('path',{d:`M${X0},${bt(X0)} L${bx},${bt(bx)} L${bx},${yf(bx)} L${X0},${yf(X0)} Z`,fill:'url(#st-booth)'},room);
+  for(let x=-40;x<bx;x+=34)el('line',{x1:x,y1:bt(x)+4,x2:x,y2:yf(x)-3,stroke:'#4d535b','stroke-width':1},room);
+  el('path',{d:`M${bx},${bt(bx)} L${bx+8},${bt(bx+8)} L${bx+8},${yf(bx+8)} L${bx},${yf(bx)} Z`,fill:'#3f444b'},room);
+  // chicanes au plafond et éclairages (de plus en plus serrés vers le fond)
+  let x=-30,step=150;while(x<860&&step>9){const w=Math.max(8,step*0.18);el('path',{d:`M${x},${yc(x)} L${x+w},${yc(x+w)} L${x+w-6},${yc(x+w)+step*0.2} L${x-6},${yc(x)+step*0.2} Z`,fill:'#343940'},room);x+=step;step*=0.8;}
+  [40,300,520,700].forEach((lx,i)=>{const w=60*Math.pow(0.8,i),y=yc(lx)+3;el('path',{d:`M${lx},${y} L${lx+w},${yc(lx+w)+3} L${lx+w},${yc(lx+w)+8} L${lx},${y+5} Z`,fill:'#fdf8ec'},room);
+    el('path',{d:`M${lx},${y+5} L${lx+w},${yc(lx+w)+8} L${lx+w+70*Math.pow(0.8,i)},${yf(lx+w+60)-8} L${lx-60*Math.pow(0.8,i)},${yf(lx-40)-8} Z`,fill:'url(#st-cone)'},room);});
+  // lignes du sol (couloir de tir) et ligne de tir
+  [0.25,0.5,0.75].forEach(f=>{const x0=X0,y0=yf(X0)+(H+Y0-yf(X0))*f;el('line',{x1:x0,y1:y0,x2:SVP[0],y2:SVP[1],stroke:'#8b8f94','stroke-width':1,'stroke-opacity':.35},room);});
+  // fond du stand : pare-balles, cible, rail du porte-cible
+  const fx0=880,fx1=R;el('path',{d:`M${fx0},${yc(fx0)} L${fx1},${yc(fx1)} L${fx1},${yf(fx1)} L${fx0},${yf(fx0)} Z`,fill:'#26292d'},room);
+  for(let k=1;k<7;k++){const xx=fx0+(fx1-fx0)*k/7;el('line',{x1:xx,y1:yc(xx)+2,x2:xx,y2:yf(xx)-2,stroke:'#303439','stroke-width':1.2},room);}
+  el('ellipse',{cx:975,cy:(yc(975)+yf(975))/2,rx:95,ry:70,fill:'url(#st-tlight)'},room);
+  el('line',{x1:200,y1:yc(200)+10,x2:975,y2:yc(975)+10,stroke:'#555b63','stroke-width':2},room);
+  const tgt=el('g',{class:'st-tgt'},cam);const tcx=975,tcy=(yc(975)+yf(975))/2-2;el('line',{x1:tcx,y1:yc(tcx)+10,x2:tcx,y2:tcy-36,stroke:'#6b7179','stroke-width':1.2},tgt);standTarget(tgt,tcx,tcy,1.15);
+  const line=el('g',{class:'st-line'},cam);el('path',{d:`M${446},${yf(446)} L${452},${yf(452)} L${440},${H+Y0} L${428},${H+Y0} Z`,fill:'#b8322a'},line);
+  // poste : tablette, sacs de pose, arme du projet
+  const post=el('g',{class:'st-post'},cam);const tb=186,tx0=150,tx1=420;
+  el('rect',{x:tx0+14,y:tb+10,width:8,height:118,fill:'#3a3f45'},post);el('rect',{x:tx1-22,y:tb+10,width:8,height:112,fill:'#3a3f45'},post);
+  el('path',{d:`M${tx0},${tb} L${tx1},${tb} L${tx1+16},${tb-8} L${tx0+16},${tb-8} Z`,fill:'#9a7a55'},post);el('rect',{x:tx0,y:tb,width:tx1-tx0,height:10,fill:'url(#st-bench)'},post);
+  const sc=0.24,gx=166,gy=tb-2-116*sc;const bag=(cx,w)=>el('path',{d:`M${cx-w},${tb-1} q0,-13 ${w},-14 q${w},1 ${w},14 Z`,fill:'#7c6a4f',stroke:'#5f5039','stroke-width':.8},post);
+  const gun=el('g',{class:'st-gun',transform:`translate(${gx} ${gy}) scale(${sc})`},post);presArm(gun);bag(gx+640*sc,17);bag(gx+40*sc,12);
+  const person=el('g',{class:'st-who'},cam);standPerson(person,96,322);
+  // repères et titres (hors du décor utile, sans collision)
+  const lab=el('g',{class:'st-labels'},cam);el('text',{x:285,y:348,class:'st-lab','text-anchor':'middle',text:'POSTE DE TIR'},lab);el('text',{x:462,y:348,class:'st-lab',text:'LIGNE DE TIR'},lab);
+  el('text',{x:tcx,y:yc(tcx)-8,class:'st-lab','text-anchor':'middle',text:'CIBLE'},lab);
+  const ttl=el('g',{class:'st-title'},root);el('text',{x:-52,y:-160,class:'st-h',text:'ESSAI EN STAND DE TIR'},ttl);el('text',{x:-52,y:-141,class:'st-s',text:'Tu vas maintenant tester ton projet dans un stand de tir simulé.'},ttl);
+  el('text',{x:1050,y:-160,class:'st-tag','text-anchor':'end',text:'SIMULATION PÉDAGOGIQUE'},ttl);
+  return {root,shade,cam,room,tgt,line,post,person,lab,ttl};}
+function standProjRows(){const D=m9Data();const M=MODELS[st.model];return [['Projet',`${M.letter} — ${M.name}`],['Crosse',STOCK_LBL[st.stock]||st.stock],['Quadrillage',`${D.lpi} LPI`],['Plaque de couche',`${D.ang}°`],['Finition',D.finName],['Gravure',D.moName]];}
+function buildStandPanel(){const p=$('#panel');p.innerHTML='';const top=h('div',{class:'panel-scroll'}),bot=h('div',{class:'panel-fixed'});p.append(top,bot);
+  const fb=h('div',{class:'fb',id:'fb'});const next=h('div',{class:'next',id:'next'});const bGo=h('button',{class:'btn blue',id:'btn-verif'},'COMMENCER L\u2019ESSAI');const bBack=h('button',{class:'btn ghost',id:'btn-back'},'Revenir à la présentation');
+  top.append(h('div',{class:'mnum'},'ESSAI EN STAND DE TIR'),h('div',{class:'msub'},'Simulation pédagogique — aucun tir réel.'),
+    h('div',{},h('div',{class:'ttl'},'TA MISSION'),h('p',{class:'mission'},'Tu vas maintenant passer de la présentation de ton projet à son essai en stand de tir simulé.'),h('p',{class:'why'},'Observe ton installation avant de commencer l\u2019essai : le poste de tir, la tablette où repose ton projet, la ligne de tir au sol et la cible au fond du stand.')),
+    h('div',{},h('div',{class:'ttl'},'POURQUOI ?'),h('p',{class:'why'},'Cette étape te permettra d\u2019observer le comportement de ton projet sur cible avant de corriger d\u2019éventuels défauts. Il s\u2019agit d\u2019une SIMULATION.')));
+  bot.append(h('div',{class:'step-card'},h('div',{class:'step-title'},'TON PROJET EST PRÊT'),h('div',{class:'dl st-dl'},...standProjRows().flatMap(([k,v])=>[h('span',{},k),h('b',{},v)]))),fb,next);p.append(h('div',{class:'acts'},bGo,bBack));
+  bGo.addEventListener('click',()=>setFb(fb,'<div class="big">ESSAI SIMULÉ</div><div>L\u2019essai simulé sera disponible à l\u2019étape suivante.</div>','ok'));
+  bBack.addEventListener('click',()=>leaveStand());}
+async function openStand(opts){opts=opts||{};const gen=planGen;r3Stop();const S=buildStand();STAND.on=true;const pres=projectState.modules.presentation=projectState.modules.presentation||{};pres.standReached=true;
+  buildStandPanel();const m=MODELS[st.model];$('#topinfo').innerHTML=`<b>Essai en stand de tir</b> — préparation &nbsp;·&nbsp; Projet ${m.letter} ${m.name}${st.designer?' &nbsp;·&nbsp; '+st.designer:''}`;
+  const bGo=$('#btn-verif'),bBack=$('#btn-back');if(opts.fast||REDUCED)return;
+  bGo.disabled=true;bBack.disabled=true;[S.room,S.post,S.person,S.tgt,S.line,S.lab,S.ttl].forEach(n=>n.style.opacity='0');S.shade.style.opacity='0';
+  const fade=(n,ms)=>{n.style.opacity='';return anim(n,[{opacity:0},{opacity:1}],{duration:ms,fill:'both'});};
+  anim(S.shade,[{opacity:0},{opacity:1}],{duration:650,fill:'both'});S.shade.style.opacity='';await wait(550);if(gen!==planGen)return;
+  S.cam.setAttribute('transform','translate(500 85) scale(1.08) translate(-500 -85)');fade(S.room,800);fade(S.line,800);await wait(500);fade(S.post,600);await wait(350);fade(S.person,600);await wait(350);fade(S.tgt,700);
+  tweenFn(1500,t=>{const k=1.08-0.08*t;S.cam.setAttribute('transform',`translate(500 85) scale(${k.toFixed(4)}) translate(-500 -85)`);});await wait(900);fade(S.ttl,500);fade(S.lab,500);await wait(700);if(gen!==planGen)return;
+  S.cam.removeAttribute('transform');bGo.disabled=false;bBack.disabled=false;bGo.focus();}
+function leaveStand(){STAND.on=false;const g=STAND.g;if(g){anim(g,[{opacity:1},{opacity:0}],{duration:450,fill:'forwards'});setTimeout(()=>{if(g.parentNode)g.remove();},470);}STAND.g=null;
+  buildDonePanel();setTopinfo(MISSION_COUNT,true);standEntry($('#panel .panel-scroll')||$('#panel'));const P=curPres();applyPres(P.view,P.mode,P.bg);}
+function standEntry(container){const b=h('button',{class:'btn ok',id:'btn-stand'},'ENTRER DANS LE STAND DE TIR');b.addEventListener('click',()=>{b.disabled=true;openStand();});container.append(h('div',{class:'next on st-entry'},b));return b;}
+
 /* ===================== RESTAURATION DEPUIS L'ÉTAT (rendu sans animation) ===================== */
 function prefillMission(n){const m=missionState(n).inputs;
   if(n===1&&m1.ui){m1.ui.iA.value=m.rear;m1.ui.iC.value=m.middle;m1.ui.iF.value=m.front;}
@@ -1875,7 +1987,7 @@ async function renderProjectFromState(){const S=projectState;st.model=S.design.m
   else if(open===8){await startMission8({fast:true,prefill:true});}
   else if(open===9){await startMission9({fast:true,prefill:true});}
   else if(open===10){await startMission10({fast:true,prefill:true});}
-  else{setTopinfo(MISSION_COUNT,true);buildDonePanel();}
+  else{setTopinfo(MISSION_COUNT,true);buildDonePanel();if(st.done10){if((projectState.modules.presentation||{}).standReached)openStand({fast:true});else standEntry($('#panel .panel-scroll')||$('#panel'));}}
   return open;}
 
 /* ===================== SAUVEGARDE PDF ===================== */
@@ -1978,6 +2090,7 @@ function autoSolve(){
   const bV=$('#btn-verif');if(!bV)return;if(bV.disabled&&!(m6.phase===2&&/MISSION 6/.test(($('#panel .mnum')||{}).textContent||''))){if(!sceneReady)setTimeout(autoSolve,300);return;}
   const num=($('#panel .mnum')||{}).textContent||'';const set=(inp,v)=>{inp.value=String(v);inp.dispatchEvent(new Event('input',{bubbles:true}));};
   if(/MISSION 10/.test(num)){m10.ui.checkAll();bV.click();return;}
+  if(/ESSAI EN STAND DE TIR/.test(num)){bV.click();return;}
   if(/MISSION 1/.test(num)){const e=expected();const ins=$$('#panel .fields input');[e.a,e.c,e.f].forEach((v,i)=>set(ins[i],v));}
   else if(/MISSION 2/.test(num)){const S=STOCKS[st.stock];const sq=S.dx*S.dx+S.dy*S.dy;const ins=$$('#panel .calc input');[S.dx,S.dy,sq,sq,S.ab].forEach((v,i)=>set(ins[i],v));}
   else if(/MISSION 3/.test(num)){const {uw,uh,best,detL,detH}=m3Data();const u=m3.ui;set(u.iW,uw);set(u.iH,uh);u.setScale(best);set(u.iL,detL);set(u.iD,Math.round(detH*10)/10);}
@@ -2024,7 +2137,7 @@ function init(){const a=$('#svg-accueil');a.setAttribute('viewBox','-30 -110 106
 init();
 /* Audit de débordement du panneau (à lancer dans la console : __bma.auditPanel()) : éléments plus larges que leur boîte ou sortant du panneau */
 function auditPanel(){const p=$('#panel');if(!p)return [];const pr=p.getBoundingClientRect();const out=[];p.querySelectorAll('*').forEach(e=>{const r=e.getBoundingClientRect();const over=e.scrollWidth>e.clientWidth+1&&getComputedStyle(e).overflowX!=='auto'&&getComputedStyle(e).overflowX!=='scroll';const outside=r.width>0&&(r.left<pr.left-1||r.right>pr.right+1);if(over||outside)out.push({el:e,tag:e.tagName+(e.className?'.'+String(e.className).split(' ').join('.'):''),over,outside,scrollWidth:e.scrollWidth,clientWidth:e.clientWidth});});return out;}
-window.__bma={R3,r3Draw,r3Start,r3Rings,r3Build,auditLayout,T9,m9Data,startMission9,m9,m10,startMission10,VIEWS10,MODES10,BGS10,st,MODELS,STOCKS,M3,FRAME,SCALES,CHECK,LPIS,HEEL,ANGLES,FLANK,FINISHES,ENGRAVE,MOTIFS,BLANKS,m8Data,startMission8,m8,m3Data,m4Data,m5Data,m6Data,m7Data,startMission4,startMission5,startMission6,startMission7,m4,m5,m6,m7,buttGeom,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
+window.__bma={STAND,openStand,leaveStand,buildStand,R3,r3Draw,r3Start,r3Rings,r3Build,auditLayout,T9,m9Data,startMission9,m9,m10,startMission10,VIEWS10,MODES10,BGS10,st,MODELS,STOCKS,M3,FRAME,SCALES,CHECK,LPIS,HEEL,ANGLES,FLANK,FINISHES,ENGRAVE,MOTIFS,BLANKS,m8Data,startMission8,m8,m3Data,m4Data,m5Data,m6Data,m7Data,startMission4,startMission5,startMission6,startMission7,m4,m5,m6,m7,buttGeom,autoSolve,auditPanel,getState:()=>projectState,buildSavePdf,parseSaveFile,importProjectFromBytes,renderProjectFromState,migrateProjectState,sha256js,expected,openPlan,show,revealZones,startMission2,reveal2,startMission3,reveal3,m2,m3,futBox,layers:()=>layers};
 })();
 </script>
 </body>
